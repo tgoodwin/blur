@@ -1,3 +1,3 @@
-# plt
+# blur
 
-This is the readme for out plt project
+Blur is a programming language for creation and modificaiton of ASCII art created from image files.
