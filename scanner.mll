@@ -1,4 +1,3 @@
-(* TODO: change this. This is the calculator code. *)
 { open Parser }
 
 let character = ['a'-'z' 'A'-'Z']
