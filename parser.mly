@@ -1,20 +1,9 @@
-(* TODO: change this (this is the calculator code *)
 %{ open Ast %}
 
-%token PLUS MINUS TIMES DIVIDE EOF
-%token <int> LITERAL
-
-%left PLUS MINUS
-%left TIMES DIVIDE
-
-%start expr
-%type < Ast.expr> expr
+%start program
+%type <Ast.program> program
 
 %%
 
-expr:
-  expr PLUS   expr { Binop($1, Add, $3) }
-| expr MINUS  expr { Binop($1, Sub, $3) }
-| expr TIMES  expr { Binop($1, Mul, $3) }
-| expr DIVIDE expr { Binop($1, Div, $3) }
-| LITERAL          { Lit($1) }
+program:
+  program {$1}
