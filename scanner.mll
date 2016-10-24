@@ -1,11 +1,6 @@
-(* TODO: change this. This is the calculator code. *)
 { open Parser }
 
 rule token = parse
-  [' ' '\t' '\r' '\n'] { token lexbuf }
-| '+' { PLUS }
-| '-' { MINUS }
-| '*' { TIMES }
-| '/' { DIVIDE }
-| ['0'-'9']+ as lit { LITERAL(int_of_string lit) }
+  [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
+| "func" { FUNC }
 | eof { EOF }
