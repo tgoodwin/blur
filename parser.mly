@@ -1,9 +1,14 @@
 %{ open Ast %}
 
+%token EOF
+
 %start program
 %type <Ast.program> program
 
 %%
 
 program:
-  program {$1}
+  decls EOF { $1 }
+
+decls:
+  /* nothing */ { [], [] }
