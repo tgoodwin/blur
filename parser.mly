@@ -3,6 +3,7 @@
 %token SEMI COMMA LPAREN RPAREN LBRACE RBRACE FUNC
 %token INT BOOL VOID
 %token <string> ID
+%token <int> LITERAL
 %token EOF
 
 %start program
@@ -18,11 +19,12 @@ decls:
   | decls funcdecl { fst $1, ($2 :: snd $1) }
 
 funcdecl:
-  FUNC typ ID LPAREN formals_opt RPAREN LBRACE vdecl_list RBRACE
+  FUNC typ ID LPAREN formals_opt RPAREN LBRACE vardecl_list stmt_list RBRACE
     { { typ = $2;
         fname = $3;
         formals = $5;
-        locals = List.rev $8; } }
+        locals = List.rev $8; 
+	body = List.rev $9 } }
 
 formals_opt:
     /* nothing */ { [] }
@@ -37,9 +39,19 @@ typ:
   | BOOL { Bool }
   | VOID { Void }
 
-vdecl_list:
+vardecl_list:
     /* nothing */ { [] } 
-  | vdecl_list vdecl { $2 :: $1 }
+  | vardecl_list vardecl { $2 :: $1 }
 
-vdecl:
-    typ ID SEMI { ($1, $2) }   
+vardecl:
+    typ ID SEMI { ($1, $2) }
+
+stmt_list:
+    /* nothing */ { [] }
+  | stmt_list stmt { $2 :: $1 }
+
+stmt:
+    expr SEMI { Expr $1 } 
+
+expr:
+    LITERAL { Literal($1) }  
