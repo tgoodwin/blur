@@ -4,6 +4,8 @@
 %token RETURN INT BOOL VOID
 %token <string> ID
 %token <int> LITERAL
+%token PLUS MINUS TIMES DIVIDE
+%token EQUAL NEQUAL LT LEQ GT GEQ
 %token EOF
 
 %start program
@@ -57,4 +59,9 @@ stmt:
   | LBRACE stmt_list RBRACE { Block(List.rev $2) }
 
 expr:
-    LITERAL { Literal($1) }  
+    expr PLUS expr    { binop($1, Add, $3) }
+    expr MINUS expr   { binop($1, Sub, $3) }
+    expr TIMES expr   { binop($1, Mul, $3) }
+    expr DIVIDE expr  { binop($1, Div, $3) }
+
+    LITERAL { Lit($1) }
