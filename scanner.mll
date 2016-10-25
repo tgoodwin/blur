@@ -48,6 +48,6 @@ rule token = parse
 | eof { EOF }
 
 and comment = parse
- "/*"	{ token lexbuf }
+ "*/"	{ token lexbuf }
 | _	{ comment lexbuf }
 
