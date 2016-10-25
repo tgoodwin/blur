@@ -1,7 +1,7 @@
 %{ open Ast %}
 
 %token SEMI COMMA LPAREN RPAREN LBRACE RBRACE FUNC
-%token INT BOOL VOID
+%token RETURN INT BOOL VOID
 %token <string> ID
 %token <int> LITERAL
 %token EOF
@@ -51,7 +51,10 @@ stmt_list:
   | stmt_list stmt { $2 :: $1 }
 
 stmt:
-    expr SEMI { Expr $1 } 
+    expr SEMI { Expr $1 }
+  | RETURN SEMI { Return Noexpr }
+  | RETURN expr SEMI { Return $2 } 
+  | LBRACE stmt_list RBRACE { Block(List.rev $2) }
 
 expr:
     LITERAL { Literal($1) }  
