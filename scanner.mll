@@ -19,7 +19,7 @@ rule token = parse
 | '/'	{ DIVIDE }
 | '='	{ ASSIGN }
 | "=="	{ EQ }
-| "!+"	{ NEQ }
+| "!="	{ NEQ }
 | '<'	{ LT }
 | "<="	{ LEQ }
 | '>'	{ GT }
