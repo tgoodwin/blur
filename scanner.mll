@@ -19,7 +19,7 @@ rule token = parse
 | '/'	{ DIVIDE }
 | '='	{ ASSIGN }
 | "=="	{ EQ }
-| "!+"	{ NEQ }
+| "!="	{ NEQ }
 | '<'	{ LT }
 | "<="	{ LEQ }
 | '>'	{ GT }
@@ -48,6 +48,6 @@ rule token = parse
 | eof { EOF }
 
 and comment = parse
- "/*"	{ token lexbuf }
+ "*/"	{ token lexbuf }
 | _	{ comment lexbuf }
 
