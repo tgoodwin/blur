@@ -2,6 +2,6 @@
 
 (* Pretty-printing functions *)
 let string_of_typ = function 
-    Int -> "int"
-  | Bool -> "bool" 
-  | Void -> "void"
+    IntLiteral(l) -> "int"
+  | BoolLiteral(l) -> "bool" 
+  (* | Void -> "void" *)
