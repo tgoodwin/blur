@@ -1,3 +1,4 @@
+(* Ocammlex scanner for Blur lang *)
 { open Parser }
 
 let character = ['a'-'z' 'A'-'Z']
