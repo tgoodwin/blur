@@ -10,6 +10,8 @@
 
 %nonassoc NOELSE
 %nonassoc ELSE
+%left PLUS MINUS
+%left TIMES DIVIDE
 
 %start program
 %type <Ast.program> program
