@@ -1,12 +1,15 @@
 %{ open Ast %}
 
 %token SEMI COMMA LPAREN RPAREN LBRACE RBRACE FUNC
-%token RETURN INT BOOL VOID
-%token <string> ID
-%token <int> LITERAL
+%token RETURN IF ELSE NOELSE FOR WHILE INT BOOL VOID
 %token PLUS MINUS TIMES DIVIDE
 %token EQUAL NEQUAL LT LEQ GT GEQ
+%token <string> ID
+%token <int> LITERAL
 %token EOF
+
+%nonassoc NOELSE
+%nonassoc ELSE
 
 %start program
 %type <Ast.program> program
@@ -57,11 +60,19 @@ stmt:
   | RETURN SEMI { Return Noexpr }
   | RETURN expr SEMI { Return $2 } 
   | LBRACE stmt_list RBRACE { Block(List.rev $2) }
+  | IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
+  | IF LPAREN expr RPAREN stmt ELSE stmt { If($3, $5, $7) }
+  | FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt { For($3, $5, $7, $9) }
+  | WHILE LPAREN expr RPAREN stmt { While($3, $5) }
+
+expr_opt:
+    /* nothing */ { Noexpr }
+  | expr { $1 }
 
 expr:
-    expr PLUS expr    { binop($1, Add, $3) }
-    expr MINUS expr   { binop($1, Sub, $3) }
-    expr TIMES expr   { binop($1, Mul, $3) }
-    expr DIVIDE expr  { binop($1, Div, $3) }
-
     LITERAL { Lit($1) }
+  | expr PLUS expr    { Binop($1, Add, $3) }
+  | expr MINUS expr   { Binop($1, Sub, $3) }
+  | expr TIMES expr   { Binop($1, Mul, $3) }
+  | expr DIVIDE expr  { Binop($1, Div, $3) }
+   
