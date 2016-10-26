@@ -1,0 +1,11 @@
+/* Print test */
+
+Println("hello with newline");
+Print("hello no newline:");
+Println("check no newline");
+
+int x = 5;
+Println(x);
+char c = 'A';
+Println(c);
+
