@@ -8,6 +8,9 @@ let string_of_op = function
   | Mul -> '*'
   | Div -> '/'
 
+let string_of_expr = function
+	Lit(l) -> string_of_int l
+
 (*let _ =
 	let lexbuf = Lexing.from_channel stdin in
 	let expr = Parser.expr Scanner.token lexbuf in

@@ -1,15 +1,16 @@
-#!/bin/bash
+OBJS = parser.cmo scanner.cmo prettyprint.cmo
 
-filename=$(date | cut -f 4 -d " ")
-mkdir $filename
-cp * ./$filename
-cd $filename
+prog : $(OBJS)
+	ocamlc -o prog $(OBJS)
 
-ocamllex scanner.mll
-ocamlyacc parser.mly
-ocamlc -c ast.ml
-ocamlc -c parser.mli
-ocamlc -c scanner.ml
-ocamlc -c parser.ml
-ocamlc -o blur parser.cmo scanner.cmo 
+scanner.ml : scanner.mll
+	ocamllex scanner.mll
 
+parser.ml parser.mli : parser.mly
+	ocamllyacc parser.mly
+
+%.cmo : %.ml
+	ocamlc -c $<
+
+%.cmi : %.mli
+	ocamlc -c $<
