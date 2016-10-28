@@ -14,3 +14,9 @@ parser.ml parser.mli : parser.mly
 
 %.cmi : %.mli
 	ocamlc -c $<
+
+.PHONY : clean
+clean :
+	rm -rf prog scanner.ml parser.ml parser.mli
+	rm -rf *.cmx *.cmi *.cmo *.cmx *.o
+
