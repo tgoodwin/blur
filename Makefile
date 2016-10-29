@@ -33,4 +33,3 @@ parser.cmi: ast.cmi
 clean :
 	rm -rf prog scanner.ml parser.ml parser.mli
 	rm -rf *.cmo *.cmi
-
