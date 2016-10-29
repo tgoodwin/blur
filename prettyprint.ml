@@ -1,4 +1,4 @@
-open Ast
+open Ast 
 
 (* Pretty-printing functions *)
 
@@ -9,10 +9,10 @@ let string_of_op = function
   | Div -> '/'
 
 let string_of_expr = function
-	Lit(l) -> string_of_int l
+	  Lit(l) -> string_of_int l
 
 let string_of_typ = function
-	Int -> "int"
+	  Int -> "int"
   | Bool -> "bool"
   | Void -> "void"
 
