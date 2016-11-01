@@ -1,17 +1,26 @@
+/* PARSER.MLY for BLUR */
+
 %{ open Ast %}
 
-%token SEMI COMMA LPAREN RPAREN LBRACE RBRACE FUNC
+%token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK
+%token SEMI COMMA FUNC
 %token RETURN IF ELSE NOELSE FOR WHILE INT BOOL VOID
 %token PLUS MINUS TIMES DIVIDE ASSIGN
-%token EQUAL NEQUAL LT LEQ GT GEQ
+%token EQUAL NEQUAL LT LEQ GT GEQ AND OR NOT
 %token <string> ID
 %token <int> LITERAL
 %token EOF
 
 %nonassoc NOELSE
 %nonassoc ELSE
+%right ASSIGN
+%left OR
+%left AND
+%left EQUAL NEQUAL
+%left LT GT LEQ GEQ
 %left PLUS MINUS
 %left TIMES DIVIDE
+%right NOT
 
 %start program
 %type <Ast.program> program

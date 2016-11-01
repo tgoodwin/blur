@@ -11,6 +11,8 @@ rule token = parse
 | ')'	{ RPAREN }
 | '{'	{ LBRACE }
 | '}'	{ RBRACE }
+| '['   { LBRACK }
+| ']'   { RBRACK }
 | ';'	{ SEMI }
 | ','	{ COMMA }
 | '+'	{ PLUS }
@@ -18,6 +20,15 @@ rule token = parse
 | '*'	{ TIMES }
 | '/'	{ DIVIDE }
 | '='	{ ASSIGN }
+| "=="  { EQUAL }
+| "!="  { NEQUAL }
+| '<'   { LT }
+| "<="  { LEQ }
+| '>'   { GT }
+| ">="  { GEQ }
+| "&&"  { AND }
+| "||"  { OR }
+| '!'   { NOT }
 | "int" 	{ INT }
 | "boolean"	{ BOOL }
 | "for"		{ FOR }
