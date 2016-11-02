@@ -1,1 +1,3 @@
-int x;
+func int foo(int a) {
+	return a;
+}
