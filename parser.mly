@@ -32,15 +32,20 @@ decls EOF { $1 }
 
 decls:
 /* nothing */ { [], [] }
+| decls vardecl { ($2 :: fst $1), snd $1 } 
 | decls funcdecl { fst $1, ($2 :: snd $1) }
 
 funcdecl:
     typ ID LPAREN formals_opt RPAREN LBRACE vardecl_list stmt_list RBRACE
-      { { typ = $1;
-    fname = $2;
-    formals = $4;
-    locals = List.rev $7; 
-    body = List.rev $8 } }
+    {
+        {
+            typ = $1;
+            fname = $2;
+            formals = $4;
+            locals = List.rev $7; 
+            body = List.rev $8
+        }
+    }
 
 formals_opt:
 /* nothing */ { [] }
