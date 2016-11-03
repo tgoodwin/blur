@@ -48,8 +48,8 @@ funcdecl:
     }
 
 formals_opt:
-/* nothing */ { [] }
-| formal_list { List.rev $1 }	
+    /* nothing */ { [] }
+  | formal_list { List.rev $1 }	
 
 formal_list:
     typ ID 	             { [($1, $2)] }
