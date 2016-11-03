@@ -14,6 +14,7 @@ let string_of_expr = function
 let rec string_of_expr = function
     Lit(l) -> string_of_int l
   | Id(s) -> s
+  | Asn(v, e) -> v ^ " = " ^ string_of_expr e
 
 let rec string_of_stmt = function
     Block(stmts) ->

@@ -86,4 +86,5 @@ expr:
   | expr MINUS expr   { Binop($1, Sub, $3) }
   | expr TIMES expr   { Binop($1, Mul, $3) }
   | expr DIVIDE expr  { Binop($1, Div, $3) }
+  | ID ASSIGN expr    { Asn ($1, $3) }
 
