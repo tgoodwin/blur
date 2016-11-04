@@ -9,7 +9,11 @@
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token EQUAL NEQUAL LT LEQ GT GEQ AND OR NOT
 %token <string> ID
-%token <int> LITERAL
+%token <int> INT_LITERAL
+%token <float> DOUBLE_LITERAL
+%token <bool> BOOL_LITERAL
+%token <string> STRING_LITERAL
+%token <char> CHAR_LITERAL
 %token EOF
 
 %nonassoc NOELSE
@@ -85,7 +89,7 @@ expr_opt:
   expr { $1 }
 
 expr:
-    LITERAL { Lit($1) }
+    INT_LITERAL { Lit($1) }
   | ID                { Id($1) }
   | expr PLUS expr    { Binop($1, Add, $3) }
   | expr MINUS expr   { Binop($1, Sub, $3) }
