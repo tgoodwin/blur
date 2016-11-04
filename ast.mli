@@ -1,7 +1,13 @@
 (* Abstract Syntax Tree *)
 type operator = Add | Sub | Mult | Div 
 
-type typ = Int | Bool | Void
+type typ =
+    Int
+  | Double
+  | Char
+  | String
+  | Bool
+  | Void
 
 type bind = typ * string
 

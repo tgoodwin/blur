@@ -56,8 +56,12 @@ formal_list:
     typ ID 	             { [($1, $2)] }
   | formal_list COMMA typ ID { ($3, $4) :: $1 }
 
+/* maybe canvas goes here later? */
 typ:
     INT { Int }
+  | DOUBLE { Double }
+  | CHAR { Char }
+  | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
 
