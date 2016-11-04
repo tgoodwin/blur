@@ -30,6 +30,9 @@ rule token = parse
 | "||"  { OR }
 | '!'   { NOT }
 | "int" 	{ INT }
+| "double"      { DOUBLE }
+| "string"      { STRING }
+| "char"        { CHAR }
 | "boolean"	{ BOOL }
 | "for"		{ FOR }
 | "while"	{ WHILE }
@@ -37,6 +40,10 @@ rule token = parse
 | "else"	{ ELSE }
 | "void"	{ VOID }
 | "return"	{ RETURN }
+| "true"        { TRUE }
+| "false"       { FALSE }
+| "break"       { BREAK }
+| "continue"    { CONTINUE }
 | ['0'-'9']+ as lit { LITERAL(int_of_string lit) }
 | '_'?['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | eof { EOF }
