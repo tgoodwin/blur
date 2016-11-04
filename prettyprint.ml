@@ -9,7 +9,11 @@ let string_of_op = function
   | Div -> "/"
 
 let rec string_of_expr = function
-    Lit(l) -> string_of_int l
+    IntLit(l) -> string_of_int l
+  | DoubleLit(l) -> string_of_float l
+  | StrLit(l) -> l
+  | CharLit(l) -> Char.escaped l
+  | BoolLit(l) -> string_of_bool l
   | Id(s) -> s
   | Asn(v, e) -> v ^ " = " ^ string_of_expr e
   | Binop(e1, o, e2) -> string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2

@@ -89,7 +89,11 @@ expr_opt:
   expr { $1 }
 
 expr:
-    INT_LITERAL { Lit($1) }
+    INT_LITERAL       { IntLit($1) }
+  | DOUBLE_LITERAL    { DoubleLit($1) }
+  | STRING_LITERAL    { StrLit($1) }
+  | CHAR_LITERAL      { CharLit($1) }
+  | BOOL_LITERAL      { BoolLit($1) }
   | ID                { Id($1) }
   | expr PLUS expr    { Binop($1, Add, $3) }
   | expr MINUS expr   { Binop($1, Sub, $3) }

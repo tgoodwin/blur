@@ -13,7 +13,11 @@ type bind = typ * string
 
 type expr =
     Binop of expr * operator * expr
-  | Lit of int
+  | IntLit of int
+  | DoubleLit of float
+  | StrLit of string
+  | CharLit of char
+  | BoolLit of bool
   | Id of string
   | Asn of string * expr
   | Seq of expr * expr
