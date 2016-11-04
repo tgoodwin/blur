@@ -1,5 +1,5 @@
 (* Abstract Syntax Tree *)
-type operator = Add | Sub | Mul | Div 
+type operator = Add | Sub | Mult | Div 
 
 type typ = Int | Bool | Void
 
