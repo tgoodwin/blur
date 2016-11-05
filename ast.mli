@@ -33,6 +33,7 @@ type expr =
   | Id of string
   | Asn of string * expr
   | Seq of expr * expr
+  | FuncCall of string * expr list
   | Noexpr
 
 type stmt = 

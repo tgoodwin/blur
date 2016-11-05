@@ -81,8 +81,10 @@ stmt_list:
   | stmt_list stmt { $2 :: $1 }
 
 stmt:
-    expr SEMI { Expr($1) }
-  | RETURN expr SEMI { Return($2) }
+    expr SEMI           { Expr($1) }
+  | condit_stmt         { $1 }
+  | loop_stmt           { $1 }
+  | RETURN expr SEMI    { Return($2) }
   | LBRACE stmt_list RBRACE { Block(List.rev $2) }
 
 condit_stmt:
@@ -96,6 +98,10 @@ loop_stmt:
 expr_opt:
     { Noexpr }
   | expr { $1 }
+
+expr_list:
+    expr                 { [$1] }
+  | expr COMMA expr_list { $1::$3 }
 
 expr:
     INT_LITERAL       { IntLit($1) }
@@ -119,4 +125,9 @@ expr:
   | LPAREN expr RPAREN { $2 }
 
   | ID ASSIGN expr    { Asn ($1, $3) }
+  | func_call         { $1 }
+
+func_call:
+    ID LPAREN RPAREN            { FuncCall($1, []) }
+  | ID LPAREN expr_list RPAREN  { FuncCall($1, $3) }
 
