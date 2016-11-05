@@ -77,8 +77,9 @@ stmt:
   | RETURN expr SEMI { Return $2 }
   | LBRACE stmt_list RBRACE { Block(List.rev $2) }
 
-expr_opt:
-  expr { $1 }
+expr_list:
+    expr { [$1] }
+  | expr COMMA expr_list { $1 :: $3 }
 
 expr:
     LITERAL { Lit($1) }
@@ -88,4 +89,4 @@ expr:
   | expr TIMES expr   { Binop($1, Mult, $3) }
   | expr DIVIDE expr  { Binop($1, Div, $3) }
   | ID ASSIGN expr    { Asn ($1, $3) }
-
+  | LBRACK expr_list RBRACK { ListInit($2) }

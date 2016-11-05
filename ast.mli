@@ -11,6 +11,7 @@ type expr =
   | Id of string
   | Asn of string * expr
   | Seq of expr * expr
+  | ListInit of expr list
 
 type stmt = 
     Block of stmt list
