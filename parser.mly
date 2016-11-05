@@ -9,7 +9,11 @@
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token EQUAL NEQUAL LT LEQ GT GEQ AND OR NOT
 %token <string> ID
-%token <int> LITERAL
+%token <int> INT_LITERAL
+%token <float> DOUBLE_LITERAL
+%token <bool> BOOL_LITERAL
+%token <string> STRING_LITERAL
+%token <char> CHAR_LITERAL
 %token EOF
 
 %nonassoc NOELSE
@@ -56,8 +60,12 @@ formal_list:
     typ ID 	             { [($1, $2)] }
   | formal_list COMMA typ ID { ($3, $4) :: $1 }
 
+/* maybe canvas goes here later? */
 typ:
     INT { Int }
+  | DOUBLE { Double }
+  | CHAR { Char }
+  | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
 
@@ -73,20 +81,54 @@ stmt_list:
   | stmt_list stmt { $2 :: $1 }
 
 stmt:
-    expr SEMI { Expr $1 }
-  | RETURN expr SEMI { Return $2 }
+    expr SEMI           { Expr($1) }
+  | condit_stmt         { $1 }
+  | loop_stmt           { $1 }
+  | RETURN expr SEMI    { Return($2) }
   | LBRACE stmt_list RBRACE { Block(List.rev $2) }
 
+condit_stmt:
+    IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
+  | IF LPAREN expr RPAREN stmt ELSE stmt   { If($3, $5, $7) }
+
+loop_stmt:
+    FOR LPAREN expr_opt SEMI expr_opt SEMI expr_opt RPAREN stmt { For($3, $5, $7, $9) }
+  | WHILE LPAREN expr RPAREN stmt { While($3, $5) }
+
+expr_opt:
+    { Noexpr }
+  | expr { $1 }
+
 expr_list:
-    expr { [$1] }
-  | expr COMMA expr_list { $1 :: $3 }
+    expr                 { [$1] }
+  | expr COMMA expr_list { $1::$3 }
 
 expr:
-    LITERAL { Lit($1) }
+    INT_LITERAL       { IntLit($1) }
+  | DOUBLE_LITERAL    { DoubleLit($1) }
+  | STRING_LITERAL    { StrLit($1) }
+  | CHAR_LITERAL      { CharLit($1) }
+  | BOOL_LITERAL      { BoolLit($1) }
   | ID                { Id($1) }
   | expr PLUS expr    { Binop($1, Add, $3) }
   | expr MINUS expr   { Binop($1, Sub, $3) }
   | expr TIMES expr   { Binop($1, Mult, $3) }
   | expr DIVIDE expr  { Binop($1, Div, $3) }
+  | expr EQUAL expr   { Binop($1, Eq, $3) }
+  | expr NEQUAL expr  { Binop($1, Neq, $3) }
+  | expr LT expr      { Binop($1, Lt, $3) }
+  | expr LEQ expr     { Binop($1, Leq, $3) }
+  | expr GT expr      { Binop($1, Gt, $3) }
+  | expr GEQ expr     { Binop($1, Geq, $3) }
+  | expr AND expr     { Binop($1, And, $3) }
+  | expr OR expr      { Binop($1, Or, $3) }
+  | LPAREN expr RPAREN { $2 }
   | ID ASSIGN expr    { Asn ($1, $3) }
   | LBRACK expr_list RBRACK { ListInit($2) }
+  | func_call         { $1 }
+
+func_call:
+    ID LPAREN RPAREN            { FuncCall($1, []) }
+  | ID LPAREN expr_list RPAREN  { FuncCall($1, $3) }
+
+

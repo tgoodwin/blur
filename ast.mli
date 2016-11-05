@@ -1,24 +1,49 @@
 (* Abstract Syntax Tree *)
-type operator = Add | Sub | Mult | Div 
+type binopr =
+    Add
+  | Sub
+  | Mult
+  | Div
+  | Eq
+  | Neq
+  | Lt
+  | Leq
+  | Gt
+  | Geq
+  | And
+  | Or
 
-type typ = Int | Bool | Void
+type typ =
+    Int
+  | Double
+  | Char
+  | String
+  | Bool
+  | Void
 
 type bind = typ * string
 
 type expr =
-    Binop of expr * operator * expr
-  | Lit of int
+    Binop of expr * binopr * expr
+  | IntLit of int
+  | DoubleLit of float
+  | StrLit of string
+  | CharLit of char
+  | BoolLit of bool
   | Id of string
   | Asn of string * expr
   | Seq of expr * expr
   | ListInit of expr list
+  | FuncCall of string * expr list
+  | Noexpr
 
 type stmt = 
     Block of stmt list
   | Expr of expr
   | Return of expr
   | If of expr * stmt * stmt
-  | For of expr * stmt * stmt
+  | For of expr * expr * expr * stmt
+  | While of expr * stmt
 
 type func_decl = {
     typ : typ;
