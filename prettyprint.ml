@@ -8,6 +8,12 @@ let string_of_op = function
   | Mult -> "*"
   | Div -> "/"
 
+let rec string_of_typ = function
+    Int -> "int"
+  | Bool -> "bool"
+  | Void -> "void"
+  | Array(t) -> string_of_typ t ^ "[]"
+
 let rec string_of_expr = function
     IntLit(l) -> string_of_int l
   | DoubleLit(l) -> string_of_float l
@@ -17,17 +23,12 @@ let rec string_of_expr = function
   | Id(s) -> s
   | Asn(v, e) -> v ^ " = " ^ string_of_expr e
   | Binop(e1, o, e2) -> string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
+  | ArraySizeInit(t, s) -> string_of_typ t ^ "[" ^ string_of_int s ^ "]"
 
 let rec string_of_stmt = function
     Block(stmts) ->
       "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
   | Expr(expr) -> string_of_expr expr ^ ";\n"   
-
-let rec string_of_typ = function
-	  Int -> "int"
-  | Bool -> "bool"
-  | Void -> "void"
-  | Array(t) -> string_of_typ t ^ "[]"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

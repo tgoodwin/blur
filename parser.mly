@@ -125,7 +125,8 @@ expr:
   | expr OR expr      { Binop($1, Or, $3) }
   | LPAREN expr RPAREN { $2 }
   | ID ASSIGN expr    { Asn ($1, $3) }
-  | LBRACK expr_list RBRACK { ArrayInit($2) }
+  | LBRACE expr_list RBRACE { ArrayListInit($2) }
+  | typ LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) }
   | func_call         { $1 }
 
 func_call:
