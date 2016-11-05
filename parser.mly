@@ -99,5 +99,15 @@ expr:
   | expr MINUS expr   { Binop($1, Sub, $3) }
   | expr TIMES expr   { Binop($1, Mult, $3) }
   | expr DIVIDE expr  { Binop($1, Div, $3) }
+  | expr EQUAL expr   { Binop($1, Eq, $3) }
+  | expr NEQUAL expr  { Binop($1, Neq, $3) }
+  | expr LT expr      { Binop($1, Lt, $3) }
+  | expr LEQ expr     { Binop($1, Leq, $3) }
+  | expr GT expr      { Binop($1, Gt, $3) }
+  | expr GEQ expr     { Binop($1, Geq, $3) }
+  | expr AND expr     { Binop($1, And, $3) }
+  | expr OR expr      { Binop($1, Or, $3) }
+  | LPAREN expr RPAREN { $2 }
+
   | ID ASSIGN expr    { Asn ($1, $3) }
 

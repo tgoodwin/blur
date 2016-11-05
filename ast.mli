@@ -1,5 +1,17 @@
 (* Abstract Syntax Tree *)
-type operator = Add | Sub | Mult | Div 
+type binopr =
+    Add
+  | Sub
+  | Mult
+  | Div
+  | Eq
+  | Neq
+  | Lt
+  | Leq
+  | Gt
+  | Geq
+  | And
+  | Or
 
 type typ =
     Int
@@ -12,7 +24,7 @@ type typ =
 type bind = typ * string
 
 type expr =
-    Binop of expr * operator * expr
+    Binop of expr * binopr * expr
   | IntLit of int
   | DoubleLit of float
   | StrLit of string
