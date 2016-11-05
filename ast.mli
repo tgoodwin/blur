@@ -33,13 +33,15 @@ type expr =
   | Id of string
   | Asn of string * expr
   | Seq of expr * expr
+  | Noexpr
 
 type stmt = 
     Block of stmt list
   | Expr of expr
   | Return of expr
   | If of expr * stmt * stmt
-  | For of expr * stmt * stmt
+  | For of expr * expr * expr * stmt
+  | While of expr * stmt
 
 type func_decl = {
     typ : typ;

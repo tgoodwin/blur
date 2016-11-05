@@ -81,12 +81,21 @@ stmt_list:
   | stmt_list stmt { $2 :: $1 }
 
 stmt:
-    expr SEMI { Expr $1 }
-  | RETURN expr SEMI { Return $2 }
+    expr SEMI { Expr($1) }
+  | RETURN expr SEMI { Return($2) }
   | LBRACE stmt_list RBRACE { Block(List.rev $2) }
 
+condit_stmt:
+    IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Block([])) }
+  | IF LPAREN expr RPAREN stmt ELSE stmt   { If($3, $5, $7) }
+
+loop_stmt:
+    FOR LPAREN expr_opt SEMI expr_opt SEMI expr_opt RPAREN stmt { For($3, $5, $7, $9) }
+  | WHILE LPAREN expr RPAREN stmt { While($3, $5) }
+
 expr_opt:
-  expr { $1 }
+    { Noexpr }
+  | expr { $1 }
 
 expr:
     INT_LITERAL       { IntLit($1) }
