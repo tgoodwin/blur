@@ -23,10 +23,11 @@ let rec string_of_stmt = function
       "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
   | Expr(expr) -> string_of_expr expr ^ ";\n"   
 
-let string_of_typ = function
+let rec string_of_typ = function
 	  Int -> "int"
   | Bool -> "bool"
   | Void -> "void"
+  | Array(t) -> string_of_typ t ^ "[]"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

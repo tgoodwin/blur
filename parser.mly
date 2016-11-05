@@ -68,6 +68,7 @@ typ:
   | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
+  | typ LBRACK RBRACK { Array($1) }
 
 vardecl_list:
     /* nothing */ { [] } 
@@ -124,7 +125,7 @@ expr:
   | expr OR expr      { Binop($1, Or, $3) }
   | LPAREN expr RPAREN { $2 }
   | ID ASSIGN expr    { Asn ($1, $3) }
-  | LBRACK expr_list RBRACK { ListInit($2) }
+  | LBRACK expr_list RBRACK { ArrayInit($2) }
   | func_call         { $1 }
 
 func_call:

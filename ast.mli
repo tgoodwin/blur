@@ -20,6 +20,7 @@ type typ =
   | String
   | Bool
   | Void
+  | Array of typ
 
 type bind = typ * string
 
@@ -33,7 +34,7 @@ type expr =
   | Id of string
   | Asn of string * expr
   | Seq of expr * expr
-  | ListInit of expr list
+  | ArrayInit of expr list
   | FuncCall of string * expr list
   | Noexpr
 
