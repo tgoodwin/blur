@@ -1,5 +1,5 @@
 int test(int x)
 {
   int[] a;
-  a = int[5];
+  a = {5,3,7};
 }
