@@ -13,6 +13,9 @@ type binopr =
   | And
   | Or
 
+type unopr = Not | Neg
+
+(* BLUR TYPES *)
 type typ =
     Int
   | Double
@@ -26,6 +29,7 @@ type bind = typ * string
 
 type expr =
     Binop of expr * binopr * expr
+  | Unop of unopr * expr
   | IntLit of int
   | DoubleLit of float
   | StrLit of string
@@ -46,6 +50,8 @@ type stmt =
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
   | While of expr * stmt
+  | Continue
+  | Break
 
 type func_decl = {
     typ : typ;
