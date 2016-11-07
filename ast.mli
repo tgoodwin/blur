@@ -14,6 +14,9 @@ type binopr =
   | Or
   | Asn
 
+type unopr = Not | Neg
+
+(* BLUR TYPES *)
 type typ =
     Int
   | Double
@@ -27,12 +30,15 @@ type bind = typ * string
 
 type expr =
     Binop of expr * binopr * expr
+  | Unop of unopr * expr
   | IntLit of int
   | DoubleLit of float
   | StrLit of string
   | CharLit of char
   | BoolLit of bool
   | Id of string
+  | Asn of string * expr
+  (* | Seq of expr * expr *)
   | ArrayListInit of expr list
   | ArraySizeInit of typ * int
   | FuncCall of string * expr list
@@ -48,6 +54,8 @@ type stmt =
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
   | While of expr * stmt
+  | Continue
+  | Break
 
 type funcdecl = {
     typ : typ;

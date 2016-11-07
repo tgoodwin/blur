@@ -8,9 +8,24 @@ let string_of_op = function
   | Mult -> "*"
   | Div -> "/"
   | Asn -> "="
+  | Eq -> "=="
+  | Neq -> "!="
+  | Lt -> "<"
+  | Leq -> "<="
+  | Gt -> ">"
+  | Geq -> ">="
+  | And -> "&&"
+  | Or -> "||"
+
+let string_of_unop = function
+    Not -> "!"
+  | Neg -> "-"
 
 let rec string_of_typ = function
     Int -> "int"
+  | Double -> "double"
+  | Char -> "char"
+  | String -> "string"
   | Bool -> "bool"
   | Void -> "void"
   | Array(t) -> string_of_typ t ^ "[]"
@@ -23,8 +38,11 @@ let rec string_of_expr = function
   | BoolLit(l) -> string_of_bool l
   | Id(s) -> s
   | Binop(e1, o, e2) -> string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
+  | Unop(o, e) -> string_of_unop o ^ string_of_expr e
   | ArrayListInit(l) -> "{" ^ String.concat ", " (List.map string_of_expr l) ^ "}"
   | ArraySizeInit(t, s) -> string_of_typ t ^ "[" ^ string_of_int s ^ "]"
+  | FuncCall(n, p) -> n ^ "(" ^ String.concat ", " (List.map string_of_expr p) ^ ")"
+  | Noexpr -> "noexpr"
 
 (*let string_of_vardecl vdecl = 
     string_of_typ vdecl.declTyp ^ " " ^
@@ -35,8 +53,13 @@ let string_of_vardecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 let rec string_of_stmt = function
     Block(stmts) ->
       "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
-  | Expr(expr) -> string_of_expr expr ^ ";\n"  
-
+  | Expr(expr) -> string_of_expr expr ^ ";\n"   
+  | Return(expr) -> "return" ^ " " ^ string_of_expr expr ^ ";\n"
+  | If(e, s1, s2) -> "if (" ^ string_of_expr e ^ ") {\n" ^ string_of_stmt s1 ^ "}\n else {\n" ^ string_of_stmt s2 ^ "}\n"
+  | For(e1, e2, e3, s) -> "for (" ^ string_of_expr e1 ^ string_of_expr e2 ^ string_of_expr e3 ^ ") {\n" ^ string_of_stmt s ^ "}\n"
+  | While(e, s) -> "while (" ^ string_of_expr e ^ ") {\n" ^ string_of_stmt s ^ "}\n"
+  | Continue -> "continue;"
+  | Break -> "break;"
 
 let string_of_funcdecl fdecl =
   string_of_typ fdecl.typ ^ " " ^

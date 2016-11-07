@@ -26,6 +26,7 @@
 %left TIMES DIVIDE
 %right NOT
 %nonassoc UNOP
+%nonassoc UNOP /* for unary op precedence */
 
 %start program
 %type <Ast.program> program
@@ -85,6 +86,10 @@ stmt:
     expr_stmt           { $1 }
   | condit_stmt         { $1 }
   | loop_stmt           { $1 }
+  | RETURN expr SEMI    { Return($2) }
+  | CONTINUE SEMI       { Continue }
+  | BREAK SEMI          { Break }
+  | LBRACE stmt_list RBRACE { Block(List.rev $2) }
 
 expr_stmt:
     expr SEMI { Expr $1 }
@@ -106,12 +111,15 @@ expr_list:
   | expr COMMA expr_list { $1::$3 }
 
 expr:
+  /* literals */
     INT_LITERAL       { IntLit($1) }
   | DOUBLE_LITERAL    { DoubleLit($1) }
   | STRING_LITERAL    { StrLit($1) }
   | CHAR_LITERAL      { CharLit($1) }
   | BOOL_LITERAL      { BoolLit($1) }
   | ID                { Id($1) }
+
+  /* binops */
   | expr PLUS expr    { Binop($1, Add, $3) }
   | expr MINUS expr   { Binop($1, Sub, $3) }
   | expr TIMES expr   { Binop($1, Mult, $3) }
@@ -124,8 +132,13 @@ expr:
   | expr GEQ expr     { Binop($1, Geq, $3) }
   | expr AND expr     { Binop($1, And, $3) }
   | expr OR expr      { Binop($1, Or, $3) }
+
+  /* unary operators */
+  | NOT expr %prec UNOP         { Unop(Not, $2) }
+  | MINUS expr %prec UNOP       { Unop(Neg, $2) }
   | LPAREN expr RPAREN { $2 }
   | ID ASSIGN expr    { Binop(Id($1), Asn, $3) }
+  /* lists */
   | LBRACE expr_list RBRACE { ArrayListInit($2) }
   | typ LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) }
   | func_call         { $1 }
