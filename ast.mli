@@ -38,16 +38,12 @@ type expr =
   | FuncCall of string * expr list
   | Noexpr
 
-type vardecl = {
-    declTyp : typ;
-    declID : string;
-    declInit : expr
-  }
+type vardecl = typ * string
 
 type stmt = 
     Block of stmt list
   | Expr of expr
-  | Decl of vardecl
+  | Varecl of vardecl
   | Return of expr
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
@@ -57,13 +53,10 @@ type funcdecl = {
     typ : typ;
     fname : string;
     args : vardecl list;
+    locals: vardecl list;
     body : stmt list;
   }
 
-type decl = 
-    Vardecl of vardecl
-  | Funcdecl of funcdecl
-
-type program = decl list
+type program = vardecl list * funcdecl list
 
 

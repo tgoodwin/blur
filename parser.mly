@@ -33,21 +33,22 @@
 %%
 
 program:
-decls EOF { List.rev $1 }
+    decls EOF { $1 }
 
 decls:
-    /* nothing */ { [] }
-  | decls vardecl SEMI { Vardecl($2) :: $1 } 
-  | decls funcdecl { Funcdecl($2) :: $1 }
+    /* nothing */ { [], [] }
+  | decls vardecl { ($2 :: fst $1), snd $1 } 
+  | decls funcdecl { fst $1, ($2 :: snd $1) }
 
 funcdecl:
-    typ ID LPAREN args_list RPAREN LBRACE stmt_list RBRACE
+    typ ID LPAREN args_list RPAREN LBRACE vardecl_list stmt_list RBRACE
     {
         {
             typ = $1;
             fname = $2;
             args = $4;
-            body = $7;
+            locals = List.rev $7;
+            body = List.rev $8;
         }
     }
 
@@ -57,7 +58,7 @@ args_list:
   | argdecl COMMA args_list { $1 :: $3 } 
 
 argdecl:
-    simple_vardecl {$1}
+    vardecl {$1}
 
 /* maybe canvas goes here later? */
 typ:
@@ -69,30 +70,24 @@ typ:
   | VOID { Void }
   | ARR typ LBRACK RBRACK { Array($2) }
 
-vardecl:
-    simple_vardecl { $1 }
-  | vardecl_init   { $1 }  
+vardecl_list:
+    /* nothing */ { [] }
+  | vardecl_list vardecl { $2 :: $1}
 
-simple_vardecl:
-    typ ID {{declTyp = $1;
-             declID = $2;
-             declInit = Noexpr}}
-vardecl_init:
-    typ ID ASSIGN expr {{declTyp = $1;
-                         declID = $2;
-                         declInit = $4}}
+vardecl:
+   typ ID SEMI { ($1, $2) }
+
 stmt_list:
-    stmt { [$1] }
-  | stmt stmt_list { $1 :: $2 }
+    /* nothing */ { [] }
+  | stmt_list stmt { $2 :: $1 }
 
 stmt:
     expr_stmt           { $1 }
-  | vardecl SEMI        { Decl($1) }
   | condit_stmt         { $1 }
   | loop_stmt           { $1 }
 
 expr_stmt:
-    expr SEMI { Expr($1) }
+    expr SEMI { Expr $1 }
 
 condit_stmt:
     IF LPAREN expr RPAREN stmt %prec NOELSE { If($3, $5, Expr(Noexpr)) }
