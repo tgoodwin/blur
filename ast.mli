@@ -49,7 +49,7 @@ type vardecl = typ * string
 type stmt = 
     Block of stmt list
   | Expr of expr
-  | Varecl of vardecl
+  | Vardecl of vardecl
   | Return of expr
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt

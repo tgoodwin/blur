@@ -54,9 +54,8 @@ funcdecl:
     }
 
 args_list:
-    /* nothing */ { [] }
-  | argdecl       { [$1] }
-  | argdecl COMMA args_list { $1 :: $3 } 
+    argdecl                 { [$1] }
+  | args_list COMMA argdecl { $3 :: $1 } 
 
 argdecl:
     vardecl {$1}

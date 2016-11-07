@@ -48,7 +48,7 @@ let rec string_of_expr = function
     string_of_typ vdecl.declTyp ^ " " ^
     vdecl.declID ^ ";\n" ^
     string_of_expr vdecl.declInit*)
-let string_of_vardecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
+let string_of_vardecl (t, id) = string_of_typ t ^ " " ^ id ^ ";"
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -63,7 +63,8 @@ let rec string_of_stmt = function
 
 let string_of_funcdecl fdecl =
   string_of_typ fdecl.typ ^ " " ^
-  fdecl.fname ^ "(" ^ "filler" ^ ")\n{\n" ^
+  fdecl.fname ^ "(" ^
+  String.concat "" (List.map string_of_vardecl fdecl.args) ^ ")\n{\n" ^
   String.concat "" (List.map string_of_stmt fdecl.body) ^ "}\n"
 
 let string_of_prog (vars, funcs) = 
