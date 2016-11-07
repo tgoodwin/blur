@@ -25,7 +25,6 @@
 %left PLUS MINUS
 %left TIMES DIVIDE
 %right NOT
-%nonassoc UNOP
 %nonassoc UNOP /* for unary op precedence */
 
 %start program
@@ -68,7 +67,6 @@ typ:
   | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
-  | typ LBRACK RBRACK { Array($1) }
 
 vardecl_list:
     /* nothing */ { [] }
@@ -145,8 +143,8 @@ expr:
   | LPAREN expr RPAREN { $2 }
   | ID ASSIGN expr    { Binop(Id($1), Asn, $3) }
   /* lists */
-  | LBRACE expr_list RBRACE { ArrayListInit($2) }
-  | typ LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) }
+  /*| LBRACE expr_list RBRACE { ArrayListInit($2) } */
+  /* | typ LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) } */
   | func_call         { $1 }
 
 func_call:

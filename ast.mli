@@ -24,7 +24,7 @@ type typ =
   | String
   | Bool
   | Void
-  | Array of typ
+  (* | Array of typ *)
 
 type bind = typ * string
 
@@ -39,8 +39,8 @@ type expr =
   | Id of string
   | Asn of string * expr
   (* | Seq of expr * expr *)
-  | ArrayListInit of expr list
-  | ArraySizeInit of typ * int
+  (*| ArrayListInit of expr list *)
+  (*| ArraySizeInit of typ * int *)
   | FuncCall of string * expr list
   | Noexpr
 
