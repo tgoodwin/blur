@@ -75,7 +75,14 @@ vardecl_list:
   | vardecl_list vardecl { $2 :: $1}
 
 vardecl:
-   typ ID { ($1, $2) }
+    vardecl_arg     { $1 }
+  | vardecl_simple  { $1 }  
+
+vardecl_arg:
+    typ ID { ($1, $2) }
+
+vardecl_simple:
+    typ ID SEMI { ($1, $2) }
 
 stmt_list:
     /* nothing */ { [] }
