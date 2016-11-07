@@ -7,9 +7,20 @@ let string_of_op = function
   | Sub -> "-"
   | Mult -> "*"
   | Div -> "/"
+  | Eq -> "=="
+  | Neq -> "!="
+  | Lt -> "<"
+  | Leq -> "<="
+  | Gt -> ">"
+  | Geq -> ">="
+  | And -> "&&"
+  | Or -> "||"
 
 let rec string_of_typ = function
     Int -> "int"
+  | Double -> "double"
+  | Char -> "char"
+  | String -> "string"
   | Bool -> "bool"
   | Void -> "void"
   | Array(t) -> string_of_typ t ^ "[]"
@@ -25,6 +36,8 @@ let rec string_of_expr = function
   | Binop(e1, o, e2) -> string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | ArrayListInit(l) -> "{" ^ String.concat ", " (List.map string_of_expr l) ^ "}"
   | ArraySizeInit(t, s) -> string_of_typ t ^ "[" ^ string_of_int s ^ "]"
+  | FuncCall(n, p) -> n ^ "(" ^ String.concat ", " (List.map string_of_expr p) ^ ")"
+  | Noexpr -> "noexpr"
 
 let rec string_of_stmt = function
     Block(stmts) ->
