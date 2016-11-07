@@ -24,7 +24,7 @@ type typ =
   | String
   | Bool
   | Void
-  (* | Array of typ *)
+  | Array of typ
 
 type bind = typ * string
 

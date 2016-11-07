@@ -67,6 +67,7 @@ typ:
   | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
+  | typ LBRACK RBRACK { Array($1) }
 
 vardecl_list:
     /* nothing */ { [] }

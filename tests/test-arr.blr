@@ -1,7 +1,4 @@
 int test(int x)
 {
-  int[] a;
-  int[] b;
-  b = int[5];
-  a = {3,43,9};
+	int[] a;
 }
