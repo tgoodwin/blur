@@ -1,5 +1,6 @@
 int test(int x)
 {
-  int[] a;
-  a = {5,3,7};
+  c = 5;
+  int d;
+  d = 2;
 }

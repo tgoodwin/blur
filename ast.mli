@@ -12,6 +12,7 @@ type binopr =
   | Geq
   | And
   | Or
+  | Asn
 
 type typ =
     Int
@@ -32,29 +33,37 @@ type expr =
   | CharLit of char
   | BoolLit of bool
   | Id of string
-  | Asn of string * expr
-  | Seq of expr * expr
   | ArrayListInit of expr list
   | ArraySizeInit of typ * int
   | FuncCall of string * expr list
   | Noexpr
 
+type vardecl = {
+    declTyp : typ;
+    declID : string;
+    declInit : expr
+  }
+
 type stmt = 
     Block of stmt list
   | Expr of expr
+  | Decl of vardecl
   | Return of expr
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
   | While of expr * stmt
 
-type func_decl = {
+type funcdecl = {
     typ : typ;
     fname : string;
-    formals : bind list;
-    locals : bind list;
+    args : vardecl list;
     body : stmt list;
   }
 
-type program = bind list * func_decl list
+type decl = 
+    Vardecl of vardecl
+  | Funcdecl of funcdecl
+
+type program = decl list
 
 

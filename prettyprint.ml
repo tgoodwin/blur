@@ -7,6 +7,7 @@ let string_of_op = function
   | Sub -> "-"
   | Mult -> "*"
   | Div -> "/"
+  | Asn -> "="
 
 let rec string_of_typ = function
     Int -> "int"
@@ -21,7 +22,6 @@ let rec string_of_expr = function
   | CharLit(l) -> Char.escaped l
   | BoolLit(l) -> string_of_bool l
   | Id(s) -> s
-  | Asn(v, e) -> v ^ " = " ^ string_of_expr e
   | Binop(e1, o, e2) -> string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | ArrayListInit(l) -> "{" ^ String.concat ", " (List.map string_of_expr l) ^ "}"
   | ArraySizeInit(t, s) -> string_of_typ t ^ "[" ^ string_of_int s ^ "]"
@@ -35,10 +35,7 @@ let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 
 let string_of_fdecl fdecl =
   string_of_typ fdecl.typ ^ " " ^
-  fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.formals) ^ ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.locals) ^
+  fdecl.fname ^ "(" ^ "filler" ^ ")\n{\n" ^
   String.concat "" (List.map string_of_stmt fdecl.body) ^ "}\n"
 
-let string_of_prog (vars, func)  =
-	String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
-  String.concat "\n" (List.map string_of_fdecl func)
+let string_of_prog (prog) = "hi"
