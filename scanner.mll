@@ -41,6 +41,7 @@ rule token = parse
 | "else"	{ ELSE }
 | "void"	{ VOID }
 | "return"	{ RETURN }
+| "arr"		{ ARR }
 
 (* literals for each data type *)
 | "true"        { BOOL_LITERAL(true) }

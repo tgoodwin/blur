@@ -34,7 +34,7 @@ type expr =
   | Id of string
   | Asn of string * expr
   | Seq of expr * expr
-  | ArrayInit of expr list
+  | ArrayListInit of expr list
   | FuncCall of string * expr list
   | Noexpr
 

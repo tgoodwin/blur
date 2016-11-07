@@ -2,7 +2,7 @@
 
 %{ open Ast %}
 
-%token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK
+%token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK ARR
 %token SEMI COMMA FUNC
 %token INT DOUBLE STRING CHAR BOOL
 %token IF ELSE FOR WHILE VOID RETURN TRUE FALSE BREAK CONTINUE
@@ -125,7 +125,7 @@ expr:
   | expr OR expr      { Binop($1, Or, $3) }
   | LPAREN expr RPAREN { $2 }
   | ID ASSIGN expr    { Asn ($1, $3) }
-  | LBRACK expr_list RBRACK { ArrayInit($2) }
+  | ARR expr_list ARR { ArrayListInit($2) }
   | func_call         { $1 }
 
 func_call:
