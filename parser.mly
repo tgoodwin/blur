@@ -47,7 +47,7 @@ funcdecl:
         {
             typ = $1;
             fname = $2;
-            args = $4;
+            args = List.rev $4;
             locals = List.rev $7;
             body = List.rev $8;
         }
@@ -75,7 +75,7 @@ vardecl_list:
   | vardecl_list vardecl { $2 :: $1}
 
 vardecl:
-   typ ID SEMI { ($1, $2) }
+   typ ID { ($1, $2) }
 
 stmt_list:
     /* nothing */ { [] }
