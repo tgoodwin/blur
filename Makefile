@@ -9,23 +9,11 @@ scanner.ml : scanner.mll
 parser.ml parser.mli : parser.mly
 	ocamlyacc parser.mly
 
-ast.cmi : ast.mli
-	ocamlc -c ast.mli
+%.cmo : %.ml
+	ocamlc -c $<
 
-parser.cmi : parser.mli
-	ocamlc -c parser.mli
-
-parser.cmo : parser.ml
-	ocamlc -c parser.ml
-
-scanner.cmo : scanner.ml
-	ocamlc -c scanner.ml
-
-prettyprint.cmo : prettyprint.ml
-	ocamlc -c prettyprint.ml
-
-blur.cmo : blur.ml
-	ocamlc -c blur.ml
+%.cmi : %.mli
+	ocamlc -c $<
 
 prog.cmo: scanner.cmo parser.cmi ast.cmi prettyprint.cmo
 parser.cmo: ast.cmi parser.cmi
