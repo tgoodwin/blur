@@ -41,23 +41,27 @@ decls:
   | decls funcdecl { fst $1, ($2 :: snd $1) }
 
 funcdecl:
-    typ ID LPAREN args_list RPAREN LBRACE vardecl_list stmt_list RBRACE
+    typ ID LPAREN args_opt RPAREN LBRACE vardecl_list stmt_list RBRACE
     {
         {
             typ = $1;
             fname = $2;
-            args = List.rev $4;
+            args = $4;
             locals = List.rev $7;
             body = List.rev $8;
         }
     }
+
+args_opt:
+    /* nothing */ { [] }
+  | args_list     { List.rev $1 }
 
 args_list:
     argdecl                 { [$1] }
   | args_list COMMA argdecl { $3 :: $1 } 
 
 argdecl:
-    vardecl {$1}
+    typ ID { ($1, $2) }
 
 /* maybe canvas goes here later? */
 typ:
@@ -74,14 +78,17 @@ vardecl_list:
   | vardecl_list vardecl { $2 :: $1}
 
 vardecl:
-    vardecl_arg     { $1 }
-  | vardecl_simple  { $1 }  
-
-vardecl_arg:
-    typ ID { ($1, $2) }
+    vardecl_simple { $1 }  
 
 vardecl_simple:
-    typ ID SEMI { ($1, $2) }
+    typ ID SEMI 
+    { 
+        {
+            declTyp = $1;
+            declID = $2;
+            declInit = Noexpr;  
+        }  
+    }
 
 stmt_list:
     /* nothing */ { [] }

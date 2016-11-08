@@ -41,13 +41,14 @@ let rec string_of_expr = function
   | Unop(o, e) -> string_of_unop o ^ string_of_expr e
   | ArrayListInit(l) -> "[" ^ String.concat ", " (List.map string_of_expr l) ^ "]"
   | FuncCall(n, p) -> n ^ "(" ^ String.concat ", " (List.map string_of_expr p) ^ ")"
-  | Noexpr -> "noexpr"
+  | Noexpr -> ""
 
-(*let string_of_vardecl vdecl = 
+let string_of_argdecl (t, id) = string_of_typ t ^ " " ^ id
+
+let string_of_vardecl vdecl = 
     string_of_typ vdecl.declTyp ^ " " ^
-    vdecl.declID ^ ";\n" ^
-    string_of_expr vdecl.declInit*)
-let string_of_vardecl (t, id) = string_of_typ t ^ " " ^ id
+    vdecl.declID ^ 
+    string_of_expr vdecl.declInit ^ ";"
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -63,8 +64,8 @@ let rec string_of_stmt = function
 let string_of_funcdecl fdecl =
   string_of_typ fdecl.typ ^ " " ^
   fdecl.fname ^ "(" ^
-  String.concat ", " (List.map string_of_vardecl fdecl.args) ^ ")\n{\n\t" ^
-  String.concat ";\n\t" (List.map string_of_vardecl fdecl.locals) ^ ";\n" ^
+  String.concat ", " (List.map string_of_argdecl fdecl.args) ^ ")\n{\n\t" ^
+  String.concat "\n\t" (List.map string_of_vardecl fdecl.locals) ^ "\n" ^
   String.concat "" (List.map string_of_stmt fdecl.body) ^ "}\n"
 
 let string_of_prog (vars, funcs) = 
