@@ -1,4 +1,4 @@
-OBJS = parser.cmo scanner.cmo prettyprint.cmo blur.cmo
+OBJS = parser.cmo scanner.cmo semantic_analyzer.cmo prettyprint.cmo blur.cmo
 
 prog : $(OBJS)
 	ocamlc -o prog $(OBJS)
@@ -18,6 +18,7 @@ parser.ml parser.mli : parser.mly
 prog.cmo: scanner.cmo parser.cmi ast.cmi prettyprint.cmo
 parser.cmo: ast.cmi parser.cmi
 scanner.cmo: parser.cmi
+semantic_analyzer.cmo : ast.cmi
 parser.cmi: ast.cmi
 
 .PHONY : clean
