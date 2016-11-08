@@ -28,7 +28,7 @@ let rec string_of_typ = function
   | String -> "string"
   | Bool -> "bool"
   | Void -> "void"
-  | Array(t) -> string_of_typ t ^ "[]"
+  | Array(t) -> "arr <" ^ string_of_typ t ^ ">"
 
 let rec string_of_expr = function
     IntLit(l) -> string_of_int l
@@ -39,6 +39,7 @@ let rec string_of_expr = function
   | Id(s) -> s
   | Binop(e1, o, e2) -> "\t" ^ string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_unop o ^ string_of_expr e
+  | ArrayListInit(l) -> "[" ^ String.concat ", " (List.map string_of_expr l) ^ "]"
   | FuncCall(n, p) -> n ^ "(" ^ String.concat ", " (List.map string_of_expr p) ^ ")"
   | Noexpr -> "noexpr"
 

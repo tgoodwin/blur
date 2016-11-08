@@ -67,7 +67,7 @@ typ:
   | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
-  | typ LBRACK RBRACK { Array($1) }
+  | ARR LT typ GT { Array($3) }
 
 vardecl_list:
     /* nothing */ { [] }
@@ -144,9 +144,11 @@ expr:
   | LPAREN expr RPAREN { $2 }
   | ID ASSIGN expr    { Binop(Id($1), Asn, $3) }
   /* lists */
-  /*| LBRACE expr_list RBRACE { ArrayListInit($2) } */
   /* | typ LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) } */
   | func_call         { $1 }
+
+  /* lists */
+  | LBRACK expr_list RBRACK { ArrayListInit($2) }
 
 func_call:
     ID LPAREN RPAREN            { FuncCall($1, []) }

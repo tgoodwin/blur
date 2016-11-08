@@ -1,4 +1,5 @@
 int test(int x)
 {
-	int[] a;
+	arr <int> a;
+	a = [5,342,5];
 }
