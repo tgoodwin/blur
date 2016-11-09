@@ -28,7 +28,7 @@ let rec string_of_typ = function
   | String -> "string"
   | Bool -> "bool"
   | Void -> "void"
-  | Array(t) -> "arr <" ^ string_of_typ t ^ ">"
+  | Array(t) -> string_of_typ t ^ "[]"
 
 let rec string_of_expr = function
     IntLit(l) -> string_of_int l
