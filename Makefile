@@ -18,7 +18,7 @@ parser.ml parser.mli : parser.mly
 prog.cmo: scanner.cmo parser.cmi ast.cmi prettyprint.cmo
 parser.cmo: ast.cmi parser.cmi
 scanner.cmo: parser.cmi
-semantic_analyzer.cmo : ast.cmi
+semantic_analyzer.cmo : ast.cmi sast.cmi
 parser.cmi: ast.cmi
 
 .PHONY : clean
