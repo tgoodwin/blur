@@ -34,7 +34,7 @@ rule token = parse
 | "double"      { DOUBLE }
 | "string"      { STRING }
 | "char"        { CHAR }
-| "boolean"	{ BOOL }
+| "bool"	{ BOOL }
 | "for"		{ FOR }
 | "while"	{ WHILE }
 | "if"		{ IF }
