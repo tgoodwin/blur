@@ -15,7 +15,7 @@ parser.ml parser.mli : parser.mly
 %.cmi : %.mli
 	ocamlc -c $<
 
-prog.cmo: scanner.cmo parser.cmi ast.cmi prettyprint.cmo
+prog.cmo: scanner.cmo parser.cmi ast.cmi sast.cmi prettyprint.cmo semantic_analyzer.cmo
 parser.cmo: ast.cmi parser.cmi
 scanner.cmo: parser.cmi
 semantic_analyzer.cmo : ast.cmi sast.cmi

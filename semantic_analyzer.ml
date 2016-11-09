@@ -1,6 +1,6 @@
 open Ast
 
-(* open Sast *)
+open Sast 
 
 type symbol_table = {
     parent: symbol_table option;
@@ -23,12 +23,8 @@ type translation_env = {
 let check_prog (globals, functions) = 
 	(* Raise exception if given list has a duplicate *)
 	let report_duplicate exceptf list =
-		let rec helper = function
-			id1 :: id2 :: _ when id1 = id2 -> raise (Failure (exceptf id1))
-			| _ :: t -> helper t
-			| [] -> ()
-		in helper (List.sort compare list)
+		print_endline ("hi")
 	in
 
-	report_duplicate (fun n -> "duplicate global " ^ n) (List.map snd globals);
+	report_duplicate (fun n -> "duplicate global " ^ n) (globals);
 	
