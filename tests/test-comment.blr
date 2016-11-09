@@ -1,3 +1,9 @@
 /*comment test abc 123 !@#$%^&* /+-~ end_test*/
 
+int comment(int a) {
+	int b;
+	int c;
+	/* comment inside function */
+}
+
 /* comment 2 */

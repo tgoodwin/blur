@@ -1,1 +1,5 @@
 /* comment fail - no closing token
+
+int comment(int a) {
+	/* fail comment
+}
