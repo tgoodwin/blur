@@ -1,0 +1,5 @@
+int main(int a) {
+int[] a;
+int[][] b;
+b = [5, 341, 4];
+}

@@ -71,7 +71,10 @@ typ:
   | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
-  | ARR LT typ GT { Array($3) }
+  | array_type { $1 }
+
+array_type:
+    typ LBRACK RBRACK { Array($1) }
 
 vardecl_list:
     /* nothing */ { [] }
