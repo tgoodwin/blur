@@ -1,0 +1,23 @@
+void forloop() {
+    int i;
+    int j;
+
+    /* basic for loop */
+    for(i=0; i<3; i=i+1) {
+	Println(i);
+    }
+
+    /* for loop increment by 2 */
+    for(i=0; i<10; i=i+3) {
+	Println(i);
+    }
+
+    /* nested for loop */
+    for(i=0; i<3; i=i+1) {
+	for(j=0; j<2; j=j+1) {
+	    Print(i);
+	    Print(' ');
+	    Println(j);
+	}
+    }
+}
