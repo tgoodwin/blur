@@ -25,6 +25,7 @@ type typ =
   | Bool
   | Void
   | Array of typ
+  | Canvas
 
 type bind = typ * string
 

@@ -29,6 +29,7 @@ let rec string_of_typ = function
   | Bool -> "bool"
   | Void -> "void"
   | Array(t) -> string_of_typ t ^ "[]"
+  | Canvas -> "Canvas"
 
 let rec string_of_expr = function
     IntLit(l) -> string_of_int l

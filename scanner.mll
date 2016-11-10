@@ -35,6 +35,7 @@ rule token = parse
 | "string"      { STRING }
 | "char"        { CHAR }
 | "bool"	{ BOOL }
+| "Canvas"	{ CANVAS }
 | "for"		{ FOR }
 | "while"	{ WHILE }
 | "if"		{ IF }

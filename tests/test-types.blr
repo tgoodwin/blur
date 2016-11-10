@@ -4,6 +4,7 @@ void types() {
   char c;
   bool d;
   string e;
+  Canvas c;
 
   a = 5;
   b = 3.14;
