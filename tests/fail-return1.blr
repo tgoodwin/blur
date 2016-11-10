@@ -1,0 +1,3 @@
+int ret_int() {
+    return True; /*should return int*/
+}
