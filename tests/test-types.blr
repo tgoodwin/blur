@@ -1,20 +1,13 @@
 void types() {
   int a;
-  a = 5;
-
-  /*
   double b;
-  b = 5.12345;
-  
-
-  bool c;
-  c = False;
-
-  
-  char d;
-  d = 'z';
-
+  char c;
+  bool d;
   string e;
-  e = "hello string";
-  */
+
+  a = 5;
+  b = 3.14;
+  c = 'c';
+  d = False;
+  e = "Hello World.";
 }

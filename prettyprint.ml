@@ -33,7 +33,7 @@ let rec string_of_typ = function
 let rec string_of_expr = function
     IntLit(l) -> string_of_int l
   | DoubleLit(l) -> string_of_float l
-  | StrLit(l) -> l
+  | StrLit(l) -> "\"" ^ l ^ "\""
   | CharLit(l) -> Char.escaped l
   | BoolLit(l) -> string_of_bool l
   | Id(s) -> s
@@ -72,3 +72,5 @@ let string_of_funcdecl fdecl =
 let string_of_prog (vars, funcs) = 
     String.concat "" (List.map string_of_vardecl vars) ^ "\n" ^
     String.concat "\n" (List.map string_of_funcdecl funcs)
+
+
