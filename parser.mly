@@ -2,7 +2,7 @@
 
 %{ open Ast %}
 
-%token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK ARR
+%token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK
 %token SEMI COMMA FUNC
 %token INT DOUBLE STRING CHAR BOOL
 %token IF ELSE FOR WHILE VOID RETURN TRUE FALSE BREAK CONTINUE
@@ -71,7 +71,10 @@ typ:
   | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
-  | ARR LT typ GT { Array($3) }
+  | array_type { $1 }
+
+array_type:
+    typ LBRACK RBRACK { Array($1) }
 
 vardecl_list:
     /* nothing */ { [] }

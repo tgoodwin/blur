@@ -34,14 +34,13 @@ rule token = parse
 | "double"      { DOUBLE }
 | "string"      { STRING }
 | "char"        { CHAR }
-| "boolean"	{ BOOL }
+| "bool"	{ BOOL }
 | "for"		{ FOR }
 | "while"	{ WHILE }
 | "if"		{ IF }
 | "else"	{ ELSE }
 | "void"	{ VOID }
 | "return"	{ RETURN }
-| "arr"		{ ARR }
 
 (* literals for each data type *)
 | "true"        { BOOL_LITERAL(true) }
