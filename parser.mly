@@ -63,7 +63,6 @@ args_list:
 argdecl:
     typ ID { ($1, $2) }
 
-/* maybe canvas goes here later? */
 typ:
     INT { Int }
   | DOUBLE { Double }
@@ -160,6 +159,9 @@ expr:
 
   /* lists */
   | LBRACK expr_list RBRACK { ArrayListInit($2) }
+
+  /* canvas */
+  | LPAREN INT_LITERAL COMMA INT_LITERAL COMMA CHAR_LITERAL RPAREN { CanvasInit($2, $4, $6) }
 
 func_call:
     ID LPAREN RPAREN            { FuncCall($1, []) }

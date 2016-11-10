@@ -1,14 +1,15 @@
 void types() {
   int a;
   double b;
-  char c;
+  char f;
   bool d;
   string e;
   Canvas c;
 
   a = 5;
   b = 3.14;
-  c = 'c';
+  f = 'c';
   d = False;
   e = "Hello World.";
+  c = (5, 4, '*');
 }
