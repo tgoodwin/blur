@@ -22,9 +22,11 @@ type translation_env = {
 
 let check_prog (globals, functions) = 
 	(* Raise exception if given list has a duplicate *)
-	let report_duplicate exceptf list =
-		print_endline ("hi")
-	in
-
-	report_duplicate (fun n -> "duplicate global " ^ n) (globals);
 	
+	let check_not_void (vdecl : vardecl) = 
+		(* Get the types of the globals *)
+		let global_typ = (fun v -> v.declTyp) vdecl in
+				if global_typ = Void then raise (Failure ("illegal global var"))
+				else () in
+
+	List.iter check_not_void globals;
