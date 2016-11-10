@@ -1,0 +1,9 @@
+void whileloop() {
+    int a;
+    int b;
+    a = 5;
+    b = 4;
+    while(a==b) {
+	Println("not equal; should not print");
+    }
+}
