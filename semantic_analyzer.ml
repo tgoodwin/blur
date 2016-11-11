@@ -23,6 +23,19 @@ type translation_env = {
 let check_prog (globals, functions) = 
 	(* Raise exception if given list has a duplicate *)
 	
+	(* There may not be duplicate variable names. *)
+	let report_duplicate exceptf globals =
+		(* Get the names of the globals *)
+		let global_names = List.map (fun v -> v.declID) globals in
+			let rec helper = function	
+					n1 :: n2 :: _ when n1 = n2 -> raise (Failure (exceptf n1))
+				| _ :: t -> helper t
+				| [] -> ()
+			in helper (List.sort compare global_names)
+	in
+
+
+	(* A global variable cannot have type void. *)
 	let check_not_void (vdecl : vardecl) = 
 		(* Get the types of the globals *)
 		let global_typ = (fun v -> v.declTyp) vdecl in
@@ -30,3 +43,5 @@ let check_prog (globals, functions) =
 				else () in
 
 	List.iter check_not_void globals;
+
+	report_duplicate (fun n -> "duplicate global " ^ n) globals;
