@@ -7,8 +7,6 @@ open Sast
 
 module StringMap = Map.Make(String)
 
-let context = L.global_context();;
-let the_module = L.create_module context "Blur";;
 
 let i32_t = L.i32_type context;;
 let iFl_t = L.double_type context;;
@@ -26,6 +24,9 @@ let ltype_of_typ = function
   | Ast.Void -> void_t;;
 
 let translate (globals, functions) =
+    let context = L.global_context() in
+    let the_module = L.create_module context "Blur" in
+
     let ltype_of_typ=  function
         Ast.Int -> i32_t
       | Ast.Double -> iFl_t
@@ -56,38 +57,6 @@ let translate (globals, functions) =
 
         List.fold_left function_decl StringMap.empty functions;
 
-    (* now fill out body of each given function *)
+    in
 
-(* let init_params func formals =
-    let formals = Array.of_list (formals) in
-
-
-
-let codegen_function fdecl =
-    let (f, _) = StringMap.find fdecl.Ast.name function_decls in
-    let builder = L.builder_at_end context (L.entry_block f) in
-
-    let _ = init_params f fdecl.Ast.args in
-
-    let local_vars =
-        let add_formal map (typ, name) param = L.set_value_name name param;
-
-        let local = L.build_alloca (ltype_of_typ t) name builder in
-        ignore (L.build_store param local buiklder);
-        StringMap.add name local map in
-
-        let add_local map (typ, name) =
-            let local_var = L.build_alloca (ltype_of_typ t) name builder
-            in StringMap.add name local_var map in
-
-        let formals =
-            List.fold_left2 add_formal StringMap.empty fdecl.Ast.args
-                (Array.to_list (L.params f)) in
-                List.fold_left add_local formals fdecl.Ast.locals in
-
-
-let codegen_main (globals, functions) =
-    let global_vars = List.fold_left global_var StringMap.empty globals in
-    (* declare built in functions *)
-    let function_decls = List.fold_left function_decl StringMap.empty functions in *)
     the_module
