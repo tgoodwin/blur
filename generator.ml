@@ -81,8 +81,8 @@ let translate (globals, functions) =
 
         let codegen_return e llbuilder =
             match func_decl.A.typ with
-                A.void  -> L.build_ret_void llbuilder
-              | _       -> L.build_ret (codegen_expr e) llbuilder
+            A.Void  -> L.build_ret_void llbuilder
+          | _       -> L.build_ret (codegen_expr e) llbuilder
         in
         
         let add_terminal llbuilder f =
@@ -98,7 +98,7 @@ let translate (globals, functions) =
         in
         let builder = codegen_stmt llbuilder (A.block fdecl.A.body)
         in add_terminal builder (match func_decl.A.typ with
-                A.void -> L.build_ret_void
+                A.Void -> L.build_ret_void
               | typ -> L.build_ret (L.const_int (ltype_of_typ typ) 0))
     in
 
