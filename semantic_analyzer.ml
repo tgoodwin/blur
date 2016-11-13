@@ -45,13 +45,29 @@ let check_prog (globals, functions) =
 			in helper (List.sort compare global_names)
 	in
 
+	(* There may not be duplicate arg names. *)
+	let report_duplicate_arg exceptf args =
+		(* Get the names of the args *)
+		let arg_names = List.map (fun a -> snd a) args in
+			let rec helper = function	
+					n1 :: n2 :: _ when n1 = n2 -> raise (Failure (exceptf n1))
+				| _ :: t -> helper t
+				| [] -> ()
+			in helper (List.sort compare arg_names)
+	in
 
 	(* A global variable cannot have type void. *)
 	let check_not_void (vdecl : vardecl) = 
 		(* Get the types of the globals *)
 		let global_typ = (fun v -> v.declTyp) vdecl in
-				if global_typ = Void then raise (Failure ("illegal global var"))
+				if global_typ = Void then raise (Failure ("illegal var"))
 				else () 
+	in
+
+	(* An argument cannot have type void. *)
+	let check_not_void_arg exceptf = function
+			(Void, n) -> raise (Failure (exceptf n))
+		| _ -> ()
 	in
 
 	(* Check assignment - type error *)
@@ -63,7 +79,19 @@ let check_prog (globals, functions) =
 
 	report_duplicate_var (fun n -> "duplicate global " ^ n) globals;
 
+	(*if List.mem "print" (List.map (fun fd -> fd.fname) functions)
+  	then raise (Failure ("function print may not be defined")) else ()*)
+
 	(**** Check functions ****)
 
 	report_duplicate_func (fun n -> "duplicate function " ^ n) functions;
 
+	(* Function declaration for named function. *)
+	let check_function func =
+		List.iter (check_not_void_arg (fun n -> "illegal void argument " ^ n ^
+      " in " ^ func.fname)) func.args;
+
+		report_duplicate_arg (fun n -> "duplicate argument " ^ n) func.args;
+
+	in
+	List.iter check_function functions
