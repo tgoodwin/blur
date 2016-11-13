@@ -15,12 +15,13 @@ parser.ml parser.mli : parser.mly
 %.cmi : %.mli
 	ocamlc -c $<
 
-generator.cmo :  ast.cmi
-prog.cmo: scanner.cmo parser.cmi ast.cmi generator.cmi sast.cmi prettyprint.cmo semantic_analyzer.cmo
-parser.cmo: ast.cmi parser.cmi
+ast.cmo : 
+generator.cmo :  ast.cmo
+prog.cmo: scanner.cmo parser.cmi ast.cmo generator.cmo sast.cmi prettyprint.cmo semantic_analyzer.cmo
+parser.cmo: ast.cmo parser.cmi
 scanner.cmo: parser.cmi
-semantic_analyzer.cmo : ast.cmi sast.cmi
-parser.cmi: ast.cmi
+semantic_analyzer.cmo : ast.cmo sast.cmo
+parser.cmi: ast.cmo
 
 .PHONY : clean
 clean :
