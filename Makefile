@@ -1,7 +1,7 @@
-OBJS = parser.cmo scanner.cmo semantic_analyzer.cmo prettyprint.cmo blur.cmo
+OBJS = ast.cmx parser.cmx scanner.cmx semantic_analyzer.cmx prettyprint.cmx blur.cmx
 
 prog : $(OBJS)
-	ocamlc -o prog $(OBJS)
+	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis $(OBJS) -o prog
 
 scanner.ml : scanner.mll
 	ocamllex scanner.mll
@@ -15,16 +15,25 @@ parser.ml parser.mli : parser.mly
 %.cmi : %.mli
 	ocamlc -c $<
 
+%.cmx : %.ml
+	ocamlfind ocamlopt -c -package llvm $<
+
 ast.cmo : 
+ast.cmx :
 generator.cmo :  ast.cmo
+generator,cmx : ast.cmx
 prog.cmo: scanner.cmo parser.cmi ast.cmo generator.cmo sast.cmi prettyprint.cmo semantic_analyzer.cmo
-parser.cmo: ast.cmo parser.cmi
+prog.cmx : scanner.cmx parser.cmx ast.cmx generator.cmx sast.cmx prettyprint.cmx semantic_analyzer.cmx
+parser.cmo : ast.cmo parser.cmi
+parser.cmx : ast.cmx parser.cmi
 scanner.cmo: parser.cmi
+scanner.cmx : parser.cmx
 semantic_analyzer.cmo : ast.cmo sast.cmo
+semantic_analyzer.cmx : ast.cmx sast.cmx
 parser.cmi: ast.cmo
 
 .PHONY : clean
 clean :
 	rm -rf prog scanner.ml parser.ml parser.mli
-	rm -rf *.cmo *.cmi
+	rm -rf *.cmo *.cmi *.cmx *.o
 	rm -f *~
