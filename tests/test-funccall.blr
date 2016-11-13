@@ -1,9 +1,11 @@
 int mult(int a, int b){
     int c;
     c = 5 * 4;
+    return c;
 }
 
 int test(int a, int b){
     int d;
     d = mult(a, b);
+    return d;
 }

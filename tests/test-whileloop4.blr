@@ -1,0 +1,8 @@
+void whileloop() {
+    int a;
+    a = 5;
+    while(a==5) {
+	Println("equal condition check");
+    a = a - 1;
+    }
+}
