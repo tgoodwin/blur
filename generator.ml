@@ -54,8 +54,9 @@ let translate (globals, functions) =
     let codegen_func func_decl =
         let (f, _) = StringMap.find func_decl.A.fname function_decls in
 
-        (* INIT INSTRUCTION BUILDER *)
         let llbuilder = L.builder_at_end context (L.entry_block f) in
+
+        let int_format_str = L.build_global_stringptr "%d\n" "fmt" llbuilder in
 
         (* construct locals, its args and locally declared vars *)
         let local_vars =
@@ -64,6 +65,7 @@ let translate (globals, functions) =
             ignore (L.build_store fmls local llbuilder);
             StringMap.add name local map in
 
+            (* this is not yet handling any initialized values *)
             let add_local map (vdecl: A.vardecl) =
                 let local_var = L.build_alloca (ltype_of_typ vdecl.declTyp) vdecl.declID llbuilder in
                StringMap.add vdecl.declID local_var map in
@@ -73,28 +75,27 @@ let translate (globals, functions) =
         in
 
         (* semantic checking ensures this will always be found *)
-        let lookup name = try StringMap.find name local_vars with Not_found -> StringMap.find name global_vars in
+        let rec lookup name = try StringMap.find name local_vars with Not_found -> StringMap.find name global_vars
 
-        let func_lookup fname =
+        (*and func_lookup fname =
             match (L.lookup_function fname the_module) with
             (*None        -> raise (exception LLVMFunctionNotFound fname)*)
-            Some f      -> f
-        in
+            Some f      -> f *)
 
-(*
-        let codegen_print el llbuilder =
-            let printf = func_lookup "printf" in
-            let params = List.map (
+(**)
+        and codegen_print e llbuilder =
+            let param = (codegen_expr llbuilder e) in
+            L.build_call printf_func [| int_format_str; param |] "printf" llbuilder
 
-        let handle_binop e1 opr e2 llbuilder ..... in *)
+        (*let handle_binop e1 opr e2 llbuilder ..... in *)
         (* let codegen_func_call f e llbuilder ..... in *)
-
-        (* blur built-ins 
-        let codegen_call f el llbuilder = function
+        
+        (* blur built-ins  *)
+        and codegen_call f el llbuilder =
+            match f with
             "print"     -> codegen_print el llbuilder
-        in *)
-
-        let rec codegen_expr llbuilder = function
+        
+        and codegen_expr llbuilder = function
             A.IntLit i        -> L.const_int i32_t i
           | A.DoubleLit i     -> L.const_float iFl_t i
           | A.StrLit s        -> L.build_global_stringptr s "tmp" llbuilder
@@ -102,34 +103,33 @@ let translate (globals, functions) =
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
           | A.Id id           -> L.build_load (lookup id) id llbuilder (* todo: error-checking in lookup *)
           (*| S.Binop_t (e1, op, e2) -> handle_binop e1 op e2 llbuilder *)
-          (*| S.FuncCall_t f el    -> codegen_call f el llbuilder *)
-        in
+          | A.FuncCall (n, [e])    -> codegen_call n e llbuilder
+        
 
         (* handle return statements *)
-        let codegen_return e llbuilder =
+        and codegen_return e llbuilder =
             match func_decl.A.typ with
             A.Void  -> L.build_ret_void llbuilder
           | _       -> L.build_ret (codegen_expr llbuilder e) llbuilder
-        in
+        
         
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
-        let add_terminal llbuilder f =
+        and add_terminal llbuilder f =
             match L.block_terminator (L.insertion_block llbuilder) with
                 Some _  -> ()
               | None    -> ignore (f llbuilder)
-        in  
 
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
-        let rec codegen_stmt llbuilder = function
+        and codegen_stmt llbuilder = function
             A.Block sl        -> List.fold_left codegen_stmt llbuilder sl
           | A.Expr e          -> ignore (codegen_expr llbuilder e); llbuilder
           | A.Return e        -> ignore (codegen_return e); llbuilder
-        in
 
         (* build the code for each statement in the function *)
-        let builder = codegen_stmt llbuilder (A.Block func_decl.A.body)
-        in add_terminal builder (match func_decl.A.typ with
+        in
+        let llbuilder = codegen_stmt llbuilder (A.Block func_decl.A.body)
+        in add_terminal llbuilder (match func_decl.A.typ with
                 A.Void -> L.build_ret_void
               | typ -> L.build_ret (L.const_int (ltype_of_typ typ) 0))
     in
