@@ -79,8 +79,8 @@ let check_prog (globals, functions) =
 
 	report_duplicate_var (fun n -> "duplicate global " ^ n) globals;
 
-	(*if List.mem "print" (List.map (fun fd -> fd.fname) functions)
-  	then raise (Failure ("function print may not be defined")) else ()*)
+	if List.mem "print" (List.map (fun fd -> fd.fname) functions)
+  	then raise (Failure ("function print may not be defined")) else ();
 
 	(**** Check functions ****)
 
