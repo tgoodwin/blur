@@ -30,7 +30,10 @@ let translate (globals, functions) =
     
     let global_vars =
         (* FUNCTION global_var *)
-        let global_var map (typ, name) =
+        let global_var map (vdecl : A.vardecl) =
+            let typ = vdecl.declTyp in
+            let name = vdecl.declID in
+
             let init = L.const_int (ltype_of_typ typ) 0
             in StringMap.add name (L.define_global name init the_module) map in
         List.fold_left global_var StringMap.empty globals in
