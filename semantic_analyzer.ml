@@ -71,6 +71,9 @@ let check_prog (globals, functions) =
 	in
 
 	(* Check assignment - type error *)
+	let check_assign lval rval err = 
+			if lval == rval then lval else raise err 
+	in 
 
 
 	(**** Check global vars ****)
