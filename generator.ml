@@ -2,7 +2,7 @@
 
 module L = Llvm
 module A = Ast
-module S = Sast
+(*module S = Sast*)
 
 
 module StringMap = Map.Make(String)
@@ -123,12 +123,12 @@ let translate (globals, functions) =
          * return the builder for where the next instruction should be placed *)
         let rec codegen_stmt llbuilder = function
             A.Block sl        -> List.fold_left codegen_stmt llbuilder sl
-          | A.Expr e          -> codegen_expr llbuilder e
-          | A.Return e        -> codegen_ret e llbuilder
+          | A.Expr e          -> ignore (codegen_expr llbuilder e); llbuilder
+          | A.Return e        -> ignore (codegen_return e); llbuilder
         in
 
         (* build the code for each statement in the function *)
-        let builder = codegen_stmt llbuilder (A.block fdecl.A.body)
+        let builder = codegen_stmt llbuilder (A.Block func_decl.A.body)
         in add_terminal builder (match func_decl.A.typ with
                 A.Void -> L.build_ret_void
               | typ -> L.build_ret (L.const_int (ltype_of_typ typ) 0))
