@@ -1,4 +1,4 @@
-OBJS = ast.cmx parser.cmx scanner.cmx semantic_analyzer.cmx prettyprint.cmx blur.cmx generator.cmx
+OBJS = ast.cmx parser.cmx scanner.cmx semantic_analyzer.cmx prettyprint.cmx generator.cmx blur.cmx
 
 prog : $(OBJS)
 	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis $(OBJS) -o prog
@@ -21,7 +21,7 @@ parser.ml parser.mli : parser.mly
 ast.cmo : 
 ast.cmx :
 generator.cmo :  ast.cmo
-generator,cmx : ast.cmx
+generator.cmx : ast.cmx
 prog.cmo: scanner.cmo parser.cmi ast.cmo generator.cmo sast.cmi prettyprint.cmo semantic_analyzer.cmo
 prog.cmx : scanner.cmx parser.cmx ast.cmx generator.cmx sast.cmx prettyprint.cmx semantic_analyzer.cmx
 parser.cmo : ast.cmo parser.cmi
