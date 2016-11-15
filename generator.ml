@@ -97,8 +97,12 @@ let translate (globals, functions) =
         
         (* blur built-ins  *)
         and codegen_call f el llbuilder =
-            match f with
-            "print"     -> codegen_print el llbuilder
+            let (fdef, fdecl) = StringMap.find f function_decls in
+            let args = List.rev (List.map (codegen_expr llbuilder) (List.rev el)) in
+            let result = (match func_decl.A.typ with
+                A.Void  -> ""
+              | _       -> f ^ "_result" )
+            in L.build_call fdef (Array.of_list args) result llbuilder
         
         and codegen_expr llbuilder = function
             A.IntLit i        -> L.const_int i32_t i
@@ -108,7 +112,8 @@ let translate (globals, functions) =
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
           | A.Id id           -> L.build_load (lookup id) id llbuilder (* todo: error-checking in lookup *)
           (*| S.Binop_t (e1, op, e2) -> handle_binop e1 op e2 llbuilder *)
-          | A.FuncCall (n, [e])    -> codegen_call n e llbuilder
+          | A.FuncCall ("print", [el])    -> codegen_print el llbuilder
+          | A.FuncCall (n, el)          -> codegen_call n el llbuilder
         
 
         (* handle return statements *)
