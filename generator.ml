@@ -70,8 +70,10 @@ let translate (globals, functions) =
 
             (* this is not yet handling any initialized values *)
             let add_local map (vdecl: A.vardecl) =
-                let local_var = L.build_alloca (ltype_of_typ vdecl.declTyp) vdecl.declID llbuilder in
-               StringMap.add vdecl.declID local_var map in
+                let typ = vdecl.declTyp in
+                let name = vdecl.declID in
+                let local_var = L.build_alloca (ltype_of_typ typ) name llbuilder in
+               StringMap.add name local_var map in
 
             let formals = List.fold_left2 add_formal StringMap.empty func_decl.A.args (Array.to_list (L.params f)) in
             List.fold_left add_local formals func_decl.A.locals
