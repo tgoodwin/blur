@@ -48,10 +48,19 @@ let rec string_of_expr = function
 
 let string_of_argdecl (t, id) = string_of_typ t ^ " " ^ id
 
-let string_of_vardecl vdecl = 
+let string_of_vardecl_simple vdecl =
     string_of_typ vdecl.declTyp ^ " " ^
     vdecl.declID ^ 
     string_of_expr vdecl.declInit ^ ";"
+
+let string_of_init_vardecl vdecl =
+    string_of_typ vdecl.declTyp ^ " " ^
+    vdecl.declID ^ " = " ^
+    string_of_expr vdecl.declInit ^ ";"
+
+let string_of_vardecl vdecl = match vdecl.declInit with
+    Noexpr ->  string_of_vardecl_simple vdecl
+  | _ -> string_of_init_vardecl vdecl
 
 let rec string_of_stmt = function
     Block(stmts) ->

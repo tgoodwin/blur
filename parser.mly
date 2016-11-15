@@ -82,6 +82,7 @@ vardecl_list:
 
 vardecl:
     vardecl_simple { $1 }  
+  | init_vardecl   { $1 }
 
 vardecl_simple:
     typ ID SEMI 
@@ -92,6 +93,17 @@ vardecl_simple:
             declInit = Noexpr;  
         }  
     }
+
+init_vardecl:
+    typ ID ASSIGN expr SEMI 
+    { 
+        {
+            declTyp = $1;
+            declID = $2;
+            declInit = $4;  
+        }  
+    }
+
 
 stmt_list:
     /* nothing */ { [] }
