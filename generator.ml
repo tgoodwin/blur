@@ -1,7 +1,10 @@
 (* code generation: translate takes semantically checked AST and produces LLVM IR *)
 
+open Ast
+open Llvm
 module L = Llvm
 module A = Ast
+
 (*module S = Sast*)
 
 
