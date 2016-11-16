@@ -57,6 +57,7 @@ type vardecl = {
 type stmt = 
     Block of stmt list
   | Expr of expr
+  | Declaration of vardecl
   | Return of expr
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
@@ -68,7 +69,6 @@ type funcdecl = {
     typ : typ;
     fname : string;
     args : argdecl list;
-    locals: vardecl list;
     body : stmt list;
   }
 

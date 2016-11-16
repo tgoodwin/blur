@@ -41,14 +41,13 @@ decls:
   | decls funcdecl { fst $1, ($2 :: snd $1) }
 
 funcdecl:
-    typ ID LPAREN args_opt RPAREN LBRACE vardecl_list stmt_list RBRACE
+    typ ID LPAREN args_opt RPAREN LBRACE stmt_list RBRACE
     {
         {
             typ = $1;
             fname = $2;
             args = $4;
-            locals = List.rev $7;
-            body = List.rev $8;
+            body = List.rev $7;
         }
     }
 
@@ -75,10 +74,6 @@ typ:
 
 array_type:
     typ LBRACK RBRACK { Array($1) }
-
-vardecl_list:
-    /* nothing */ { [] }
-  | vardecl_list vardecl { $2 :: $1}
 
 vardecl:
     vardecl_simple { $1 }  
@@ -111,6 +106,7 @@ stmt_list:
 
 stmt:
     expr_stmt           { $1 }
+  | vardecl             { Declaration($1) }
   | condit_stmt         { $1 }
   | loop_stmt           { $1 }
   | RETURN expr SEMI    { Return($2) }

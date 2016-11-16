@@ -95,9 +95,9 @@ let check_prog (globals, functions) =
 	(* TODO: Modify when we write these function in llvm. *)
 	let built_in_decls =  StringMap.add "print"
      { typ = Void; fname = "print"; args = [(Int, "x")];
-       locals = []; body = [] } (StringMap.singleton "printb"
+       body = [] } (StringMap.singleton "printb"
      { typ = Void; fname = "printb"; args = [(Bool, "x")];
-       locals = []; body = [] })
+       body = [] })
    in
 
   let function_decls = List.fold_left (fun map fd -> StringMap.add fd.fname fd map)
