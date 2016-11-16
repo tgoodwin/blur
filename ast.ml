@@ -57,7 +57,7 @@ type vardecl = {
 type stmt = 
     Block of stmt list
   | Expr of expr
-  | Declaration of vardecl
+  | Decl of vardecl
   | Return of expr
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt

@@ -66,6 +66,7 @@ let rec string_of_stmt = function
     Block(stmts) ->
       "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
   | Expr(expr) -> string_of_expr expr ^ ";\n"   
+  | Decl(decl) -> string_of_vardecl decl
   | Return(expr) -> "return" ^ " " ^ string_of_expr expr ^ ";\n"
   | If(e, s1, s2) -> "if (" ^ string_of_expr e ^ ") {\n" ^ string_of_stmt s1 ^ "}\n else {\n" ^ string_of_stmt s2 ^ "}\n"
   | For(e1, e2, e3, s) -> "for (" ^ string_of_expr e1 ^ string_of_expr e2 ^ string_of_expr e3 ^ ") {\n" ^ string_of_stmt s ^ "}\n"

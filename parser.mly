@@ -106,7 +106,7 @@ stmt_list:
 
 stmt:
     expr_stmt           { $1 }
-  | vardecl             { Declaration($1) }
+  | vardecl             { Decl($1) }
   | condit_stmt         { $1 }
   | loop_stmt           { $1 }
   | RETURN expr SEMI    { Return($2) }
