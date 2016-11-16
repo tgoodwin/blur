@@ -1,6 +1,6 @@
 int add(int a)
 {
   int c;
+  c = 7;
   int d;
-  a = 5;
 }
