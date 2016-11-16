@@ -11,7 +11,7 @@ let _ =
 		List.assoc Sys.argv.(1) [ ("-p", Pretty);
 			("-l", Llvm);
 			("-c", Checked_Llvm) ]
-	else Checked_Llvm in
+		else Checked_Llvm in
 	let lexbuf = Lexing.from_channel stdin in
 	let ast = Parser.program Scanner.token lexbuf in
         Semantic_analyzer.check_prog ast;
