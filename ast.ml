@@ -38,7 +38,6 @@ type expr =
   | CharLit of char
   | BoolLit of bool
   | Id of string
-  | Asn of string * expr
   (* | Seq of expr * expr *)
   | ArrayListInit of expr list
   (*| ArraySizeInit of typ * int *)

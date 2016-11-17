@@ -38,7 +38,6 @@ let rec string_of_expr = function
   | CharLit(l) -> Char.escaped l
   | BoolLit(l) -> string_of_bool l
   | Id(s) -> s
-  | Asn(s, e) -> s ^ " = " ^ string_of_expr e
   | Binop(e1, o, e2) -> "\t" ^ string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_unop o ^ string_of_expr e
   | ArrayListInit(l) -> "[" ^ String.concat ", " (List.map string_of_expr l) ^ "]"
