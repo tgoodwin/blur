@@ -176,8 +176,8 @@ let translate (globals, functions) =
         and codegen_decl (vdecl: A.vardecl) llbuilder =
             let init_expr = vdecl.declInit in
             match init_expr with 
-                Noexpr -> ()    (* make call to add_local *)
-              | e       ->      (* codegen expr, call codegen_assign *)
+                A.Noexpr -> ()    (* make call to add_local *)
+              | e       ->   ()   (* codegen expr, call codegen_assign *)
 
             (* TODO KG - do stuff here *)
 
