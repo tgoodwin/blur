@@ -96,7 +96,7 @@ let translate (globals, functions) =
             Some f      -> f *)
 
 (**)
-        let rec codegen_binop e1 op e2 llbuilder =
+       (* let rec codegen_binop e1 op e2 llbuilder =
             let int_ops lh op rh  =
                 match op with
                 A.Add   -> L.build_add lh rh "tmp" llbuilder
@@ -125,9 +125,9 @@ let translate (globals, functions) =
               | _             -> arith_binop e1 op e2
 
             in
-            handle_binop op
+            handle_binop op *)
                 
-        and codegen_asn n e llbuilder =
+       let rec codegen_asn n e llbuilder =
             let gen_e = (codegen_expr llbuilder e) in
             ignore(L.build_store gen_e (lookup n) llbuilder); gen_e
 
@@ -135,7 +135,6 @@ let translate (globals, functions) =
             let param = (codegen_expr llbuilder e) in
             L.build_call printf_func [| int_format_str; param |] "printf" llbuilder
 
-        (*let handle_binop e1 opr e2 llbuilder ..... in *)
         (* let codegen_func_call f e llbuilder ..... in *)
         
         (* blur built-ins  *)
@@ -155,7 +154,7 @@ let translate (globals, functions) =
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
           | A.Id id           -> L.build_load (lookup id) id llbuilder (* todo: error-checking in lookup *)
           (*| A.Asn(n, e)       -> codegen_asn n e llbuilder *)
-          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 llbuilder 
+          (*| A.Binop(e1, op, e2) -> codegen_binop e1 op e2 llbuilder *)
           | A.FuncCall ("print", [el])    -> codegen_print el llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el llbuilder
         
