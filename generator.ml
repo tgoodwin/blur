@@ -88,7 +88,7 @@ let translate (globals, functions) =
         in
 
         (* semantic checking ensures this will always be found *)
-        let rec lookup name = try StringMap.find name local_vars with Not_found -> StringMap.find name global_vars
+        let rec lookup name = try StringMap.find name local_vars with Not_found -> StringMap.find name global_vars in
 
         (*and func_lookup fname =
             match (L.lookup_function fname the_module) with
@@ -96,6 +96,41 @@ let translate (globals, functions) =
             Some f      -> f *)
 
 (**)
+        let rec codegen_binop e1 op e2 llbuilder =
+            let int_ops lh op rh  =
+                match op with
+                A.Add   -> L.build_add lh rh "tmp" llbuilder
+              | A.Sub   -> L.build_sub lh rh "tmp" llbuilder
+              | A.Mult  -> L.build_mul lh rh "tmp" llbuilder
+              | A.Div   -> L.build_sdiv lh rh "tmp" llbuilder
+              | A.And   -> L.build_and lh rh "tmp" llbuilder
+              | A.Or    -> L.build_or lh rh "tmp" llbuilder
+              | A.Eq    -> L.build_icmp Icmp.Eq lh rh "tmp" llbuilder
+              | A.Neq   -> L.build_icmp Icmp.Ne lh rh "tmp" llbuilder
+              | A.Lt    -> L.build_icmp Icmp.Slt lh rh "tmp" llbuilder
+              | A.Leq   -> L.build_icmp Icmp.Sle lh rh "tmp" llbuilder
+              | A.Gt    -> L.build_icmp Icmp.Sgt lh rh "tmp" llbuilder
+              | A.Geq   -> L.build_icmp Icmp.Sge lh rh "tmp" llbuilder
+
+            in
+            let arith_binop e1 op e2 =
+                let lh = codegen_expr llbuilder e1
+                and rh = codegen_expr llbuilder e2
+                in int_ops lh op rh
+            in
+
+            let handle_binop opr =
+                match opr with
+                A.Asn         -> codegen_asn e1 e2 llbuilder
+              | _             -> arith_binop e1 op e2
+
+            in
+            handle_binop op
+                
+        and codegen_asn n e llbuilder =
+            let gen_e = (codegen_expr llbuilder e) in
+            ignore(L.build_store gen_e (lookup n) llbuilder); gen_e
+
         and codegen_print e llbuilder =
             let param = (codegen_expr llbuilder e) in
             L.build_call printf_func [| int_format_str; param |] "printf" llbuilder
@@ -119,7 +154,8 @@ let translate (globals, functions) =
           | A.CharLit c       -> L.const_int i8_t (Char.code c)
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
           | A.Id id           -> L.build_load (lookup id) id llbuilder (* todo: error-checking in lookup *)
-          (*| S.Binop_t (e1, op, e2) -> handle_binop e1 op e2 llbuilder *)
+          (*| A.Asn(n, e)       -> codegen_asn n e llbuilder *)
+          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 llbuilder 
           | A.FuncCall ("print", [el])    -> codegen_print el llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el llbuilder
         
