@@ -17,7 +17,7 @@ let _ =
         Semantic_analyzer.check_prog ast;
 	match action with
 	Pretty -> print_endline (Prettyprint.string_of_prog ast)
-	(*| Llvm -> print_string (Llvm.string_of_llmodule (Generator.translate ast))
+	| Llvm -> print_string (Llvm.string_of_llmodule (Generator.translate ast))
 	| Checked_Llvm -> let m = Generator.translate ast in
 		Llvm_analysis.assert_valid_module m;
-		print_string (Llvm.string_of_llmodule m)*)
+		print_string (Llvm.string_of_llmodule m)

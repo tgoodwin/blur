@@ -79,8 +79,12 @@ let translate (globals, functions) =
                 let local_var = L.build_alloca (ltype_of_typ typ) name llbuilder in
                StringMap.add name local_var map in
 
+            let rec translate_stmt = function
+                    Decl vdecl -> vdecl
+                in
+
             let formals = List.fold_left2 add_formal StringMap.empty func_decl.A.args (Array.to_list (L.params f)) in
-            List.fold_left add_local formals func_decl.A.locals
+            List.fold_left add_local formals (List.map translate_stmt func_decl.body)
         in
 
         (* semantic checking ensures this will always be found *)
@@ -126,7 +130,11 @@ let translate (globals, functions) =
             A.Void  -> L.build_ret_void llbuilder
           | _       -> L.build_ret (codegen_expr llbuilder e) llbuilder
         
-        
+        (* handle variable declarations *)
+        (*and codegen_decl decl llbuilder =
+            let alloca = build_alloca decl.declTyp decl.declID llbuilder 
+            (* KG = probably going to need to add more here *)*)
+
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and add_terminal llbuilder f =
             match L.block_terminator (L.insertion_block llbuilder) with
@@ -138,6 +146,7 @@ let translate (globals, functions) =
         (* TODO: If, For, While, Continue, Break *)
         and codegen_stmt llbuilder = function
             A.Block sl        -> List.fold_left codegen_stmt llbuilder sl
+         (* | A.Decl e          -> codegen_decl e llbuilder*)
           | A.Expr e          -> ignore (codegen_expr llbuilder e); llbuilder
           | A.Return e        -> ignore (codegen_return e llbuilder); llbuilder
 
