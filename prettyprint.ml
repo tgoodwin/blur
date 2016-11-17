@@ -56,7 +56,7 @@ let string_of_vardecl_simple vdecl =
 let string_of_init_vardecl vdecl =
     "\t" ^ string_of_typ vdecl.declTyp ^ " " ^
     vdecl.declID ^ " = " ^
-    string_of_expr vdecl.declInit ^ ";"
+    string_of_expr vdecl.declInit ^ ";\n"
 
 let string_of_vardecl vdecl = match vdecl.declInit with
     Noexpr ->  string_of_vardecl_simple vdecl

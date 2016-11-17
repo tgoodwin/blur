@@ -1,6 +1,9 @@
 int add(int a)
 {
+  int q;
   int c;
-  c = 7;
-  int d;
+  c = 2;
+  int d = 3;
+  int q = 5;
+  int e = 0;
 }
