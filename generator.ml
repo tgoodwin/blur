@@ -1,7 +1,10 @@
 (* code generation: translate takes semantically checked AST and produces LLVM IR *)
 
+open Ast
+open Llvm
 module L = Llvm
 module A = Ast
+
 (*module S = Sast*)
 
 
@@ -20,6 +23,7 @@ let translate (globals, functions) =
     and void_t = L.void_type context
     in
 
+    (* TODO: String, Array, Canvas *)
     let ltype_of_typ=  function
         A.Int -> i32_t
       | A.Double -> iFl_t
@@ -103,7 +107,7 @@ let translate (globals, functions) =
                 A.Void  -> ""
               | _       -> f ^ "_result" )
             in L.build_call fdef (Array.of_list args) result llbuilder
-        
+       (* TODO: Binio, Unop, Asn, ArrayListInit, CanvasInit, Noexpr *) 
         and codegen_expr llbuilder = function
             A.IntLit i        -> L.const_int i32_t i
           | A.DoubleLit i     -> L.const_float iFl_t i
@@ -131,10 +135,11 @@ let translate (globals, functions) =
 
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
+        (* TODO: If, For, While, Continue, Break *)
         and codegen_stmt llbuilder = function
             A.Block sl        -> List.fold_left codegen_stmt llbuilder sl
           | A.Expr e          -> ignore (codegen_expr llbuilder e); llbuilder
-          | A.Return e        -> ignore (codegen_return e); llbuilder
+          | A.Return e        -> ignore (codegen_return e llbuilder); llbuilder
 
         (* build the code for each statement in the function *)
         in
