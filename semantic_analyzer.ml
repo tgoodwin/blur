@@ -2,6 +2,8 @@ open Ast
 
 open Sast 
 
+module StringMap = Map.Make(String)
+
 type symbol_table = {
     parent: symbol_table option;
     variables: vardecl list
@@ -82,14 +84,32 @@ let check_prog (globals, functions) =
 
 	report_duplicate_var (fun n -> "duplicate global " ^ n) globals;
 
+	(**** Check functions ****)
+
 	if List.mem "print" (List.map (fun fd -> fd.fname) functions)
   	then raise (Failure ("function print may not be defined")) else ();
-
-	(**** Check functions ****)
 
 	report_duplicate_func (fun n -> "duplicate function " ^ n) functions;
 
 	(* Function declaration for named function. *)
+	(* TODO: Modify when we write these function in llvm. *)
+	let built_in_decls =  StringMap.add "print"
+     { typ = Void; fname = "print"; args = [(Int, "x")];
+       body = [] } (StringMap.singleton "printb"
+     { typ = Void; fname = "printb"; args = [(Bool, "x")];
+       body = [] })
+   in
+
+  let function_decls = List.fold_left (fun map fd -> StringMap.add fd.fname fd map)
+                         built_in_decls functions
+  in
+
+  let function_decl s = try StringMap.find s function_decls
+       with Not_found -> raise (Failure ("unrecognized function " ^ s))
+  in
+
+  (*let _ = function_decl "main" in (* Ensure "main" is defined. *)*)
+
 	let check_function func =
 		List.iter (check_not_void_arg (fun n -> "illegal void argument " ^ n ^
       " in " ^ func.fname)) func.args;

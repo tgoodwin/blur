@@ -49,12 +49,12 @@ let rec string_of_expr = function
 let string_of_argdecl (t, id) = string_of_typ t ^ " " ^ id
 
 let string_of_vardecl_simple vdecl =
-    string_of_typ vdecl.declTyp ^ " " ^
+    "\t" ^ string_of_typ vdecl.declTyp ^ " " ^
     vdecl.declID ^ 
-    string_of_expr vdecl.declInit ^ ";"
+    string_of_expr vdecl.declInit ^ ";\n"
 
 let string_of_init_vardecl vdecl =
-    string_of_typ vdecl.declTyp ^ " " ^
+    "\t" ^ string_of_typ vdecl.declTyp ^ " " ^
     vdecl.declID ^ " = " ^
     string_of_expr vdecl.declInit ^ ";"
 
@@ -66,6 +66,7 @@ let rec string_of_stmt = function
     Block(stmts) ->
       "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
   | Expr(expr) -> string_of_expr expr ^ ";\n"   
+  | Decl(decl) -> string_of_vardecl decl  
   | Return(expr) -> "return" ^ " " ^ string_of_expr expr ^ ";\n"
   | If(e, s1, s2) -> "if (" ^ string_of_expr e ^ ") {\n" ^ string_of_stmt s1 ^ "}\n else {\n" ^ string_of_stmt s2 ^ "}\n"
   | For(e1, e2, e3, s) -> "for (" ^ string_of_expr e1 ^ string_of_expr e2 ^ string_of_expr e3 ^ ") {\n" ^ string_of_stmt s ^ "}\n"
@@ -76,8 +77,7 @@ let rec string_of_stmt = function
 let string_of_funcdecl fdecl =
   string_of_typ fdecl.typ ^ " " ^
   fdecl.fname ^ "(" ^
-  String.concat ", " (List.map string_of_argdecl fdecl.args) ^ ")\n{\n\t" ^
-  String.concat "\n\t" (List.map string_of_vardecl fdecl.locals) ^ "\n" ^
+  String.concat ", " (List.map string_of_argdecl fdecl.args) ^ ")\n{\n" ^
   String.concat "" (List.map string_of_stmt fdecl.body) ^ "}\n"
 
 let string_of_prog (vars, funcs) = 
