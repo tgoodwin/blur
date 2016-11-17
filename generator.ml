@@ -64,30 +64,26 @@ let translate (globals, functions) =
         let llbuilder = L.builder_at_end context (L.entry_block f) in
 
         let int_format_str = L.build_global_stringptr "%d\n" "fmt" llbuilder in
-
-        (* construct locals, its args and locally declared vars *)
-        let local_vars =
-            let add_formal map (typ, name) fmls = L.set_value_name name fmls;
+        
+        let add_formal map (typ, name) fmls =
+            L.set_value_name name fmls;
             let local = L.build_alloca (ltype_of_typ typ) name llbuilder in
             ignore (L.build_store fmls local llbuilder);
-            StringMap.add name local map in
-
-            (* this is not yet handling any initialized values *)
-            let add_local map (vdecl: A.vardecl) =
-                let typ = vdecl.declTyp in
-                let name = vdecl.declID in
-                let local_var = L.build_alloca (ltype_of_typ typ) name llbuilder in
-               StringMap.add name local_var map in
-
-            let rec translate_stmt = function
-                    Decl vdecl -> vdecl
-                in
-
-            let formals = List.fold_left2 add_formal StringMap.empty func_decl.A.args (Array.to_list (L.params f)) in
-            List.fold_left add_local formals (List.map translate_stmt func_decl.body)
+            StringMap.add name local map
+        in
+        let add_local map (vdecl: A.vardecl) =
+            let typ = vdecl.declTyp in
+            let name = vdecl.declID in
+            let local_var = L.build_alloca (ltype_of_typ typ) name llbuilder in
+            StringMap.add name local_var map
         in
 
-        (* semantic checking ensures this will always be found *)
+        (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
+         * which is a statement list *)
+
+        let local_vars = List.fold_left2 add_formal StringMap.empty func_decl.A.args (Array.to_list (L.params f)) in
+
+        (* see if a variable has been declared already *)
         let rec lookup name = try StringMap.find name local_vars with Not_found -> StringMap.find name global_vars in
 
         (*and func_lookup fname =
@@ -95,7 +91,6 @@ let translate (globals, functions) =
             (*None        -> raise (exception LLVMFunctionNotFound fname)*)
             Some f      -> f *)
 
-(**)
          let rec codegen_binop e1 op e2 llbuilder =
             let int_ops lh op rh  =
                 match op with
@@ -166,20 +161,26 @@ let translate (globals, functions) =
           | A.FuncCall (n, el)          -> codegen_call n el llbuilder
         
 
-        (* handle return statements *)
+        (* codegen_return: handle return statements *)
         and codegen_return e llbuilder =
             match func_decl.A.typ with
             A.Void  -> L.build_ret_void llbuilder
           | _       -> L.build_ret (codegen_expr llbuilder e) llbuilder
         
-        (* handle variable declarations *)
-        and codegen_decl (vdecl: A.vardecl) llbuilder =
+        (* codegen_vdecl: handle variable declarations *)
+        and codegen_vdecl (vdecl: A.vardecl) llbuilder =
+            let name = vdecl.declID in
+
+            (* add to local_vars map no matter what. if already exists, policy is to overwrite *)
+            add_local local_vars vdecl;
+
+            (* if vdecl contains an expression, codegen that expr and assign the variable to it.
+             * note that codegen_asn is called after add_local local_vars vdecl. *)
             let init_expr = vdecl.declInit in
             match init_expr with 
-                A.Noexpr -> ()    (* make call to add_local *)
-              | e       ->   ()   (* codegen expr, call codegen_assign *)
+                A.Noexpr        -> llbuilder
+              | _               -> (codegen_asn name init_expr llbuilder); llbuilder
 
-            (* TODO KG - do stuff here *)
 
             (*let alloca = build_lloca decl.declTyp decl.declID llbuilder*)
 
@@ -194,7 +195,7 @@ let translate (globals, functions) =
         (* TODO: If, For, While, Continue, Break *)
         and codegen_stmt llbuilder = function
             A.Block sl        -> List.fold_left codegen_stmt llbuilder sl
-          | A.Decl e          -> ignore (codegen_decl e llbuilder); llbuilder
+          | A.Decl e          -> ignore (codegen_vdecl e llbuilder); llbuilder
           | A.Expr e          -> ignore (codegen_expr llbuilder e); llbuilder
           | A.Return e        -> ignore (codegen_return e llbuilder); llbuilder
 
