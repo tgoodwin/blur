@@ -131,9 +131,11 @@ let translate (globals, functions) =
           | _       -> L.build_ret (codegen_expr llbuilder e) llbuilder
         
         (* handle variable declarations *)
-        (*and codegen_decl decl llbuilder =
-            let alloca = build_alloca decl.declTyp decl.declID llbuilder 
-            (* KG = probably going to need to add more here *)*)
+        and codegen_decl decl llbuilder =
+            match decl.declInit with 
+                Noexpr -> ()
+            (* TODO KG - do stuff here *)
+            (*let alloca = build_alloca decl.declTyp decl.declID llbuilder*)
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and add_terminal llbuilder f =
@@ -146,7 +148,7 @@ let translate (globals, functions) =
         (* TODO: If, For, While, Continue, Break *)
         and codegen_stmt llbuilder = function
             A.Block sl        -> List.fold_left codegen_stmt llbuilder sl
-         (* | A.Decl e          -> codegen_decl e llbuilder*)
+          | A.Decl e          -> ignore (codegen_decl e llbuilder); llbuilder
           | A.Expr e          -> ignore (codegen_expr llbuilder e); llbuilder
           | A.Return e        -> ignore (codegen_return e llbuilder); llbuilder
 
