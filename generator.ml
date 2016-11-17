@@ -96,7 +96,7 @@ let translate (globals, functions) =
             Some f      -> f *)
 
 (**)
-       (* let rec codegen_binop e1 op e2 llbuilder =
+         let rec codegen_binop e1 op e2 llbuilder =
             let int_ops lh op rh  =
                 match op with
                 A.Add   -> L.build_add lh rh "tmp" llbuilder
@@ -119,15 +119,19 @@ let translate (globals, functions) =
                 in int_ops lh op rh
             in
 
-            let handle_binop opr =
-                match opr with
-                A.Asn         -> codegen_asn e1 e2 llbuilder
+            let handle_binop e1 op e2 =
+                match op with
+                A.Asn         -> codegen_asn (id_to_str e1) e2 llbuilder
               | _             -> arith_binop e1 op e2
 
             in
-            handle_binop op *)
+            handle_binop e1 op e2
                 
-       let rec codegen_asn n e llbuilder =
+        and id_to_str e =
+            match e with
+            A.Id s      -> s
+
+        and codegen_asn n e llbuilder =
             let gen_e = (codegen_expr llbuilder e) in
             ignore(L.build_store gen_e (lookup n) llbuilder); gen_e
 
