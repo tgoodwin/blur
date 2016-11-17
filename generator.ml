@@ -127,10 +127,12 @@ let translate (globals, functions) =
             in
             handle_binop e1 op e2
                 
+        (* helper to get the raw string from an ID expression type *)
         and id_to_str e =
             match e with
             A.Id s      -> s
 
+        (* ASSIGN an expression (value) to a declared variable *)
         and codegen_asn n e llbuilder =
             let gen_e = (codegen_expr llbuilder e) in
             ignore(L.build_store gen_e (lookup n) llbuilder); gen_e
@@ -149,7 +151,8 @@ let translate (globals, functions) =
                 A.Void  -> ""
               | _       -> f ^ "_result" )
             in L.build_call fdef (Array.of_list args) result llbuilder
-       (* TODO: Binio, Unop, Asn, ArrayListInit, CanvasInit, Noexpr *) 
+
+       (* TODO: Unop, Asn, ArrayListInit, CanvasInit, Noexpr *) 
         and codegen_expr llbuilder = function
             A.IntLit i        -> L.const_int i32_t i
           | A.DoubleLit i     -> L.const_float iFl_t i
@@ -158,7 +161,7 @@ let translate (globals, functions) =
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
           | A.Id id           -> L.build_load (lookup id) id llbuilder (* todo: error-checking in lookup *)
           (*| A.Asn(n, e)       -> codegen_asn n e llbuilder *)
-          (*| A.Binop(e1, op, e2) -> codegen_binop e1 op e2 llbuilder *)
+          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 llbuilder 
           | A.FuncCall ("print", [el])    -> codegen_print el llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el llbuilder
         
@@ -170,11 +173,15 @@ let translate (globals, functions) =
           | _       -> L.build_ret (codegen_expr llbuilder e) llbuilder
         
         (* handle variable declarations *)
-        and codegen_decl decl llbuilder =
-            match decl.declInit with 
-                Noexpr -> ()
+        and codegen_decl (vdecl: A.vardecl) llbuilder =
+            let init_expr = vdecl.declInit in
+            match init_expr with 
+                Noexpr -> ()    (* make call to add_local *)
+              | e       ->      (* codegen expr, call codegen_assign *)
+
             (* TODO KG - do stuff here *)
-            (*let alloca = build_alloca decl.declTyp decl.declID llbuilder*)
+
+            (*let alloca = build_lloca decl.declTyp decl.declID llbuilder*)
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and add_terminal llbuilder f =

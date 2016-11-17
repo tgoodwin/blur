@@ -35,7 +35,7 @@ let rec string_of_expr = function
     IntLit(l) -> string_of_int l
   | DoubleLit(l) -> string_of_float l
   | StrLit(l) -> "\"" ^ l ^ "\""
-  | CharLit(l) -> Char.escaped l
+  | CharLit(l) -> "'" ^ Char.escaped l ^ "'"
   | BoolLit(l) -> string_of_bool l
   | Id(s) -> s
   | Binop(e1, o, e2) -> "\t" ^ string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
