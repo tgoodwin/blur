@@ -132,7 +132,14 @@ let translate (globals, functions) =
             in
             handle_binop e1 op e2
                 
-        (* helper to get the raw string from an ID expression type *)
+        (* TODO: type handling for float, etc *)
+        and codegen_unop op e locals llbuilder =
+            let exp = (codegen_expr (locals, llbuilder)) e in
+            match op with
+            A.Neg       -> L.build_neg exp "int_unoptmp" llbuilder
+          | A.Not       -> L.build_not exp "bool_unoptmp" llbuilder
+
+        (* helper to get the raw string from an ID expression type. MOVE TO A UTILS FILE *)
         and id_to_str e =
             match e with
             A.Id s      -> s
@@ -158,7 +165,7 @@ let translate (globals, functions) =
               | _       -> f ^ "_result" )
             in L.build_call fdef (Array.of_list args) result llbuilder
 
-       (* TODO: Unop, Asn, ArrayListInit, CanvasInit, Noexpr *) 
+       (* TODO: ArrayListInit, CanvasInit, Noexpr *) 
         and codegen_expr tup e =
             let locals = fst tup and llbuilder = snd tup in
             match e with
@@ -169,8 +176,10 @@ let translate (globals, functions) =
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
           | A.Id id           -> L.build_load (lookup id locals) id llbuilder (* todo: error-checking in lookup *)
           | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 locals llbuilder
+          | A.Unop(op, e)       -> codegen_unop op e locals llbuilder
           | A.FuncCall ("print", [e; typ])    -> codegen_print e typ locals llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el (locals, llbuilder)
+          (* | A.Noexpr            -> () ??? *)
         
 
         (* codegen_return: handle return statements *)
