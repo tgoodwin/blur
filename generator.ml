@@ -2,6 +2,7 @@
 
 open Ast
 open Llvm
+open Exceptions
 module L = Llvm
 module A = Ast
 
@@ -61,37 +62,43 @@ let translate (globals, functions) =
     let codegen_func func_decl =
         let (f, _) = StringMap.find func_decl.A.fname function_decls in
 
+        let local_vars = StringMap.empty in
+
         let llbuilder = L.builder_at_end context (L.entry_block f) in
 
         let int_format_str = L.build_global_stringptr "%d\n" "fmt" llbuilder in
         
-        let add_formal map (typ, name) fmls =
-            L.set_value_name name fmls;
+        let add_formal map (typ, name) fml =
+            L.set_value_name name fml;
             let local = L.build_alloca (ltype_of_typ typ) name llbuilder in
-            ignore (L.build_store fmls local llbuilder);
+            ignore (L.build_store fml local llbuilder);
             StringMap.add name local map
         in
-        let add_local map (vdecl: A.vardecl) =
+        let add_local (vdecl: A.vardecl) local_vars =
             let typ = vdecl.declTyp in
             let name = vdecl.declID in
             let local_var = L.build_alloca (ltype_of_typ typ) name llbuilder in
-            StringMap.add name local_var map
+            StringMap.add name local_var local_vars
         in
 
         (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
          * which is a statement list *)
 
-        let local_vars = List.fold_left2 add_formal StringMap.empty func_decl.A.args (Array.to_list (L.params f)) in
+        let local_vars = List.fold_left2 add_formal local_vars func_decl.A.args (Array.to_list (L.params f)) in
 
         (* see if a variable has been declared already *)
-        let rec lookup name = try StringMap.find name local_vars with Not_found -> StringMap.find name global_vars in
+        let rec lookup (name, locals) =
+            try StringMap.find name locals
+            with Not_found -> try StringMap.find name global_vars
+            with Not_found -> raise (Exceptions.UnknownVariable name)
+        in
 
         (*and func_lookup fname =
             match (L.lookup_function fname the_module) with
             (*None        -> raise (exception LLVMFunctionNotFound fname)*)
             Some f      -> f *)
 
-         let rec codegen_binop e1 op e2 llbuilder =
+         let rec codegen_binop e1 op e2 locals llbuilder =
             let int_ops lh op rh  =
                 match op with
                 A.Add   -> L.build_add lh rh "tmp" llbuilder
@@ -116,7 +123,7 @@ let translate (globals, functions) =
 
             let handle_binop e1 op e2 =
                 match op with
-                A.Asn         -> codegen_asn (id_to_str e1) e2 llbuilder
+                A.Asn         -> codegen_asn (id_to_str e1) e2 locals llbuilder
               | _             -> arith_binop e1 op e2
 
             in
@@ -128,9 +135,9 @@ let translate (globals, functions) =
             A.Id s      -> s
 
         (* ASSIGN an expression (value) to a declared variable *)
-        and codegen_asn n e llbuilder =
+        and codegen_asn n e locals llbuilder =
             let gen_e = (codegen_expr llbuilder e) in
-            ignore(L.build_store gen_e (lookup n) llbuilder); gen_e
+            ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
         and codegen_print e llbuilder =
             let param = (codegen_expr llbuilder e) in
@@ -154,9 +161,9 @@ let translate (globals, functions) =
           | A.StrLit s        -> L.build_global_stringptr s "tmp" llbuilder
           | A.CharLit c       -> L.const_int i8_t (Char.code c)
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
-          | A.Id id           -> L.build_load (lookup id) id llbuilder (* todo: error-checking in lookup *)
+          | A.Id id           -> L.build_load (lookup id local_vars) id llbuilder (* todo: error-checking in lookup *)
           (*| A.Asn(n, e)       -> codegen_asn n e llbuilder *)
-          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 llbuilder 
+          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 local_vars llbuilder 
           | A.FuncCall ("print", [el])    -> codegen_print el llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el llbuilder
         
@@ -168,18 +175,18 @@ let translate (globals, functions) =
           | _       -> L.build_ret (codegen_expr llbuilder e) llbuilder
         
         (* codegen_vdecl: handle variable declarations *)
-        and codegen_vdecl (vdecl: A.vardecl) llbuilder =
+        and codegen_vdecl (vdecl: A.vardecl) (local_vars, llbuilder) =
             let name = vdecl.declID in
 
             (* add to local_vars map no matter what. if already exists, policy is to overwrite *)
-            add_local local_vars vdecl;
+            let local_vars = add_local vdecl local_vars in
 
             (* if vdecl contains an expression, codegen that expr and assign the variable to it.
              * note that codegen_asn is called after add_local local_vars vdecl. *)
             let init_expr = vdecl.declInit in
             match init_expr with 
-                A.Noexpr        -> llbuilder
-              | _               -> (codegen_asn name init_expr llbuilder); llbuilder
+                A.Noexpr        -> local_vars, llbuilder
+              | _               -> (codegen_asn name init_expr local_vars llbuilder); local_vars, llbuilder
 
 
             (*let alloca = build_lloca decl.declTyp decl.declID llbuilder*)
@@ -195,7 +202,7 @@ let translate (globals, functions) =
         (* TODO: If, For, While, Continue, Break *)
         and codegen_stmt llbuilder = function
             A.Block sl        -> List.fold_left codegen_stmt llbuilder sl
-          | A.Decl e          -> ignore (codegen_vdecl e llbuilder); llbuilder
+          | A.Decl e          -> ignore (codegen_vdecl e (local_vars, llbuilder)); llbuilder
           | A.Expr e          -> ignore (codegen_expr llbuilder e); llbuilder
           | A.Return e        -> ignore (codegen_return e llbuilder); llbuilder
 

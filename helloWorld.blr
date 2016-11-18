@@ -1,3 +1,4 @@
+char a;
 int main() {
-        char a = 'c';
+        a = '5';
 }
