@@ -65,12 +65,9 @@ let translate (globals, functions) =
     let codegen_func func_decl =
         let (f, _) = StringMap.find func_decl.A.fname function_decls in
 
+        let llbuilder = L.builder_at_end context (L.entry_block f) in
         let local_vars = StringMap.empty in
 
-        let llbuilder = L.builder_at_end context (L.entry_block f) in
-
-        let int_format_str = L.build_global_stringptr "%d\n" "fmt" llbuilder in
-        
         let add_formal map (typ, name) fml =
             L.set_value_name name fml;
             let local = L.build_alloca (ltype_of_typ typ) name llbuilder in
@@ -206,6 +203,20 @@ let translate (globals, functions) =
             (*let alloca = build_lloca decl.declTyp decl.declID llbuilder*)
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
+        (*and codegen_conditional pred then_stmt else_stmt (locals, llbuilder) =
+            let bool_val = (codegen_expr (locals, llbuilder) pred) in
+
+            let merge_bb = L.append_block context "merge" f in
+            let then_bb = L.append_block context "then" f in
+            let then_builder = (L.builder_at_end context then_bb) in
+            add_terminal (codegen_stmt (locals, then_builder) then_stmt) (L.build_br merge_bb);
+
+            let else_bb = L.append_block context "else" f in
+            let else_builder = (L.builder_at_end context else_bb) in
+            add_terminal (codegen_stmt (locals, else_builder) else_stmt) (L.build_br merge_bb);
+            ignore (L.build_cond_br bool_val then_bb else_bb llbuilder);
+            L.builder_at_end context merge_bb *)
+
         and add_terminal llbuilder f =
             match L.block_terminator (L.insertion_block llbuilder) with
                 Some _  -> ()
@@ -216,9 +227,11 @@ let translate (globals, functions) =
         (* TODO: If, For, While, Continue, Break *)
         and codegen_stmt (locals, llbuilder) = function
             A.Block sl        -> List.fold_left codegen_stmt (locals, llbuilder) sl
-          | A.Decl e          -> codegen_vdecl e (local_vars, llbuilder)
+          | A.Decl e          -> codegen_vdecl e (locals, llbuilder)
           | A.Expr e          -> ignore (codegen_expr (locals, llbuilder) e); locals, llbuilder
           | A.Return e        -> ignore (codegen_return e (locals, llbuilder)); locals, llbuilder
+          (*| A.If(p, s1, s2) -> ignore (codegen_conditional p s1 s2 (locals, llbuilder)); locals, llbuilder *)
+          (*| A.While(p, body) -> codegen_while p body (locals, llbuilder) TODO *)
 
         (* build the code for each statement in the function *)
         in
