@@ -25,7 +25,7 @@ let translate (globals, functions) =
     in
     let string_t = L.pointer_type i8_t in
 
-    (* TODO: String, Array, Canvas *)
+    (* TODO: Array, Canvas *)
     let rec ltype_of_typ = function
         A.Int -> i32_t
       | A.Double -> iFl_t
@@ -142,9 +142,10 @@ let translate (globals, functions) =
             let gen_e = codegen_expr (locals, llbuilder) e in
             ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
-        and codegen_print e locals llbuilder =
+        and codegen_print e typ locals llbuilder =
             let param = (codegen_expr (locals, llbuilder) e) in
-            L.build_call printf_func [| int_format_str; param |] "printf" llbuilder
+            let format_str = (codegen_expr (locals, llbuilder) typ) in (* should return string literal*)
+            L.build_call printf_func [| format_str; param |] "printf" llbuilder
 
         (* let codegen_func_call f e llbuilder ..... in *)
         
@@ -168,7 +169,7 @@ let translate (globals, functions) =
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
           | A.Id id           -> L.build_load (lookup id locals) id llbuilder (* todo: error-checking in lookup *)
           | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 locals llbuilder
-          | A.FuncCall ("print", [el])    -> codegen_print el locals llbuilder
+          | A.FuncCall ("print", [e; typ])    -> codegen_print e typ locals llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el (locals, llbuilder)
         
 

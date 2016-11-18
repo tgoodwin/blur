@@ -1,4 +1,4 @@
-char a;
 int main() {
-        a = '5';
+        string a = "Hello, world!";
+        print(a, "%s");
 }
