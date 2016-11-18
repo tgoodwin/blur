@@ -87,7 +87,7 @@ let translate (globals, functions) =
         let local_vars = List.fold_left2 add_formal local_vars func_decl.A.args (Array.to_list (L.params f)) in
 
         (* see if a variable has been declared already *)
-        let rec lookup (name, locals) =
+        let rec lookup name locals =
             try StringMap.find name locals
             with Not_found -> try StringMap.find name global_vars
             with Not_found -> raise (Exceptions.UnknownVariable name)
@@ -116,8 +116,8 @@ let translate (globals, functions) =
 
             in
             let arith_binop e1 op e2 =
-                let lh = codegen_expr llbuilder e1
-                and rh = codegen_expr llbuilder e2
+                let lh = codegen_expr (locals, llbuilder) e1
+                and rh = codegen_expr (locals, llbuilder) e2
                 in int_ops lh op rh
             in
 
@@ -136,43 +136,46 @@ let translate (globals, functions) =
 
         (* ASSIGN an expression (value) to a declared variable *)
         and codegen_asn n e locals llbuilder =
-            let gen_e = (codegen_expr llbuilder e) in
+            let gen_e = codegen_expr (locals, llbuilder) e in
             ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
-        and codegen_print e llbuilder =
-            let param = (codegen_expr llbuilder e) in
+        and codegen_print e locals llbuilder =
+            let param = (codegen_expr (locals, llbuilder) e) in
             L.build_call printf_func [| int_format_str; param |] "printf" llbuilder
 
         (* let codegen_func_call f e llbuilder ..... in *)
         
         (* blur built-ins  *)
-        and codegen_call f el llbuilder =
+        and codegen_call f el (locals, llbuilder) =
             let (fdef, fdecl) = StringMap.find f function_decls in
-            let args = List.rev (List.map (codegen_expr llbuilder) (List.rev el)) in
+            let args = List.rev (List.map (codegen_expr (locals, llbuilder)) (List.rev el)) in
             let result = (match func_decl.A.typ with
                 A.Void  -> ""
               | _       -> f ^ "_result" )
             in L.build_call fdef (Array.of_list args) result llbuilder
 
        (* TODO: Unop, Asn, ArrayListInit, CanvasInit, Noexpr *) 
-        and codegen_expr llbuilder = function
+            (* does this have to return llbuilder?? i think it should return an llvm expr *)
+        and codegen_expr tup e =
+            let locals = fst tup and llbuilder = snd tup in
+            match e with
             A.IntLit i        -> L.const_int i32_t i
           | A.DoubleLit i     -> L.const_float iFl_t i
           | A.StrLit s        -> L.build_global_stringptr s "tmp" llbuilder
           | A.CharLit c       -> L.const_int i8_t (Char.code c)
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
-          | A.Id id           -> L.build_load (lookup id local_vars) id llbuilder (* todo: error-checking in lookup *)
+          | A.Id id           -> L.build_load (lookup id locals) id llbuilder (* todo: error-checking in lookup *)
           (*| A.Asn(n, e)       -> codegen_asn n e llbuilder *)
-          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 local_vars llbuilder 
-          | A.FuncCall ("print", [el])    -> codegen_print el llbuilder
-          | A.FuncCall (n, el)          -> codegen_call n el llbuilder
+          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 locals llbuilder
+          | A.FuncCall ("print", [el])    -> codegen_print el locals llbuilder
+          | A.FuncCall (n, el)          -> codegen_call n el (locals, llbuilder)
         
 
         (* codegen_return: handle return statements *)
-        and codegen_return e llbuilder =
+        and codegen_return e (locals, llbuilder) =
             match func_decl.A.typ with
             A.Void  -> L.build_ret_void llbuilder
-          | _       -> L.build_ret (codegen_expr llbuilder e) llbuilder
+          | _       -> L.build_ret (codegen_expr (locals, llbuilder) e) llbuilder
         
         (* codegen_vdecl: handle variable declarations *)
         and codegen_vdecl (vdecl: A.vardecl) (local_vars, llbuilder) =
@@ -200,16 +203,17 @@ let translate (globals, functions) =
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
         (* TODO: If, For, While, Continue, Break *)
-        and codegen_stmt llbuilder = function
-            A.Block sl        -> List.fold_left codegen_stmt llbuilder sl
-          | A.Decl e          -> ignore (codegen_vdecl e (local_vars, llbuilder)); llbuilder
-          | A.Expr e          -> ignore (codegen_expr llbuilder e); llbuilder
-          | A.Return e        -> ignore (codegen_return e llbuilder); llbuilder
+        and codegen_stmt (locals, llbuilder) = function
+            A.Block sl        -> List.fold_left codegen_stmt (locals, llbuilder) sl
+          | A.Decl e          -> codegen_vdecl e (local_vars, llbuilder)
+          | A.Expr e          -> ignore (codegen_expr (locals, llbuilder) e); locals, llbuilder
+          | A.Return e        -> ignore (codegen_return e (locals, llbuilder)); locals, llbuilder
 
         (* build the code for each statement in the function *)
         in
-        let llbuilder = codegen_stmt llbuilder (A.Block func_decl.A.body)
-        in add_terminal llbuilder (match func_decl.A.typ with
+        let tuple = codegen_stmt (local_vars, llbuilder) (A.Block func_decl.A.body) in
+        let llbuilder = (snd tuple) in
+        add_terminal llbuilder (match func_decl.A.typ with
                 A.Void -> L.build_ret_void
               | typ -> L.build_ret (L.const_int (ltype_of_typ typ) 0))
     in
