@@ -23,14 +23,17 @@ let translate (globals, functions) =
     and i1_t = L.i1_type context
     and void_t = L.void_type context
     in
+    let string_t = L.pointer_type i8_t in
 
     (* TODO: String, Array, Canvas *)
-    let ltype_of_typ=  function
+    let rec ltype_of_typ = function
         A.Int -> i32_t
       | A.Double -> iFl_t
       | A.Char -> i8_t
+      | A.String -> string_t
       | A.Bool -> i1_t
       | A.Void -> void_t
+      (* | A.Array t -> (ltype_of_typ t) *)
     in
     
     let global_vars =
@@ -155,7 +158,6 @@ let translate (globals, functions) =
             in L.build_call fdef (Array.of_list args) result llbuilder
 
        (* TODO: Unop, Asn, ArrayListInit, CanvasInit, Noexpr *) 
-            (* does this have to return llbuilder?? i think it should return an llvm expr *)
         and codegen_expr tup e =
             let locals = fst tup and llbuilder = snd tup in
             match e with
@@ -165,7 +167,6 @@ let translate (globals, functions) =
           | A.CharLit c       -> L.const_int i8_t (Char.code c)
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
           | A.Id id           -> L.build_load (lookup id locals) id llbuilder (* todo: error-checking in lookup *)
-          (*| A.Asn(n, e)       -> codegen_asn n e llbuilder *)
           | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 locals llbuilder
           | A.FuncCall ("print", [el])    -> codegen_print el locals llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el (locals, llbuilder)
