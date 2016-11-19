@@ -160,13 +160,17 @@ expr:
   | NOT expr %prec UNOP         { Unop(Not, $2) }
   | MINUS expr %prec UNOP       { Unop(Neg, $2) }
   | LPAREN expr RPAREN { $2 }
+  
   | ID ASSIGN expr    { Binop(Id($1), Asn, $3) }
+  | ID LBRACK INT_LITERAL RBRACK ASSIGN expr  { Binop(ArrayAccess($1, $3), Asn, $6) }
+
   /* lists */
   /* | typ LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) } */
   | func_call         { $1 }
 
   /* lists */
   | LBRACK expr_list RBRACK { ArrayListInit($2) }
+  | ID LBRACK INT_LITERAL RBRACK { ArrayAccess($1, $3) }
 
   /* canvas */
   | LPAREN INT_LITERAL COMMA INT_LITERAL COMMA CHAR_LITERAL RPAREN { CanvasInit($2, $4, $6) }
