@@ -137,8 +137,7 @@ let translate (globals, functions) =
           | A.Not       -> L.build_not exp "bool_unoptmp" llbuilder
 
         (* helper to get the raw string from an ID expression type. MOVE TO A UTILS FILE *)
-        and id_to_str e =
-            match e with
+        and id_to_str = function
             A.Id s      -> s
 
         (* ASSIGN an expression (value) to a declared variable *)
@@ -197,25 +196,27 @@ let translate (globals, functions) =
             let init_expr = vdecl.declInit in
             match init_expr with 
                 A.Noexpr        -> local_vars, llbuilder
-              | _               -> (codegen_asn name init_expr local_vars llbuilder); local_vars, llbuilder
+              | e               -> (codegen_asn name e local_vars llbuilder); local_vars, llbuilder
 
 
             (*let alloca = build_lloca decl.declTyp decl.declID llbuilder*)
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
-        (*and codegen_conditional pred then_stmt else_stmt (locals, llbuilder) =
+        and codegen_conditional pred then_stmt else_stmt (locals, llbuilder) =
             let bool_val = (codegen_expr (locals, llbuilder) pred) in
 
             let merge_bb = L.append_block context "merge" f in
             let then_bb = L.append_block context "then" f in
             let then_builder = (L.builder_at_end context then_bb) in
-            add_terminal (codegen_stmt (locals, then_builder) then_stmt) (L.build_br merge_bb);
+            let then_tup = (codegen_stmt (locals, then_builder) then_stmt) in
+            add_terminal (snd then_tup) (L.build_br merge_bb);
 
             let else_bb = L.append_block context "else" f in
             let else_builder = (L.builder_at_end context else_bb) in
-            add_terminal (codegen_stmt (locals, else_builder) else_stmt) (L.build_br merge_bb);
+            let else_tup = (codegen_stmt (locals, else_builder) else_stmt) in
+            add_terminal (snd else_tup) (L.build_br merge_bb);
             ignore (L.build_cond_br bool_val then_bb else_bb llbuilder);
-            L.builder_at_end context merge_bb *)
+            L.builder_at_end context merge_bb
 
         and add_terminal llbuilder f =
             match L.block_terminator (L.insertion_block llbuilder) with
@@ -230,7 +231,7 @@ let translate (globals, functions) =
           | A.Decl e          -> codegen_vdecl e (locals, llbuilder)
           | A.Expr e          -> ignore (codegen_expr (locals, llbuilder) e); locals, llbuilder
           | A.Return e        -> ignore (codegen_return e (locals, llbuilder)); locals, llbuilder
-          (*| A.If(p, s1, s2) -> ignore (codegen_conditional p s1 s2 (locals, llbuilder)); locals, llbuilder *)
+          | A.If(p, s1, s2) -> ignore (codegen_conditional p s1 s2 (locals, llbuilder)); locals, llbuilder
           (*| A.While(p, body) -> codegen_while p body (locals, llbuilder) TODO *)
 
         (* build the code for each statement in the function *)
