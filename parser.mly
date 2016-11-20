@@ -165,8 +165,8 @@ expr:
   | ID LBRACK INT_LITERAL RBRACK ASSIGN expr  { Binop(ArrayAccess($1, $3), Asn, $6) }
 
   /* lists */
-  /* | typ LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) } */
-  | func_call         { $1 }
+  | typ LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) }
+  | func_call { $1 }
 
   /* lists */
   | LBRACK expr_list RBRACK { ArrayListInit($2) }
