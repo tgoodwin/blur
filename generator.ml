@@ -3,6 +3,11 @@
 open Ast
 open Llvm
 open Exceptions
+open Configuration
+
+open Llvm.MemoryBuffer
+open Llvm_bitreader
+
 module L = Llvm
 module A = Ast
 
@@ -262,6 +267,12 @@ let translate (globals, functions) =
                 A.Void -> L.build_ret_void
               | typ -> L.build_ret (L.const_int (ltype_of_typ typ) 0))
     in
-
+    let linker filename =
+	let llctx = Llvm.global_context () in
+	let llmem = Llvm.MemoryBuffer.of_file filename in
+	let llm = Llvm_bitreader.parse_bitcode llctx llmem in
+	ignore(Llvm_linker.link_modules the_module llm)
+    in
+    let _ = linker Configuration.bindings_path in
     List.iter codegen_func functions;
     the_module

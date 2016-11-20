@@ -1,5 +1,0 @@
-int test(int x)
-{
-	arr <int> a;
-	a = [5,342,5];
-}
