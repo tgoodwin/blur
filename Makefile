@@ -1,7 +1,7 @@
 OBJS = ast.cmx parser.cmx scanner.cmx semantic_analyzer.cmx exceptions.cmx configuration.cmx generator.cmx prettyprint.cmx blur.cmx
 
 prog : $(OBJS)
-	clang -emit-llvm -o bindings.bc -c bindings.cpp
+	clang++ -emit-llvm -o bindings.bc -c bindings.cpp
 	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis -package llvm.bitwriter -package llvm.bitreader -package llvm.linker $(OBJS) -o prog
 
 scanner.ml : scanner.mll

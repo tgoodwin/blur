@@ -1,7 +1,3 @@
 #include "bindings.cpp"
 
-int main(){
-
-
-    return 0;
-}
+//int *a = canvas("supermario.png");
