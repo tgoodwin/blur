@@ -218,6 +218,25 @@ let translate (globals, functions) =
             ignore (L.build_cond_br bool_val then_bb else_bb llbuilder);
             L.builder_at_end context merge_bb
 
+        (* WHILE LOOP: todo - figure out if scoping behaves right *)
+        and codegen_while pred body (locals, llbuilder) =
+            let pred_bb = L.append_block context "while" f in
+            ignore (L.build_br pred_bb llbuilder);
+            let body_bb = L.append_block context "while_body" f in
+            let while_builder = (L.builder_at_end context body_bb) in
+            add_terminal (snd (codegen_stmt (locals, while_builder) body)) (L.build_br pred_bb);
+
+            let pred_builder = L.builder_at_end context pred_bb in
+            let bool_val = (codegen_expr (locals, pred_builder) pred) in
+            
+            let merge_bb = L.append_block context "merge" f in
+            ignore (L.build_cond_br bool_val body_bb merge_bb pred_builder);
+            L.builder_at_end context merge_bb
+
+        (* FOR LOOP: todo - figure out if scoping behaves right *)
+        and codegen_for e1 e2 e3 body (locals, llbuilder) =
+            codegen_stmt (locals, llbuilder) (A.Block [A.Expr e1; A.While (e2, A.Block [body; A.Expr e3])])
+
         and add_terminal llbuilder f =
             match L.block_terminator (L.insertion_block llbuilder) with
                 Some _  -> ()
@@ -225,14 +244,15 @@ let translate (globals, functions) =
 
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
-        (* TODO: If, For, While, Continue, Break *)
+        (* TODO: Continue, Break *)
         and codegen_stmt (locals, llbuilder) = function
-            A.Block sl        -> List.fold_left codegen_stmt (locals, llbuilder) sl
-          | A.Decl e          -> codegen_vdecl e (locals, llbuilder)
-          | A.Expr e          -> ignore (codegen_expr (locals, llbuilder) e); locals, llbuilder
-          | A.Return e        -> ignore (codegen_return e (locals, llbuilder)); locals, llbuilder
-          | A.If(p, s1, s2) -> ignore (codegen_conditional p s1 s2 (locals, llbuilder)); locals, llbuilder
-          (*| A.While(p, body) -> codegen_while p body (locals, llbuilder) TODO *)
+            A.Block sl              -> List.fold_left codegen_stmt (locals, llbuilder) sl
+          | A.Decl e                -> codegen_vdecl e (locals, llbuilder)
+          | A.Expr e                -> ignore (codegen_expr (locals, llbuilder) e); locals, llbuilder
+          | A.Return e              -> ignore (codegen_return e (locals, llbuilder)); locals, llbuilder
+          | A.If(p, s1, s2)         -> ignore (codegen_conditional p s1 s2 (locals, llbuilder)); locals, llbuilder
+          | A.While(p, body)        -> ignore (codegen_while p body (locals, llbuilder)); locals, llbuilder
+          | A.For(e1, e2, e3, body) -> codegen_for e1 e2 e3 body (locals, llbuilder)
 
         (* build the code for each statement in the function *)
         in
