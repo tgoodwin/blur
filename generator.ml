@@ -23,10 +23,15 @@ let translate (globals, functions) =
     and i1_t = L.i1_type context
     and void_t = L.void_type context
     in
-    let string_t = L.pointer_type i8_t in
+
+    let string_t = L.pointer_type i8_t
+    and i8ptr_t = L.pointer_type i8_t
+    and i32ptr_t = L.pointer_type i32_t
+    in
 
     (* TODO: Array, Canvas *)
-    let rec ltype_of_typ = function
+    (* and a get_ptr_type function for arrays *)
+    let ltype_of_typ = function
         A.Int -> i32_t
       | A.Double -> iFl_t
       | A.Char -> i8_t
@@ -50,7 +55,101 @@ let translate (globals, functions) =
     let printf_t = L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
     let printf_func = L.declare_function "printf" printf_t the_module in
 
-    (* define each function w/ args and return type so we can call it *)
+    let memset_t = L.function_type void_t [| i8ptr_t; i32_t; i32_t |] in
+    let memset = L.declare_function "memset" memset_t the_module in
+
+    (* instructions for 2D matrix configuration *)
+    let sizeof_offset   = L.const_int i32_t (-1)
+    and length_offset   = L.const_int i32_t (-2)
+    and cols_offset     = L.const_int i32_t (-3)
+    and rows_offset     = L.const_int i32_t (-4)
+    (* byte sizes for blur primitives *)
+    and int_size        = L.const_int i32_t 4
+    and double_size     = L.const_int i32_t 8
+    and one_32t         = L.const_int i32_t 1
+    and zero_32t        = L.const_int i32_t 0
+    in
+
+    let get_size_of_typ = function
+        A.Int           -> int_size
+      | A.Double        -> double_size
+      | A.Char          -> one_32t
+      | A.Bool          -> one_32t (* bools are stored as 1 byte blocks, cus padding *)
+    in
+
+    let get_dim from_ptr item llbuilder =
+        let loc = L.build_bitcast from_ptr i32ptr_t "dim" llbuilder in
+        let loc = L.build_gep loc [| item |] "dim" llbuilder in
+        L.build_load loc "dim" llbuilder in
+
+    let put_dim from_ptr item the_val llbuilder =
+        let loc = L.build_bitcast from_ptr i32ptr_t "dim" llbuilder in
+        let loc = L.build_gep loc [| item |] "dim" llbuilder in
+        L.build_store the_val loc llbuilder
+    in
+
+    (* STORAGE ALLOCATION INSTRUCTIONS for all ARRAY data structures *)
+
+    let get_header loc llbuilder =
+        let char_ptr = L.build_bitcast loc i8ptr_t "new" llbuilder in
+        L.build_gep char_ptr [| (L.const_int i8_t (-16)) |] "new" llbuilder
+    in
+
+    let get_body loc llbuilder =
+        let char_ptr = L.build_bitcast loc i8ptr_t "new" llbuilder in
+        L.build_gep char_ptr [| (L.const_int i8_t (16)) |] "new" llbuilder
+    in
+
+    let build_block size llbuilder = 
+        let ch_ptr = L.build_array_alloca i8_t size "new" llbuilder in
+        ignore (L.build_call memset [| ch_ptr; zero_32t; size |] "" llbuilder); ch_ptr
+    in
+
+    let build_arr1D len size llbuilder =
+        let size = L.build_mul len size "new" llbuilder in (* total sequential size *)
+        let alloc_size = L.build_add size (L.const_int i32_t 16) "new" llbuilder in (* add 16 byte header *)
+        let char_ptr = build_block alloc_size llbuilder in
+        let arr_ptr = get_body char_ptr llbuilder in
+        ignore (put_dim arr_ptr sizeof_offset alloc_size llbuilder);
+        ignore (put_dim arr_ptr length_offset len llbuilder);
+        ignore (put_dim arr_ptr rows_offset zero_32t llbuilder); (* ROWS, COLUMNS starting at 0 for now *)
+        ignore (put_dim arr_ptr cols_offset zero_32t llbuilder);
+        L.build_bitcast arr_ptr i32ptr_t "new" llbuilder
+    in
+    
+    (* takes in an Ast type and row, col values *)
+    let build_arr2D primtyp row col llbuilder =
+        let typ_size = (get_size_of_typ primtyp) in
+        let len = L.build_mul row col "new" llbuilder in
+        let arr_ptr = build_arr1D len typ_size llbuilder in
+        ignore (put_dim arr_ptr rows_offset row llbuilder);
+        ignore (put_dim arr_ptr cols_offset col llbuilder);
+        L.build_bitcast arr_ptr (L.pointer_type (ltype_of_typ primtyp))  "new" llbuilder
+    in
+
+    (* --- ARRAY ACCESS --- *)
+
+    let build_put from_ptr offset value llbuilder =
+        let loc = L.build_gep from_ptr [| offset |] "putarr" llbuilder in
+        L.build_store value loc llbuilder in
+
+    let build_get from_ptr offset llbuilder =
+        let loc = L.build_gep from_ptr [| offset |] "getarr" llbuilder in
+        L.build_load loc "getarr" llbuilder in
+
+    let build_putrc from_ptr row col value llbuilder =
+        let offset = get_dim from_ptr cols_offset llbuilder in
+        let offset = L.build_mul row offset "getrc" llbuilder in
+        let offset = L.build_add col offset "getrc" llbuilder in
+        build_put from_ptr offset value llbuilder in
+
+    let build_getrc from_ptr row col llbuilder =
+        let offset = get_dim from_ptr cols_offset llbuilder in
+        let offset = L.build_mul row offset "get" llbuilder in
+        let offset = L.build_add col offset "get" llbuilder in
+        build_get from_ptr offset llbuilder in
+
+    (* --- FUNCTION DECLARATIONS --- *)
     let function_decls =
         (* FUNCTION function_decl *)
         let function_decl map fdecl =
@@ -62,6 +161,7 @@ let translate (globals, functions) =
 
         List.fold_left function_decl StringMap.empty functions in
 
+    (* --- CODEGEN FUNCTION BODY --- *)
     let codegen_func func_decl =
         let (f, _) = StringMap.find func_decl.A.fname function_decls in
 
@@ -161,6 +261,8 @@ let translate (globals, functions) =
               | _       -> f ^ "_result" )
             in L.build_call fdef (Array.of_list args) result llbuilder
 
+
+       (* -------------- EXPRESSIONS --------------------*)
        (* TODO: ArrayListInit, CanvasInit, Noexpr *) 
         and codegen_expr tup e =
             let locals = fst tup and llbuilder = snd tup in
@@ -199,7 +301,6 @@ let translate (globals, functions) =
               | e               -> (codegen_asn name e local_vars llbuilder); local_vars, llbuilder
 
 
-            (*let alloca = build_lloca decl.declTyp decl.declID llbuilder*)
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (locals, llbuilder) =
