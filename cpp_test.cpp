@@ -2,6 +2,6 @@
 
 int main(){
 
-    createEmptyCanvas(5,5,1,0);
 
+    return 0;
 }
