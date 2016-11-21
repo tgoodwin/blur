@@ -1,3 +1,3 @@
 #include "bindings.cpp"
 
-//int *a = canvas("supermario.png");
+vector<char> a = readBMP("goldenmushie.bmp");

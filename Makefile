@@ -1,7 +1,7 @@
 OBJS = ast.cmx parser.cmx scanner.cmx semantic_analyzer.cmx exceptions.cmx configuration.cmx generator.cmx prettyprint.cmx blur.cmx
 
 prog : $(OBJS)
-	clang++ -emit-llvm -o bindings.bc -c bindings.cpp
+	clang++ -std=c++11 -emit-llvm -o bindings.bc -c bindings.cpp
 	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis -package llvm.bitwriter -package llvm.bitreader -package llvm.linker $(OBJS) -o prog
 
 scanner.ml : scanner.mll
@@ -37,6 +37,6 @@ parser.cmi: ast.cmo
 
 .PHONY : clean
 clean :
-	rm -rf prog scanner.ml parser.ml parser.mli
+	rm -rf prog scanner.ml parser.ml parser.mli a.out
 	rm -rf *.cmo *.cmi *.cmx *.o *.bc
 	rm -f *~
