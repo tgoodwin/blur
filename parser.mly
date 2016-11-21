@@ -41,7 +41,7 @@ decls:
   | decls funcdecl { fst $1, ($2 :: snd $1) }
 
 funcdecl:
-    typ ID LPAREN args_opt RPAREN LBRACE stmt_list RBRACE
+    datatype ID LPAREN args_opt RPAREN LBRACE stmt_list RBRACE
     {
         {
             typ = $1;
@@ -59,8 +59,17 @@ args_list:
     argdecl                 { [$1] }
   | args_list COMMA argdecl { $3 :: $1 } 
 
+/*argdecl:
+    datatype ID { Arg($1, $2) }*/
+
 argdecl:
-    typ ID { ($1, $2) }
+    datatype ID
+    { 
+        {
+            argdeclType = $1;
+            argdeclID = $2;
+        }  
+    }
 
 typ:
     INT { Int }
@@ -69,18 +78,41 @@ typ:
   | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
-  | array_type { $1 }
   | CANVAS { Canvas }
 
 array_type:
-    typ LBRACK RBRACK { Array($1) }
+    one_d_array { Arraytype($1) }
+  | two_d_array { Arraytype($1) }
+
+one_d_array:
+  typ LBRACK RBRACK 
+  {
+        {
+            arrTyp = $1;
+            is2D = false;
+        }
+    }
+
+/* Indicate that this is a 2D array with boolean */
+two_d_array:
+  typ LBRACK RBRACK LBRACK RBRACK 
+  {
+        {
+            arrTyp = $1;
+            is2D = true;
+        }
+    }
+
+datatype:
+    typ         { Datatype($1) }
+  | array_type  { $1 }
 
 vardecl:
     vardecl_simple { $1 }  
   | init_vardecl   { $1 }
 
 vardecl_simple:
-    typ ID SEMI 
+    datatype ID SEMI 
     { 
         {
             declTyp = $1;
@@ -90,7 +122,7 @@ vardecl_simple:
     }
 
 init_vardecl:
-    typ ID ASSIGN expr SEMI 
+    datatype ID ASSIGN expr SEMI 
     { 
         {
             declTyp = $1;

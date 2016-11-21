@@ -24,10 +24,16 @@ type typ =
   | String
   | Bool
   | Void
-  | Array of typ
   | Canvas
 
-type bind = typ * string
+type array_type  = {
+  arrTyp : typ;
+  is2D : bool;
+} 
+
+type datatype = 
+    Arraytype of array_type
+  | Datatype of typ
 
 type expr =
     Binop of expr * binopr * expr
@@ -47,10 +53,13 @@ type expr =
   | FuncCall of string * expr list
   | Noexpr
 
-type argdecl = typ * string
+type argdecl = {
+  argdeclType : datatype;
+  argdeclID : string;
+}
 
 type vardecl = {
-  declTyp : typ;
+  declTyp : datatype;
   declID : string;
   declInit : expr;  
 }
@@ -67,7 +76,7 @@ type stmt =
   | Break
 
 type funcdecl = {
-    typ : typ;
+    typ : datatype;
     fname : string;
     args : argdecl list;
     body : stmt list;

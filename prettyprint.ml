@@ -21,15 +21,27 @@ let string_of_unop = function
     Not -> "!"
   | Neg -> "-"
 
-let rec string_of_typ = function
+let string_of_typ = function
     Int -> "int"
   | Double -> "double"
   | Char -> "char"
   | String -> "string"
   | Bool -> "bool"
   | Void -> "void"
-  | Array(t) -> string_of_typ t ^ "[]"
   | Canvas -> "Canvas"
+
+let string_of_array_type_1d a = string_of_typ a.arrTyp ^ "[]" 
+
+let string_of_array_type_2d a = string_of_typ a.arrTyp ^ "[][]" 
+
+let string_of_array_type a = 
+  let is2D = (fun a -> a.is2D) a in
+    if is2D = true then string_of_array_type_2d a
+    else  string_of_array_type_1d a
+
+let string_of_datatype = function 
+    Arraytype(t) -> string_of_array_type t
+  | Datatype(t) -> string_of_typ t
 
 let rec string_of_expr = function
     IntLit(l) -> string_of_int l
@@ -47,15 +59,15 @@ let rec string_of_expr = function
   | FuncCall(n, p) -> n ^ "(" ^ String.concat ", " (List.map string_of_expr p) ^ ")"
   | Noexpr -> ""
 
-let string_of_argdecl (t, id) = string_of_typ t ^ " " ^ id
+let string_of_argdecl a = string_of_datatype a.argdeclType ^ " " ^ a.argdeclID
 
 let string_of_vardecl_simple vdecl =
-    "\t" ^ string_of_typ vdecl.declTyp ^ " " ^
+    "\t" ^ string_of_datatype vdecl.declTyp ^ " " ^
     vdecl.declID ^ 
     string_of_expr vdecl.declInit ^ ";\n"
 
 let string_of_init_vardecl vdecl =
-    "\t" ^ string_of_typ vdecl.declTyp ^ " " ^
+    "\t" ^ string_of_datatype vdecl.declTyp ^ " " ^
     vdecl.declID ^ " = " ^
     string_of_expr vdecl.declInit ^ ";\n"
 
@@ -76,7 +88,7 @@ let rec string_of_stmt = function
   | Break -> "break;"
 
 let string_of_funcdecl fdecl =
-  string_of_typ fdecl.typ ^ " " ^
+  string_of_datatype fdecl.typ ^ " " ^
   fdecl.fname ^ "(" ^
   String.concat ", " (List.map string_of_argdecl fdecl.args) ^ ")\n{\n" ^
   String.concat "" (List.map string_of_stmt fdecl.body) ^ "}\n"

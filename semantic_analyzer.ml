@@ -12,14 +12,14 @@ type symbol_table = {
 (* see slide 73 of types lecture *)
 type func_type = {
     name: string;
-    input_types: typ list;
-    return_type: typ
+    input_types: datatype list;
+    return_type: datatype
 }
 
 type translation_env = {
     scope: symbol_table;
     functions: func_type list;
-    return_type: typ option;
+    return_type: datatype option;
 }
 
 let check_prog (globals, functions) = 
@@ -50,7 +50,7 @@ let check_prog (globals, functions) =
 	(* There may not be duplicate arg names. *)
 	let report_duplicate_arg exceptf args =
 		(* Get the names of the args *)
-		let arg_names = List.map (fun a -> snd a) args in
+		let arg_names = List.map (fun a -> a.argdeclID) args in
 			let rec helper = function	
 					n1 :: n2 :: _ when n1 = n2 -> raise (Failure (exceptf n1))
 				| _ :: t -> helper t
@@ -62,14 +62,15 @@ let check_prog (globals, functions) =
 	let check_not_void (vdecl : vardecl) = 
 		(* Get the types of the globals *)
 		let global_typ = (fun v -> v.declTyp) vdecl in
-				if global_typ = Void then raise (Failure ("illegal var"))
+				if global_typ = Datatype(Void) then raise (Failure ("illegal var"))
 				else () 
 	in
 
 	(* An argument cannot have type void. *)
-	let check_not_void_arg exceptf = function
-			(Void, n) -> raise (Failure (exceptf n))
-		| _ -> ()
+	let check_not_void_arg (adecl : argdecl) = 
+		let arg_typ = (fun a -> a.argdeclType) adecl in
+				if arg_typ = Datatype(Void) then raise (Failure ("illegal void arg"))
+				else ()
 	in
 
 	(* Check assignment - type error *)
@@ -94,9 +95,9 @@ let check_prog (globals, functions) =
 	(* Function declaration for named function. *)
 	(* TODO: Modify when we write these function in llvm. *)
 	let built_in_decls =  StringMap.add "print"
-     { typ = Void; fname = "print"; args = [(Int, "x")];
+     { typ = Datatype(Void); fname = "print"; args = [{argdeclType = Datatype(Int); argdeclID = "x"}];
        body = [] } (StringMap.singleton "printb"
-     { typ = Void; fname = "printb"; args = [(Bool, "x")];
+     { typ = Datatype(Void); fname = "printb"; args = [{argdeclType = Datatype(Bool); argdeclID = "x"}];
        body = [] })
    in
 
@@ -111,8 +112,7 @@ let check_prog (globals, functions) =
   (*let _ = function_decl "main" in (* Ensure "main" is defined. *)*)
 
 	let check_function func =
-		List.iter (check_not_void_arg (fun n -> "illegal void argument " ^ n ^
-      " in " ^ func.fname)) func.args;
+		List.iter check_not_void_arg func.args;
 
 		report_duplicate_arg (fun n -> "duplicate argument " ^ n) func.args;
 
