@@ -64,7 +64,13 @@ code(){
     filebase=$(echo ${1} | cut -f 1 -d '.')
     ./prog -l < "${filebase}.blr" > "${filebase}.ll" && lli "${filebase}.ll" > output.txt
     #cmp --silent output.txt helloWorld.out || echo "Wrong Output"
-    diff -bB output.txt "${filebase}.out"
+    DIFF=$(diff -bB output.txt "${filebase}.out")
+    if [ "$DIFF" -eq "" ]; then
+	echo "${filebase}: check"
+    else
+	echo "${filebase}: Wrong Output"
+    fi
+    rm -rf tests/*.ll
 }
 
 codeAll(){
