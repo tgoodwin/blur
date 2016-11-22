@@ -1,5 +1,8 @@
-int main(int a) {
+int main() {
 	int b;
 	int c;
-	b + c;
+	b = 4;
+	c = 3;
+	Print(b+c,"%d");
+	return 1;
 }
