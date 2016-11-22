@@ -1,0 +1,6 @@
+/* Print test */
+
+Print("hello");
+Print(12345);
+Print(1.12345);
+Print('a');
