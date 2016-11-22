@@ -1,6 +1,10 @@
-# blur
+blur
 
 Blur is a programming language for creation and modificaiton of ASCII art created from image files.
+
+You must have clang installed
+
+sudo apt-get install clang 
 
 You must have the OCaml llvm library installed. Install version 3.6 using the following commands:
 
