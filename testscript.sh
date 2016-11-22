@@ -47,21 +47,29 @@ if [ "$#" -ne 1 ]; then
     echo "Usage: check filename"
 else
     diff "${filebase}.blr" "${filebase}.blr" # .blr.pp
-    echo "${filebase} check: "
+    echo "${filebase} check: checked! "
     cmp --silent "${filebase}.blr" "${filebase}.blr" || echo "Wrong Output"
 fi
 }
 
-testall(){
+testAll(){
 #rm results.out
-for i in tests/*.blr
+for i in testsPP/*.blr
 do
     check $i >> results.out;
 done
 }
 
-hello(){
-    ./prog -l < helloWorld.blr > helloWorld.ll && lli helloWorld.ll > output.txt
+code(){
+    filebase=$(echo ${1} | cut -f 1 -d '.')
+    ./prog -l < "${filebase}.blr" > "${filebase}.ll" && lli "${filebase}.ll" > output.txt
     #cmp --silent output.txt helloWorld.out || echo "Wrong Output"
-    diff -bB output.txt helloWorld.out
+    diff -bB output.txt "${filebase}.out"
+}
+
+codeAll(){
+for i in tests/*.blr
+do
+    code $i >> codeResults.out;
+done
 }

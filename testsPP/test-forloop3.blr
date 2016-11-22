@@ -1,4 +1,4 @@
-void main() {
+void forloop() {
     int i;
     int j;
     /* nested for loop */
@@ -6,7 +6,7 @@ void main() {
 	for(j=0; j<2; j=j+1) {
 	    Print(i);
 	    Print(' ');
-	    Print(j);
+	    Println(j);
 	}
     }
 }
