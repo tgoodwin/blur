@@ -1,0 +1,11 @@
+clib:
+	gcc -c bindings.c -lGL -lglut -lGLU -lIL
+	ar -cvq libclib.a bindings.o
+
+exec:
+	gcc bindings.c -lGL -lglut -lGLU -lIL -o test
+
+.PHONY: clean
+clean:
+	rm -f *.o
+	rm libclib.a test
