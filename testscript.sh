@@ -61,6 +61,6 @@ done
 }
 
 hello(){
-    ./prog -l < helloworld.blr > helloworld.ll && lli helloworld.ll > output.txt
-    cmp --silent output.txt helloworld.out || echo "Wrong Output"
+    ./prog -l < helloWorld.blr > helloWorld.ll && lli helloWorld.ll > output.txt
+    cmp --silent output.txt helloWorld.out || echo "Wrong Output"
 }
