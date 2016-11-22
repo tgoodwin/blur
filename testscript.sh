@@ -53,7 +53,7 @@ fi
 }
 
 testall(){
-rm results.out
+#rm results.out
 for i in tests/*.blr
 do
     check $i >> results.out;
