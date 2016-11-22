@@ -15,4 +15,12 @@ eval `opam config env`
 make
 ./testall.sh
 
+Linking the c files.
+
+Easel
+compile c down to .o and llvm down to .o and link them.
+link them gcc
+
+the prog file is what takes a blur file and produces llvm
+then in the makefile you need one more call that will link the llvm emitted from prog with the .o emitted from the c code.
 
