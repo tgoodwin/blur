@@ -53,6 +53,7 @@ fi
 }
 
 testall(){
+rm results.out
 for i in tests/*.blr
 do
     check $i >> results.out;
@@ -60,6 +61,6 @@ done
 }
 
 hello(){
-    ./prog -l < helloworld.blr > helloworld.ll && llli helloworld.ll > output.txt
+    ./prog -l < helloworld.blr > helloworld.ll && lli helloworld.ll > output.txt
     cmp --silent output.txt helloworld.out || echo "Wrong Output"
 }
