@@ -46,6 +46,12 @@ filebase=$(echo ${1} | cut -f 1 -d '.')
 if [ "$#" -ne 1 ]; then
     echo "Usage: check filename"
 else
-    diff "${filebase}.blr" "${filebase}.blr.pp"
+    diff "${filebase}.blr" "${filebase}.blr" # .blr.pp
+    echo "OK"
 fi
 }
+
+for i in tests/*.blr
+do
+    check $i >> results.out;
+done
