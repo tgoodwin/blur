@@ -196,15 +196,23 @@ let translate (globals, functions) =
             (* add to local_vars map no matter what. if already exists, policy is to overwrite *)
             let local_vars = add_local vdecl local_vars in
 
-            (* if vdecl contains an expression, codegen that expr and assign the variable to it.
-             * note that codegen_asn is called after add_local local_vars vdecl. *)
-            let init_expr = vdecl.declInit in
-            match init_expr with 
-                A.Noexpr        -> local_vars, llbuilder
-              | e               -> (codegen_asn name e local_vars llbuilder); local_vars, llbuilder
+            if vdecl.declTyp = A.Arraytype then
+                array_init vdecl.declInit (local_vars, llbuilder)
+
+            else
+                let init_expr = vdecl.declInit in
+                match init_expr with
+                  A.Noexpr      -> local_vars, llbuilder
+                | e             -> (codegen_asn name e local_vars llbuilder); local_vars, llbuilder
 
 
-            (*let alloca = build_lloca decl.declTyp decl.declID llbuilder*)
+
+        and array_init e (locals, llbuilder) =
+            match e with
+              A.ArrayListInit el        -> ()
+            | A.ArraySizeInit (t, el)   -> () (* build_array t el *)
+            | A.ArrayAccess (n, ds)     -> () (* build_array_access n ds *)
+              
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (locals, llbuilder) =
@@ -267,12 +275,5 @@ let translate (globals, functions) =
                 A.Void -> L.build_ret_void
               | typ -> L.build_ret (L.const_int (ltype_of_typ typ) 0))
     in
-    let linker filename =
-	let llctx = Llvm.global_context () in
-	let llmem = Llvm.MemoryBuffer.of_file filename in
-	let llm = Llvm_bitreader.parse_bitcode llctx llmem in
-	ignore(Llvm_linker.link_modules the_module llm)
-    in
-    let _ = linker Configuration.bindings_path in
     List.iter codegen_func functions;
     the_module
