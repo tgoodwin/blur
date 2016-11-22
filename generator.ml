@@ -203,15 +203,17 @@ let translate (globals, functions) =
                 let init_expr = vdecl.declInit in
                 match init_expr with
                   A.Noexpr      -> local_vars, llbuilder
-                | e             -> (codegen_asn name e local_vars llbuilder); local_vars, llbuilder
+                | e             -> ignore(codegen_asn name e local_vars llbuilder); local_vars, llbuilder
 
 
+        and build_array t dl =
+            let total_cells = List.fold_left (fun s e -> s * e) 0 dl in
 
         and array_init e (locals, llbuilder) =
             match e with
-              A.ArrayListInit el        -> ()
-            | A.ArraySizeInit (t, el)   -> () (* build_array t el *)
-            | A.ArrayAccess (n, ds)     -> () (* build_array_access n ds *)
+              A.ArrayListInit el        -> () (* build_array_lit vdecl.declID el *)
+            | A.ArraySizeInit (t, dl)   -> () (* build_array t dl *)
+            | A.ArrayAccess (n, dl)     -> () (* build_array_access n dl *)
               
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
