@@ -47,7 +47,8 @@ if [ "$#" -ne 1 ]; then
     echo "Usage: check filename"
 else
     diff "${filebase}.blr" "${filebase}.blr" # .blr.pp
-    echo "OK"
+    echo "${filebase} check: "
+    cmp --silent "${filebase}.blr" "${filebase}.blr" || echo "Wrong Output"
 fi
 }
 
