@@ -4,9 +4,9 @@ void main() {
     /* nested for loop */
     for(i=0; i<3; i=i+1) {
 	for(j=0; j<2; j=j+1) {
-	    Print(i);
-	    Print(' ');
-	    Print(j);
+	    print(i);
+	    print(' ');
+	    print(j);
 	}
     }
 }

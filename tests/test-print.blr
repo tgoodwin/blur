@@ -1,6 +1,6 @@
 /* Print test */
 
-Print("hello");
-Print(12345);
-Print(1.12345);
-Print('a');
+print("hello");
+print(12345);
+print(1.12345);
+print('a');
