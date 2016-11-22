@@ -33,9 +33,21 @@ let translate (globals, functions) =
       | A.String -> string_t
       | A.Bool -> i1_t
       | A.Void -> void_t
-      (* | A.Array t -> (ltype_of_typ t) *)
     in
     
+    let ltype_of_array_type_1d a = ltype_of_typ a.arrTyp ^ "[]" in
+
+    let ltype_of_array_type_2d a = ltype_of_typ a.arrTyp ^ "[][]" in
+
+    let ltype_of_array_type a = 
+      let is2D = (fun a -> a.is2D) a in
+        if is2D = true then ltype_of_array_type_2d a
+        else  ltype_of_array_type_1d a in
+
+    let ltype_of_datatype = function 
+        A.Arraytype(t) -> ltype_of_array_type t
+      | A.Datatype(t) -> ltype_of_typ t in
+
     let global_vars =
         (* FUNCTION global_var *)
         let global_var map (vdecl : A.vardecl) =
