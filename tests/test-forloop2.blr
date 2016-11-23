@@ -1,7 +1,7 @@
-void forloop() {
+void main() {
     int i;
     /* for loop increment by 2 */
-    for(i=0; i<10; i=i+3) {
-	Println(i);
+    for(i=0; i<10; i=i+2) {
+	print(i);
     }
 }
