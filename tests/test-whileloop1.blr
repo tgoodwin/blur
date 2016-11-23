@@ -1,0 +1,5 @@
+void main() {
+    while(int a;) {
+	print("While True == inf loop", "%s");
+    };
+}
