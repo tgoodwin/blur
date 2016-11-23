@@ -32,14 +32,17 @@ let translate (globals, functions) =
     in
     let string_t = L.pointer_type i8_t in
 
-
-    let ltype_of_typ (d: A.datatype) = match d with
-        A.Datatype(A.Int) -> i32_t
-      | A.Datatype(A.Double) -> iFl_t
-      | A.Datatype(A.Char) -> i8_t
-      | A.Datatype(A.String) -> string_t
-      | A.Datatype(A.Bool) -> i1_t
-      | A.Datatype(A.Void) -> void_t
+    let rec ltype_of_array datatype = match datatype with
+        Arraytype(t) -> ltype_of_primitive (Arraytype(t))
+    
+    and ltype_of_primitive (d: A.datatype) = match d with
+        Datatype(A.Int) -> i32_t
+      | Datatype(A.Double) -> iFl_t
+      | Datatype(A.Char) -> i8_t
+      | Datatype(A.String) -> string_t
+      | Datatype(A.Bool) -> i1_t
+      | Datatype(A.Void) -> void_t
+      | Arraytype(t) -> ltype_of_array (Datatype(t))
     in
     (*let get_size_of_typ = function
         A.Int           -> int_size
@@ -54,7 +57,7 @@ let translate (globals, functions) =
             let typ = vdecl.declTyp in
             let name = vdecl.declID in
 
-            let init = L.const_int (ltype_of_typ typ) 0
+            let init = L.const_int (ltype_of_primitive typ) 0
             in StringMap.add name (L.define_global name init the_module) map in
         List.fold_left global_var StringMap.empty globals in
 
@@ -67,9 +70,9 @@ let translate (globals, functions) =
         (* FUNCTION function_decl *)
         let function_decl map fdecl =
             let name = fdecl.A.fname
-            and formal_types = Array.of_list (List.map (fun (typ) -> ltype_of_typ typ.argdeclType) fdecl.A.args) in
+            and formal_types = Array.of_list (List.map (fun (typ) -> ltype_of_primitive typ.argdeclType) fdecl.A.args) in
             (* use sast here prob *)
-            let ftype = L.function_type (ltype_of_typ fdecl.A.typ) formal_types in
+            let ftype = L.function_type (ltype_of_primitive fdecl.A.typ) formal_types in
             StringMap.add name (L.define_function name ftype the_module, fdecl) map in
 
         List.fold_left function_decl StringMap.empty functions in
@@ -86,14 +89,14 @@ let translate (globals, functions) =
 
         let add_formal map (typ, name) fml =
             L.set_value_name name fml;
-            let local = L.build_alloca (ltype_of_typ typ) name llbuilder in
+            let local = L.build_alloca (ltype_of_primitive typ) name llbuilder in
             ignore (L.build_store fml local llbuilder);
             StringMap.add name local map
         in
         let add_local (vdecl: A.vardecl) local_vars =
             let typ = vdecl.declTyp in
             let name = vdecl.declID in
-            let local_var = L.build_alloca (ltype_of_typ typ) name llbuilder in
+            let local_var = L.build_alloca (ltype_of_primitive typ) name llbuilder in
             StringMap.add name local_var local_vars
         in
 
@@ -289,7 +292,7 @@ let translate (globals, functions) =
         let llbuilder = (snd tuple) in
         add_terminal llbuilder (match func_decl.A.typ with
                 A.Datatype(A.Void) -> L.build_ret_void
-              | typ -> L.build_ret (L.const_int (ltype_of_typ typ) 0))
+              | typ -> L.build_ret (L.const_int (ltype_of_primitive typ) 0))
     in
     List.iter codegen_func functions;
     the_module
