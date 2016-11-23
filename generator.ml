@@ -33,13 +33,13 @@ let translate (globals, functions) =
     let string_t = L.pointer_type i8_t in
 
 
-    let ltype_of_typ = function
-        A.Int -> i32_t
-      | A.Double -> iFl_t
-      | A.Char -> i8_t
-      | A.String -> string_t
-      | A.Bool -> i1_t
-      | A.Void -> void_t
+    let ltype_of_typ (d: A.datatype) = match d with
+        A.Datatype(A.Int) -> i32_t
+      | A.Datatype(A.Double) -> iFl_t
+      | A.Datatype(A.Char) -> i8_t
+      | A.Datatype(A.String) -> string_t
+      | A.Datatype(A.Bool) -> i1_t
+      | A.Datatype(A.Void) -> void_t
     in
     (*let get_size_of_typ = function
         A.Int           -> int_size
@@ -67,7 +67,7 @@ let translate (globals, functions) =
         (* FUNCTION function_decl *)
         let function_decl map fdecl =
             let name = fdecl.A.fname
-            and formal_types = Array.of_list (List.map (fun (typ,_) -> ltype_of_typ typ) fdecl.A.args) in
+            and formal_types = Array.of_list (List.map (fun (typ) -> ltype_of_typ typ.argdeclType) fdecl.A.args) in
             (* use sast here prob *)
             let ftype = L.function_type (ltype_of_typ fdecl.A.typ) formal_types in
             StringMap.add name (L.define_function name ftype the_module, fdecl) map in
@@ -104,7 +104,7 @@ let translate (globals, functions) =
         (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
          * which is a statement list *)
 
-        let local_vars = List.fold_left2 add_formal local_vars func_decl.A.args (Array.to_list (L.params f)) in
+        let local_vars = List.fold_left2 add_formal local_vars (List.map (fun (t) -> (t.argdeclType, t.argdeclID)) func_decl.A.args) (Array.to_list (L.params f)) in
 
         (* see if a variable has been declared already *)
         let rec lookup name locals =
@@ -161,11 +161,9 @@ let translate (globals, functions) =
             A.Id s      -> s
 
         (* ASSIGN an expression (value) to a declared variable *)
-        and codegen_asn (vdecl: A.vardecl) e maps llbuilder =
+
+        and codegen_asn n e maps llbuilder =
             let locals = fst maps and arrdims = snd maps in
-            if vdecl.declTyp = A.Arraytype then
-                match e with
-                  A.ArraySizeInit(t, dl)        -> 
             let gen_e = codegen_expr (maps, llbuilder) e in
             ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
@@ -179,7 +177,7 @@ let translate (globals, functions) =
             let (fdef, fdecl) = StringMap.find f function_decls in
             let args = List.rev (List.map (codegen_expr (maps, llbuilder)) (List.rev el)) in
             let result = (match func_decl.A.typ with
-                A.Void  -> ""
+                A.Datatype(A.Void)  -> ""
               | _       -> f ^ "_result" )
             in L.build_call fdef (Array.of_list args) result llbuilder
 
@@ -205,7 +203,7 @@ let translate (globals, functions) =
         (* codegen_return: handle return statements *)
         and codegen_return e (maps, llbuilder) =
             match func_decl.A.typ with
-            A.Void  -> L.build_ret_void llbuilder
+            A.Datatype(A.Void)  -> L.build_ret_void llbuilder
           | _       -> L.build_ret (codegen_expr (maps, llbuilder) e) llbuilder
         
         (* codegen_vdecl: handle variable declarations *)
@@ -218,7 +216,7 @@ let translate (globals, functions) =
             let init_expr = vdecl.declInit in
             match init_expr with
               A.Noexpr      -> maps, llbuilder
-            | e             -> ignore(codegen_asn vdecl e maps llbuilder); maps, llbuilder
+            | e             -> ignore(codegen_asn vdecl.declID e maps llbuilder); maps, llbuilder
 
 
         (* returns a pointer to a sequential memory region *)
@@ -276,7 +274,7 @@ let translate (globals, functions) =
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
         (* TODO: Continue, Break *)
-        and codegen_stmt maps llbuilder = function
+        and codegen_stmt (maps, llbuilder) = function
             A.Block sl              -> List.fold_left codegen_stmt (maps, llbuilder) sl
           | A.Decl e                -> codegen_vdecl e (maps, llbuilder)
           | A.Expr e                -> ignore (codegen_expr (maps, llbuilder) e); maps, llbuilder
@@ -290,7 +288,7 @@ let translate (globals, functions) =
         let tuple = codegen_stmt (maps, llbuilder) (A.Block func_decl.A.body) in
         let llbuilder = (snd tuple) in
         add_terminal llbuilder (match func_decl.A.typ with
-                A.Void -> L.build_ret_void
+                A.Datatype(A.Void) -> L.build_ret_void
               | typ -> L.build_ret (L.const_int (ltype_of_typ typ) 0))
     in
     List.iter codegen_func functions;
