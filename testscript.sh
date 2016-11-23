@@ -65,7 +65,7 @@ code(){
     ./prog -l < "${filebase}.blr" > "${filebase}.ll" && lli "${filebase}.ll" > output.txt
     #cmp --silent output.txt helloWorld.out || echo "Wrong Output"
     DIFF=$(diff -bB output.txt "${filebase}.out")
-    if [ "$DIFF" -eq "" ]; then
+    if [ "$DIFF" == "" ]; then
 	echo "${filebase}: check"
     else
 	echo "${filebase}: Wrong Output"
@@ -74,6 +74,9 @@ code(){
 }
 
 codeAll(){
+if [ -f "codeResults.out" ]; then
+    rm "codeResults.out"
+fi
 for i in tests/*.blr
 do
     code $i >> codeResults.out;
