@@ -16,6 +16,8 @@ module A = Ast
 
 module StringMap = Map.Make(String)
 
+let arraydims = StringMap.empty;;
+
 
 
 let translate (globals, functions) =
@@ -30,16 +32,21 @@ let translate (globals, functions) =
     in
     let string_t = L.pointer_type i8_t in
 
-    (* TODO: Array, Canvas *)
-    let rec ltype_of_typ = function
+
+    let ltype_of_typ = function
         A.Int -> i32_t
       | A.Double -> iFl_t
       | A.Char -> i8_t
       | A.String -> string_t
       | A.Bool -> i1_t
       | A.Void -> void_t
-      (* | A.Array t -> (ltype_of_typ t) *)
     in
+    (*let get_size_of_typ = function
+        A.Int           -> int_size
+      | A.Double       -> double_size
+      | A.Char          -> one_32t
+      | A.Bool          -> one_32t
+    in *)
     
     let global_vars =
         (* FUNCTION global_var *)
@@ -146,7 +153,10 @@ let translate (globals, functions) =
             A.Id s      -> s
 
         (* ASSIGN an expression (value) to a declared variable *)
-        and codegen_asn n e locals llbuilder =
+        and codegen_asn (vdecl: A.vardecl) e locals llbuilder =
+            if vdecl.declTyp = A.Arraytype then
+                match e with
+                  A.ArraySizeInit(t, dl)        -> 
             let gen_e = codegen_expr (locals, llbuilder) e in
             ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
@@ -155,8 +165,6 @@ let translate (globals, functions) =
             let format_str = (codegen_expr (locals, llbuilder) typ) in (* should return string literal*)
             L.build_call printf_func [| format_str; param |] "printf" llbuilder
 
-        (* let codegen_func_call f e llbuilder ..... in *)
-        
         (* blur built-ins  *)
         and codegen_call f el (locals, llbuilder) =
             let (fdef, fdecl) = StringMap.find f function_decls in
@@ -180,6 +188,9 @@ let translate (globals, functions) =
           | A.Unop(op, e)       -> codegen_unop op e locals llbuilder
           | A.FuncCall ("print", [e; typ])    -> codegen_print e typ locals llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el (locals, llbuilder)
+          (*| A.ArrayListInit el          -> (* init_literal_array *) () *)
+          (*| A.ArraySizeInit (t, dl)     ->  build_array_blocks t dl locals llbuilder *)
+          (*| A.ArrayAccess(n, dl)        -> (* build_array_access *) () *)
           (* | A.Noexpr            -> () ??? *)
         
 
@@ -191,30 +202,26 @@ let translate (globals, functions) =
         
         (* codegen_vdecl: handle variable declarations *)
         and codegen_vdecl (vdecl: A.vardecl) (local_vars, llbuilder) =
-            let name = vdecl.declID in
 
             (* add to local_vars map no matter what. if already exists, policy is to overwrite *)
             let local_vars = add_local vdecl local_vars in
 
-            if vdecl.declTyp = A.Arraytype then
-                array_init vdecl.declInit (local_vars, llbuilder)
-
-            else
-                let init_expr = vdecl.declInit in
-                match init_expr with
-                  A.Noexpr      -> local_vars, llbuilder
-                | e             -> ignore(codegen_asn name e local_vars llbuilder); local_vars, llbuilder
+            let init_expr = vdecl.declInit in
+            match init_expr with
+              A.Noexpr      -> local_vars, llbuilder
+            | e             -> ignore(codegen_asn vdecl e local_vars llbuilder); local_vars, llbuilder
 
 
-        and build_array t dl =
-            let total_cells = List.fold_left (fun s e -> s * e) 0 dl in
+        (* returns a pointer to a sequential memory region *)
+        (*and build_array_blocks t dl locals llbuilder =
+            let total_cells = List.fold_left (fun prod e -> prod * (codegen_expr (locals, llbuilder) e)) 1 dl in
+            let typ = ltype_of_typ t in
+            let type_size = L.build_intcast (L.size_of typ) i32_t "tmp" llbuilder in
+            let total_size = L.build_mul type_size total_cells "tmp" llbuilder in
 
-        and array_init e (locals, llbuilder) =
-            match e with
-              A.ArrayListInit el        -> () (* build_array_lit vdecl.declID el *)
-            | A.ArraySizeInit (t, dl)   -> () (* build_array t dl *)
-            | A.ArrayAccess (n, dl)     -> () (* build_array_access n dl *)
-              
+            let arr = L.build_array_alloca typ total_size "tmp" llbuilder in
+            let arr_ptr = L.build_pointercast arr (pointer_type typ) "tmp" llbuilder in
+            arr_ptr *)
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (locals, llbuilder) =
