@@ -110,7 +110,7 @@ two_d_array:
     }*/
 
 datatype:
-    type_tag         { Datatype($1) }
+    type_tag    { Datatype($1) }
   | array_type  { $1 }
 
 vardecl:
