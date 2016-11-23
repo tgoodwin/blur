@@ -177,7 +177,7 @@ let translate (globals, functions) =
           | A.Not       -> L.build_not exp "bool_unoptmp" llbuilder
 
         (* helper to get the raw string from an ID expression type. MOVE TO A UTILS FILE *)
-        and id_to_str = function
+        and id_to_str id = match id with
             A.Id s      -> s
 
         (* ASSIGN an expression (value) to a declared variable *)
