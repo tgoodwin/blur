@@ -78,7 +78,11 @@ let translate (globals, functions) =
         let (f, _) = StringMap.find func_decl.A.fname function_decls in
 
         let llbuilder = L.builder_at_end context (L.entry_block f) in
+
+        (* MAPS MAPS MAPS FAKE GLOBAL MAPS *)
         let local_vars = StringMap.empty in
+        let arr_dims = StringMap.empty in
+        let maps = (local_vars, arr_dims) in
 
         let add_formal map (typ, name) fml =
             L.set_value_name name fml;
@@ -91,6 +95,10 @@ let translate (globals, functions) =
             let name = vdecl.declID in
             let local_var = L.build_alloca (ltype_of_typ typ) name llbuilder in
             StringMap.add name local_var local_vars
+        in
+
+        let add_arrdim id dims arr_dims =
+            StringMap.add id dims arr_dims
         in
 
         (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
@@ -110,7 +118,7 @@ let translate (globals, functions) =
             (*None        -> raise (exception LLVMFunctionNotFound fname)*)
             Some f      -> f *)
 
-         let rec codegen_binop e1 op e2 locals llbuilder =
+         let rec codegen_binop e1 op e2 maps llbuilder =
             let int_ops lh op rh  =
                 match op with
                 A.Add   -> L.build_add lh rh "tmp" llbuilder
@@ -128,22 +136,22 @@ let translate (globals, functions) =
 
             in
             let arith_binop e1 op e2 =
-                let lh = codegen_expr (locals, llbuilder) e1
-                and rh = codegen_expr (locals, llbuilder) e2
+                let lh = codegen_expr (maps, llbuilder) e1
+                and rh = codegen_expr (maps, llbuilder) e2
                 in int_ops lh op rh
             in
 
             let handle_binop e1 op e2 =
                 match op with
-                A.Asn         -> codegen_asn (id_to_str e1) e2 locals llbuilder
+                A.Asn         -> codegen_asn (id_to_str e1) e2 maps llbuilder
               | _             -> arith_binop e1 op e2
 
             in
             handle_binop e1 op e2
                 
         (* TODO: type handling for float, etc *)
-        and codegen_unop op e locals llbuilder =
-            let exp = (codegen_expr (locals, llbuilder)) e in
+        and codegen_unop op e maps llbuilder =
+            let exp = (codegen_expr (maps, llbuilder)) e in
             match op with
             A.Neg       -> L.build_neg exp "int_unoptmp" llbuilder
           | A.Not       -> L.build_not exp "bool_unoptmp" llbuilder
@@ -153,41 +161,41 @@ let translate (globals, functions) =
             A.Id s      -> s
 
         (* ASSIGN an expression (value) to a declared variable *)
-        and codegen_asn (vdecl: A.vardecl) e locals llbuilder =
+        and codegen_asn (vdecl: A.vardecl) e maps llbuilder =
+            let locals = fst maps and arrdims = snd maps in
             if vdecl.declTyp = A.Arraytype then
                 match e with
                   A.ArraySizeInit(t, dl)        -> 
-            let gen_e = codegen_expr (locals, llbuilder) e in
+            let gen_e = codegen_expr (maps, llbuilder) e in
             ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
-        and codegen_print e typ locals llbuilder =
-            let param = (codegen_expr (locals, llbuilder) e) in
-            let format_str = (codegen_expr (locals, llbuilder) typ) in (* should return string literal*)
+        and codegen_print e typ maps llbuilder =
+            let param = (codegen_expr (maps, llbuilder) e) in
+            let format_str = (codegen_expr (maps, llbuilder) typ) in (* should return string literal*)
             L.build_call printf_func [| format_str; param |] "printf" llbuilder
 
         (* blur built-ins  *)
-        and codegen_call f el (locals, llbuilder) =
+        and codegen_call f el (maps, llbuilder) =
             let (fdef, fdecl) = StringMap.find f function_decls in
-            let args = List.rev (List.map (codegen_expr (locals, llbuilder)) (List.rev el)) in
+            let args = List.rev (List.map (codegen_expr (maps, llbuilder)) (List.rev el)) in
             let result = (match func_decl.A.typ with
                 A.Void  -> ""
               | _       -> f ^ "_result" )
             in L.build_call fdef (Array.of_list args) result llbuilder
 
        (* TODO: ArrayListInit, CanvasInit, Noexpr *) 
-        and codegen_expr tup e =
-            let locals = fst tup and llbuilder = snd tup in
+        and codegen_expr (maps, llbuilder) e =
             match e with
             A.IntLit i        -> L.const_int i32_t i
           | A.DoubleLit i     -> L.const_float iFl_t i
           | A.StrLit s        -> L.build_global_stringptr s "tmp" llbuilder
           | A.CharLit c       -> L.const_int i8_t (Char.code c)
           | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
-          | A.Id id           -> L.build_load (lookup id locals) id llbuilder (* todo: error-checking in lookup *)
-          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 locals llbuilder
-          | A.Unop(op, e)       -> codegen_unop op e locals llbuilder
-          | A.FuncCall ("print", [e; typ])    -> codegen_print e typ locals llbuilder
-          | A.FuncCall (n, el)          -> codegen_call n el (locals, llbuilder)
+          | A.Id id           -> L.build_load (lookup id (fst maps)) id llbuilder (* todo: error-checking in lookup *)
+          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 maps llbuilder
+          | A.Unop(op, e)       -> codegen_unop op e maps llbuilder
+          | A.FuncCall ("print", [e; typ])    -> codegen_print e typ maps llbuilder
+          | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           (*| A.ArrayListInit el          -> (* init_literal_array *) () *)
           (*| A.ArraySizeInit (t, dl)     ->  build_array_blocks t dl locals llbuilder *)
           (*| A.ArrayAccess(n, dl)        -> (* build_array_access *) () *)
@@ -195,21 +203,22 @@ let translate (globals, functions) =
         
 
         (* codegen_return: handle return statements *)
-        and codegen_return e (locals, llbuilder) =
+        and codegen_return e (maps, llbuilder) =
             match func_decl.A.typ with
             A.Void  -> L.build_ret_void llbuilder
-          | _       -> L.build_ret (codegen_expr (locals, llbuilder) e) llbuilder
+          | _       -> L.build_ret (codegen_expr (maps, llbuilder) e) llbuilder
         
         (* codegen_vdecl: handle variable declarations *)
-        and codegen_vdecl (vdecl: A.vardecl) (local_vars, llbuilder) =
+        and codegen_vdecl (vdecl: A.vardecl) (maps, llbuilder) =
 
             (* add to local_vars map no matter what. if already exists, policy is to overwrite *)
-            let local_vars = add_local vdecl local_vars in
+            let local_vars = add_local vdecl (fst maps) in
+            let maps = (local_vars, (snd maps)) in
 
             let init_expr = vdecl.declInit in
             match init_expr with
-              A.Noexpr      -> local_vars, llbuilder
-            | e             -> ignore(codegen_asn vdecl e local_vars llbuilder); local_vars, llbuilder
+              A.Noexpr      -> maps, llbuilder
+            | e             -> ignore(codegen_asn vdecl e maps llbuilder); maps, llbuilder
 
 
         (* returns a pointer to a sequential memory region *)
@@ -224,40 +233,40 @@ let translate (globals, functions) =
             arr_ptr *)
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
-        and codegen_conditional pred then_stmt else_stmt (locals, llbuilder) =
-            let bool_val = (codegen_expr (locals, llbuilder) pred) in
+        and codegen_conditional pred then_stmt else_stmt (maps, llbuilder) =
+            let bool_val = (codegen_expr (maps, llbuilder) pred) in
 
             let merge_bb = L.append_block context "merge" f in
             let then_bb = L.append_block context "then" f in
             let then_builder = (L.builder_at_end context then_bb) in
-            let then_tup = (codegen_stmt (locals, then_builder) then_stmt) in
+            let then_tup = (codegen_stmt (maps, then_builder) then_stmt) in
             add_terminal (snd then_tup) (L.build_br merge_bb);
 
             let else_bb = L.append_block context "else" f in
             let else_builder = (L.builder_at_end context else_bb) in
-            let else_tup = (codegen_stmt (locals, else_builder) else_stmt) in
+            let else_tup = (codegen_stmt (maps, else_builder) else_stmt) in
             add_terminal (snd else_tup) (L.build_br merge_bb);
             ignore (L.build_cond_br bool_val then_bb else_bb llbuilder);
             L.builder_at_end context merge_bb
 
         (* WHILE LOOP: todo - figure out if scoping behaves right *)
-        and codegen_while pred body (locals, llbuilder) =
+        and codegen_while pred body (maps, llbuilder) =
             let pred_bb = L.append_block context "while" f in
             ignore (L.build_br pred_bb llbuilder);
             let body_bb = L.append_block context "while_body" f in
             let while_builder = (L.builder_at_end context body_bb) in
-            add_terminal (snd (codegen_stmt (locals, while_builder) body)) (L.build_br pred_bb);
+            add_terminal (snd (codegen_stmt (maps, while_builder) body)) (L.build_br pred_bb);
 
             let pred_builder = L.builder_at_end context pred_bb in
-            let bool_val = (codegen_expr (locals, pred_builder) pred) in
+            let bool_val = (codegen_expr (maps, pred_builder) pred) in
             
             let merge_bb = L.append_block context "merge" f in
             ignore (L.build_cond_br bool_val body_bb merge_bb pred_builder);
             L.builder_at_end context merge_bb
 
         (* FOR LOOP: todo - figure out if scoping behaves right *)
-        and codegen_for e1 e2 e3 body (locals, llbuilder) =
-            codegen_stmt (locals, llbuilder) (A.Block [A.Expr e1; A.While (e2, A.Block [body; A.Expr e3])])
+        and codegen_for e1 e2 e3 body (maps, llbuilder) =
+            codegen_stmt (maps, llbuilder) (A.Block [A.Expr e1; A.While (e2, A.Block [body; A.Expr e3])])
 
         and add_terminal llbuilder f =
             match L.block_terminator (L.insertion_block llbuilder) with
@@ -267,18 +276,18 @@ let translate (globals, functions) =
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
         (* TODO: Continue, Break *)
-        and codegen_stmt (locals, llbuilder) = function
-            A.Block sl              -> List.fold_left codegen_stmt (locals, llbuilder) sl
-          | A.Decl e                -> codegen_vdecl e (locals, llbuilder)
-          | A.Expr e                -> ignore (codegen_expr (locals, llbuilder) e); locals, llbuilder
-          | A.Return e              -> ignore (codegen_return e (locals, llbuilder)); locals, llbuilder
-          | A.If(p, s1, s2)         -> ignore (codegen_conditional p s1 s2 (locals, llbuilder)); locals, llbuilder
-          | A.While(p, body)        -> ignore (codegen_while p body (locals, llbuilder)); locals, llbuilder
-          | A.For(e1, e2, e3, body) -> codegen_for e1 e2 e3 body (locals, llbuilder)
+        and codegen_stmt maps llbuilder = function
+            A.Block sl              -> List.fold_left codegen_stmt (maps, llbuilder) sl
+          | A.Decl e                -> codegen_vdecl e (maps, llbuilder)
+          | A.Expr e                -> ignore (codegen_expr (maps, llbuilder) e); maps, llbuilder
+          | A.Return e              -> ignore (codegen_return e (maps, llbuilder)); maps, llbuilder
+          | A.If(p, s1, s2)         -> ignore (codegen_conditional p s1 s2 (maps, llbuilder)); maps, llbuilder
+          | A.While(p, body)        -> ignore (codegen_while p body (maps, llbuilder)); maps, llbuilder
+          | A.For(e1, e2, e3, body) -> codegen_for e1 e2 e3 body (maps, llbuilder)
 
         (* build the code for each statement in the function *)
         in
-        let tuple = codegen_stmt (local_vars, llbuilder) (A.Block func_decl.A.body) in
+        let tuple = codegen_stmt (maps, llbuilder) (A.Block func_decl.A.body) in
         let llbuilder = (snd tuple) in
         add_terminal llbuilder (match func_decl.A.typ with
                 A.Void -> L.build_ret_void
