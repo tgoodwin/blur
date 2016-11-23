@@ -12,8 +12,6 @@ module A = Ast
 
 module StringMap = Map.Make(String)
 
-let arraydims = StringMap.empty;;
-
 
 let translate (globals, functions) =
     let context = L.global_context() in
@@ -96,8 +94,27 @@ let translate (globals, functions) =
             StringMap.add name local_var local_vars
         in
 
-        let add_arrdim id dims arr_dims =
-            StringMap.add id dims arr_dims
+        (* return a list of integers *)
+        let get_arrliteral_dims inputlist =
+            let rec insert_at_end l i =
+                match l with
+                 [] -> [i]
+               | h::t -> h:: (insert_at_end t i)
+            in
+
+            let rec get_length l dim_list =
+                let dim = List.length l in insert_at_end dim_list dim
+
+                (*let head = List.hd l in match head with *)
+                 (* hd::tl    -> get_length hd dim_list*)
+                (*| e         -> let dim = List.length l in dim_list::dim *)
+            in
+            get_length inputlist []
+        in
+
+        let add_arrdim id thelist arr_dims =
+
+            StringMap.add id thelist arr_dims
         in
 
         (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
@@ -210,7 +227,16 @@ let translate (globals, functions) =
 
             (* add to local_vars map no matter what. if already exists, policy is to overwrite *)
             let local_vars = add_local vdecl (fst maps) in
-            let maps = (local_vars, (snd maps)) in
+            let arr_dims = (snd maps) in
+
+            (* if array, keep track of its dimensions *)
+            let arr_dims =
+                match vdecl.declInit with
+                  A.ArrayListInit(el)      -> let arr_dim = get_arrliteral_dims el in add_arrdim vdecl.declID arr_dim arr_dims
+                | A.ArraySizeInit(t, dl)   -> add_arrdim vdecl.declID (List.map (codegen_expr (maps, llbuilder)) dl) arr_dims
+                | _                        -> arr_dims
+
+            in let maps = (local_vars, arr_dims) in
 
             let init_expr = vdecl.declInit in
             match init_expr with
