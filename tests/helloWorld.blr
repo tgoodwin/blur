@@ -1,0 +1,4 @@
+int main() {
+        string a = "Hello, world!";
+        print(a, "%s");
+}
