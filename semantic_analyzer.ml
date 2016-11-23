@@ -109,7 +109,7 @@ let check_prog (globals, functions) =
        with Not_found -> raise (Failure ("unrecognized function " ^ s))
   in
 
-  (*let _ = function_decl "main" in (* Ensure "main" is defined. *)*)
+  let _ = function_decl "main" in (* Ensure "main" is defined. *)
 
 	let check_function func =
 		List.iter check_not_void_arg func.args;
