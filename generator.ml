@@ -112,9 +112,9 @@ let translate (globals, functions) =
             get_length inputlist []
         in
 
-        let add_arrdim id thelist arr_dims =
+        let add_arrdim id dimension_list arr_dims =
 
-            StringMap.add id thelist arr_dims
+            StringMap.add id dimension_list arr_dims
         in
 
         (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
@@ -229,11 +229,11 @@ let translate (globals, functions) =
             let local_vars = add_local vdecl (fst maps) in
             let arr_dims = (snd maps) in
 
-            (* if array, keep track of its dimensions *)
+            (* if array, keep track of its dimensions in the dimensions map*)
             let arr_dims =
                 match vdecl.declInit with
                   A.ArrayListInit(el)      -> let arr_dim = get_arrliteral_dims el in add_arrdim vdecl.declID arr_dim arr_dims
-                | A.ArraySizeInit(t, dl)   -> add_arrdim vdecl.declID (List.map (codegen_expr (maps, llbuilder)) dl) arr_dims
+                | A.ArraySizeInit(t, dl)   -> add_arrdim vdecl.declID dl arr_dims
                 | _                        -> arr_dims
 
             in let maps = (local_vars, arr_dims) in
