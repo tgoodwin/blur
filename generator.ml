@@ -105,15 +105,11 @@ let translate (globals, functions) =
             let rec get_length l dim_list =
                 let dim = List.length l in insert_at_end dim_list dim
 
-                (*let head = List.hd l in match head with *)
-                 (* hd::tl    -> get_length hd dim_list*)
-                (*| e         -> let dim = List.length l in dim_list::dim *)
             in
             get_length inputlist []
         in
 
         let add_arrdim id dimension_list arr_dims =
-
             StringMap.add id dimension_list arr_dims
         in
 
@@ -213,7 +209,7 @@ let translate (globals, functions) =
           (*| A.ArrayListInit el          -> (* init_literal_array *) () *)
           (*| A.ArraySizeInit (t, dl)     ->  build_array_blocks t dl locals llbuilder *)
           (*| A.ArrayAccess(n, dl)        -> (* build_array_access *) () *)
-          (* | A.Noexpr            -> () ??? *)
+          | A.Noexpr            -> L.const_int i32_t 0
         
 
         (* codegen_return: handle return statements *)

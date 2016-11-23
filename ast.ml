@@ -65,7 +65,7 @@ type stmt =
   | Decl of vardecl
   | Return of expr
   | If of expr * stmt * stmt
-  | For of expr_opt * expr * expr_opt * stmt
+  | For of expr * expr * expr * stmt
   | While of expr * stmt
   | Continue
   | Break
