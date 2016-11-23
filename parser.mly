@@ -91,24 +91,6 @@ type_tag:
 array_type:
   type_tag LBRACK RBRACK { Arraytype($1) }
 
-/*one_d_array:
-  type_tag LBRACK RBRACK 
-  {
-        {
-            arrTyp = $1;
-            is2D = false;
-        }
-    }
-
-two_d_array:
-  type_tag LBRACK RBRACK LBRACK RBRACK 
-  {
-        {
-            arrTyp = $1;
-            is2D = true;
-        }
-    }*/
-
 datatype:
     type_tag    { Datatype($1) }
   | array_type  { $1 }
