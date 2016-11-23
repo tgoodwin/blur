@@ -42,7 +42,7 @@ type expr =
   (*| Asn of string * expr *)
   (* | Seq of expr * expr *)
   | ArrayListInit of expr list
-  | ArraySizeInit of primitive * int
+  | ArraySizeInit of primitive * int list
   | ArrayAccess of string * int
   | CanvasInit of int * int * char
   | FuncCall of string * expr list

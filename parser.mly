@@ -203,7 +203,7 @@ expr:
   | ID LBRACK INT_LITERAL RBRACK ASSIGN expr  { Binop(ArrayAccess($1, $3), Asn, $6) }
 
   /* lists */
-  | type_tag LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) }
+  | type_tag dimension_args { ArraySizeInit($1, List.rev $2) }
   | func_call { $1 }
 
   /* lists */
@@ -212,6 +212,10 @@ expr:
 
   /* canvas */
   | LPAREN INT_LITERAL COMMA INT_LITERAL COMMA CHAR_LITERAL RPAREN { CanvasInit($2, $4, $6) }
+
+dimension_args:
+    LBRACK INT_LITERAL RBRACK { [$2] }
+  | dimension_args LBRACK INT_LITERAL RBRACK { $3 :: $1 } 
 
 func_call:
     ID LPAREN RPAREN            { FuncCall($1, []) }
