@@ -17,7 +17,7 @@ type binopr =
 type unopr = Not | Neg
 
 (* BLUR TYPES *)
-type typ =
+type primitive =
     Int
   | Double
   | Char
@@ -26,14 +26,9 @@ type typ =
   | Void
   | Canvas
 
-type array_type  = {
-  arrTyp : typ;
-  is2D : bool;
-} 
-
 type datatype = 
-    Arraytype of array_type
-  | Datatype of typ
+    Arraytype of primitive
+  | Datatype of primitive
 
 type expr =
     Binop of expr * binopr * expr
@@ -47,7 +42,7 @@ type expr =
   (*| Asn of string * expr *)
   (* | Seq of expr * expr *)
   | ArrayListInit of expr list
-  | ArraySizeInit of typ * int
+  | ArraySizeInit of primitive * int
   | ArrayAccess of string * int
   | CanvasInit of int * int * char
   | FuncCall of string * expr list

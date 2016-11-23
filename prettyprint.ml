@@ -30,17 +30,10 @@ let string_of_typ = function
   | Void -> "void"
   | Canvas -> "Canvas"
 
-let string_of_array_type_1d a = string_of_typ a.arrTyp ^ "[]" 
-
-let string_of_array_type_2d a = string_of_typ a.arrTyp ^ "[][]" 
-
-let string_of_array_type a = 
-  let is2D = (fun a -> a.is2D) a in
-    if is2D = true then string_of_array_type_2d a
-    else  string_of_array_type_1d a
+let string_of_array t = string_of_typ t  ^ "[]" 
 
 let string_of_datatype = function 
-    Arraytype(t) -> string_of_array_type t
+    Arraytype(t) -> string_of_array t
   | Datatype(t) -> string_of_typ t
 
 let rec string_of_expr = function

@@ -14,7 +14,7 @@ type expr =
   | FuncCall_t of string * expr_t list
   | Noexpr_t
 
-  and expr_t = (expr * typ)
+  and expr_t = (expr * primitive)
 
 type stmt_s =
     Block_s of stmt_s list
@@ -26,18 +26,18 @@ type stmt_s =
   | Continue_s
   | Break_s
 
-type argdecl_s = typ * string
+type argdecl_s = datatype * string
 
 type vardecl_s =
     {
-        declTyp_s: typ;
+        declTyp_s: datatype;
         declID_s: string;
         declInit_s: expr_t
     }
 
 type funcdecl_s =
     {
-        s_typ: typ;
+        s_typ: datatype;
         s_fname: string;
         s_args: argdecl_s list;
         s_locals: vardecl_s list;

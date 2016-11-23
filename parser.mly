@@ -71,7 +71,8 @@ argdecl:
         }  
     }
 
-typ:
+/* TODO: Reconsider typ of Canvas. */
+primitive:
     INT { Int }
   | DOUBLE { Double }
   | CHAR { Char }
@@ -80,12 +81,18 @@ typ:
   | VOID { Void }
   | CANVAS { Canvas }
 
-array_type:
-    one_d_array { Arraytype($1) }
-  | two_d_array { Arraytype($1) }
+type_tag:
+    primitive { $1 }
 
-one_d_array:
-  typ LBRACK RBRACK 
+/*array_type:
+    one_d_array { Arraytype($1) }
+  | two_d_array { Arraytype($1) }*/
+
+array_type:
+  type_tag LBRACK RBRACK { Arraytype($1) }
+
+/*one_d_array:
+  type_tag LBRACK RBRACK 
   {
         {
             arrTyp = $1;
@@ -93,18 +100,17 @@ one_d_array:
         }
     }
 
-/* Indicate that this is a 2D array with boolean */
 two_d_array:
-  typ LBRACK RBRACK LBRACK RBRACK 
+  type_tag LBRACK RBRACK LBRACK RBRACK 
   {
         {
             arrTyp = $1;
             is2D = true;
         }
-    }
+    }*/
 
 datatype:
-    typ         { Datatype($1) }
+    type_tag    { Datatype($1) }
   | array_type  { $1 }
 
 vardecl:
@@ -197,7 +203,7 @@ expr:
   | ID LBRACK INT_LITERAL RBRACK ASSIGN expr  { Binop(ArrayAccess($1, $3), Asn, $6) }
 
   /* lists */
-  | typ LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) }
+  | type_tag LBRACK INT_LITERAL RBRACK { ArraySizeInit($1, $3) }
   | func_call { $1 }
 
   /* lists */
