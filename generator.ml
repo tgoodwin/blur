@@ -33,7 +33,7 @@ let translate (globals, functions) =
     let string_t = L.pointer_type i8_t in
 
     let rec ltype_of_array datatype = match datatype with
-        Arraytype(t) -> ltype_of_primitive (Arraytype(t))
+        Arraytype(t) -> ltype_of_primitive (Datatype(t))
     
     and ltype_of_primitive (d: A.datatype) = match d with
         Datatype(A.Int) -> i32_t
@@ -42,7 +42,7 @@ let translate (globals, functions) =
       | Datatype(A.String) -> string_t
       | Datatype(A.Bool) -> i1_t
       | Datatype(A.Void) -> void_t
-      | Arraytype(t) -> ltype_of_array (Datatype(t))
+      | Arraytype(t) -> ltype_of_array (Arraytype(t))
     in
     (*let get_size_of_typ = function
         A.Int           -> int_size
