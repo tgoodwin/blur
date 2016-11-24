@@ -1,5 +1,7 @@
 open Ast
 
+module A = Ast
+
 (*open Sast*) 
 
 module StringMap = Map.Make(String)
@@ -23,6 +25,14 @@ type translation_env = {
 }
 
 let check_prog (globals, functions) = 
+	(* Make a map of global variables *)
+	let global_vars = 
+		let global_var map (vdecl : A.vardecl) =
+			let name = vdecl.declID in
+			let typ = vdecl.declTyp in
+		 	StringMap.add name typ map in 
+		List.fold_left global_var StringMap.empty globals in
+
 	(* Raise exception if given list has a duplicate *)
 	
 	(* There may not be duplicate variable names. *)
@@ -86,7 +96,7 @@ let check_prog (globals, functions) =
 	report_duplicate_var (fun n -> "duplicate global " ^ n) globals;
 
 	(**** Check functions ****)
-
+ 
 	if List.mem "print" (List.map (fun fd -> fd.fname) functions)
   	then raise (Failure ("function print may not be defined")) else ();
 
@@ -112,6 +122,23 @@ let check_prog (globals, functions) =
   let _ = function_decl "main" in (* Ensure "main" is defined. *)
 
 	let check_function func =
+		
+		let local_vars = StringMap.empty in
+
+		let add_arg map (adecl: A.argdecl) =
+			let name = adecl.argdeclID in
+			let typ = adecl.argdeclType in
+			StringMap.add name typ map 
+		in
+		let add_local map (vdecl: A.vardecl) = 
+			let name = vdecl.declID in
+			let typ = vdecl.declTyp in
+			StringMap.add name typ map
+		in
+
+		(* Add function arguments to local_vars map. *)
+		let local_vars = List.fold_left add_arg local_vars func.args in
+
 		List.iter check_not_void_arg func.args;
 
 		report_duplicate_arg (fun n -> "duplicate argument " ^ n) func.args;
