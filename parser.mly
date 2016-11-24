@@ -142,7 +142,7 @@ condit_stmt:
   | IF LPAREN expr RPAREN stmt ELSE stmt   { If($3, $5, $7) }
 
 loop_stmt:
-    FOR LPAREN expr_opt SEMI expr_opt SEMI expr_opt RPAREN stmt { For($3, $5, $7, $9) }
+    FOR LPAREN expr_opt SEMI expr SEMI expr_opt RPAREN stmt { For($3, $5, $7, $9) }
   | WHILE LPAREN expr RPAREN stmt { While($3, $5) }
 
 expr_opt:

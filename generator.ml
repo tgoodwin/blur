@@ -12,8 +12,6 @@ module A = Ast
 
 module StringMap = Map.Make(String)
 
-let arraydims = StringMap.empty;;
-
 
 let translate (globals, functions) =
     let context = L.global_context() in
@@ -39,6 +37,13 @@ let translate (globals, functions) =
       | Datatype(A.Void) -> void_t
       | Arraytype(t) -> ltype_of_array (Arraytype(t))
 
+    and ltype_of_p (p: A.primitive) = match p with
+      A.Int     -> i32_t
+    | A.Double  -> iFl_t
+    | A.Char    -> i8_t
+    | A.String  -> string_t
+    | A.Bool    -> i1_t
+    | A.Void    -> void_t
     in
     (*let get_size_of_typ = function
         A.Int           -> int_size
@@ -81,7 +86,6 @@ let translate (globals, functions) =
         (* MAPS MAPS MAPS FAKE GLOBAL MAPS *)
         let local_vars = StringMap.empty in
         let arr_dims = StringMap.empty in
-        let maps = (local_vars, arr_dims) in
 
         let add_formal map (typ, name) fml =
             L.set_value_name name fml;
@@ -96,14 +100,31 @@ let translate (globals, functions) =
             StringMap.add name local_var local_vars
         in
 
-        let add_arrdim id dims arr_dims =
-            StringMap.add id dims arr_dims
+        (* return a list of integers *)
+        let get_arrliteral_dims inputlist =
+            let rec insert_at_end l i =
+                match l with
+                 [] -> [i]
+               | h::t -> h:: (insert_at_end t i)
+            in
+
+            let rec get_length l dim_list =
+                let dim = List.length l in insert_at_end dim_list dim
+
+            in
+            get_length inputlist []
+        in
+
+        let add_arrdim id dimension_list arr_dims =
+            StringMap.add id dimension_list arr_dims
         in
 
         (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
          * which is a statement list *)
 
         let local_vars = List.fold_left2 add_formal local_vars (List.map (fun (t) -> (t.argdeclType, t.argdeclID)) func_decl.A.args) (Array.to_list (L.params f)) in
+
+        let maps = (local_vars, arr_dims) in
 
         (* see if a variable has been declared already *)
         let rec lookup name locals =
@@ -194,9 +215,9 @@ let translate (globals, functions) =
           | A.FuncCall ("print", [e; typ])    -> codegen_print e typ maps llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           (*| A.ArrayListInit el          -> (* init_literal_array *) () *)
-          (*| A.ArraySizeInit (t, dl)     ->  build_array_blocks t dl locals llbuilder *)
+          | A.ArraySizeInit (t, dl)     ->  build_array_blocks t dl maps llbuilder
           (*| A.ArrayAccess(n, dl)        -> (* build_array_access *) () *)
-          (* | A.Noexpr            -> () ??? *)
+          | A.Noexpr            -> L.const_int i32_t 0
         
 
         (* codegen_return: handle return statements *)
@@ -210,7 +231,16 @@ let translate (globals, functions) =
 
             (* add to local_vars map no matter what. if already exists, policy is to overwrite *)
             let local_vars = add_local vdecl (fst maps) in
-            let maps = (local_vars, (snd maps)) in
+            let arr_dims = (snd maps) in
+
+            (* if array, keep track of its dimensions in the dimensions map*)
+            let arr_dims =
+                match vdecl.declInit with
+                  A.ArrayListInit(el)      -> let arr_dim = get_arrliteral_dims el in add_arrdim vdecl.declID arr_dim arr_dims
+                | A.ArraySizeInit(t, dl)   -> add_arrdim vdecl.declID dl arr_dims
+                | _                        -> arr_dims
+
+            in let maps = (local_vars, arr_dims) in
 
             let init_expr = vdecl.declInit in
             match init_expr with
@@ -219,15 +249,16 @@ let translate (globals, functions) =
 
 
         (* returns a pointer to a sequential memory region *)
-        (*and build_array_blocks t dl locals llbuilder =
-            let total_cells = List.fold_left (fun prod e -> prod * (codegen_expr (locals, llbuilder) e)) 1 dl in
-            let typ = ltype_of_typ t in
+        and build_array_blocks t dl maps llbuilder =
+            let total_cells = List.fold_left (fun prod e -> prod * e) 1 dl in
+            let total_cells = L.const_int i32_t total_cells in
+            let typ = ltype_of_p t in
             let type_size = L.build_intcast (L.size_of typ) i32_t "tmp" llbuilder in
             let total_size = L.build_mul type_size total_cells "tmp" llbuilder in
 
             let arr = L.build_array_alloca typ total_size "tmp" llbuilder in
             let arr_ptr = L.build_pointercast arr (pointer_type typ) "tmp" llbuilder in
-            arr_ptr *)
+            arr_ptr
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (maps, llbuilder) =
