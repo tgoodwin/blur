@@ -139,6 +139,11 @@ let check_prog (globals, functions) =
 		(* Add function arguments to local_vars map. *)
 		let local_vars = List.fold_left add_arg local_vars func.args in
 
+		let type_of_var v =
+			try StringMap.find v local_vars
+			with Not_found -> raise (Failure ("undeclared identifier " ^ v))
+		in
+
 		List.iter check_not_void_arg func.args;
 
 		report_duplicate_arg (fun n -> "duplicate argument " ^ n) func.args;
