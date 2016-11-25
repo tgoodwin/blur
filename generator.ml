@@ -149,6 +149,11 @@ let translate (globals, functions) =
             with Not_found -> raise (Exceptions.UnknownVariable name)
         in
 
+        let lookup_arr name arr_map =
+            try StringMap.find name arr_map
+            with Not_found -> raise (Exceptions.UninitializedArray name)
+        in
+
         (*and func_lookup fname =
             match (L.lookup_function fname the_module) with
             (*None        -> raise (exception LLVMFunctionNotFound fname)*)
@@ -195,9 +200,12 @@ let translate (globals, functions) =
                 let arr_dims = (snd maps) in
                 let id_str = (id_to_str e1) in
                 (* if the assignment involves array dimensions, update the arr_dims map *)
+                (* i.e. int[][] a = int[5][10] *)
                 let arr_dims = update_array_map id_str e2 arr_dims (maps, llbuilder) in
                 let maps = ((fst maps), arr_dims) in
-                codegen_asn id_str e2 maps llbuilder
+                match e1 with
+                  A.Id s        -> codegen_asn s e2 maps llbuilder
+                | A.ArrayAccess(n, dl) -> codegen_asn_arr e1 e2 maps llbuilder
             in
 
             let handle_binop e1 op e2 =
@@ -227,6 +235,15 @@ let translate (globals, functions) =
             | A.ArraySizeInit(t, dl) -> add_arrdim name (List.map (codegen_expr (maps, llbuilder)) dl) arr_map
             | _                      -> arr_map
         
+
+        and codegen_asn_arr e1 e2 maps llbuilder =
+            let locals = fst maps and arrdims = snd maps in
+            let gen_e1 = (match e1 with
+              A.ArrayAccess(n, dl)    -> build_array_access n dl maps llbuilder true
+              | _                       -> raise Exceptions.IllegalAssignment)
+            in 
+            let gen_e2 = codegen_expr (maps, llbuilder) e2 in
+            ignore(L.build_store gen_e2 gen_e1 llbuilder); gen_e2
 
         and codegen_asn n e maps llbuilder =
             let locals = fst maps and arrdims = snd maps in
@@ -260,8 +277,8 @@ let translate (globals, functions) =
           | A.FuncCall ("print", [e; typ])    -> codegen_print e typ maps llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
-          | A.ArraySizeInit (t, dl)     ->  build_array_blocks t dl maps llbuilder
-          (*| A.ArrayAccess(n, dl)        -> (* build_array_access *) () *)
+          | A.ArraySizeInit (t, dl)     -> build_array_blocks t dl maps llbuilder
+          | A.ArrayAccess(n, dl)        -> build_array_access n dl maps llbuilder false
           | A.Noexpr            -> L.const_int i32_t 0
         
 
@@ -291,7 +308,7 @@ let translate (globals, functions) =
             let arr = Array.of_list gen_list in
             L.const_array (array_t typ len) arr
             
-        (* returns a pointer to a sequential memory region *)
+        (* ARRAY SIZE INIT returns a pointer to a sequential memory region *)
         and build_array_blocks t el maps llbuilder =
             (*let total_cells = List.fold_left (fun prod e -> prod * e) 1 el in*)
             let int_list = List.rev (List.map (codegen_expr (maps, llbuilder)) (List.rev el)) in
@@ -303,6 +320,27 @@ let translate (globals, functions) =
             let arr = L.build_array_alloca typ total_size "tmp" llbuilder in
             let arr_ptr = L.build_pointercast arr (pointer_type typ) "tmp" llbuilder in
             arr_ptr
+
+        (* BUILD ARRAY ACCESS TYPE *)
+        and build_array_access s il maps llbuilder isAssign =
+            let get_access_type arr_ptr offset =
+                if isAssign then
+                    L.build_gep arr_ptr [| offset |] "isassign" llbuilder
+                else
+                    (* pull value out of array at position *)
+                    L.build_load (L.build_gep arr_ptr [| offset |] "get" llbuilder) "load" llbuilder
+            in
+
+            let indices = List.map (codegen_expr (maps, llbuilder)) il in
+            let arr_ptr = (lookup s (fst maps)) in
+            let arr_dims = (lookup_arr s (snd maps)) in
+            if List.length arr_dims = 2 then
+                let offset = L.build_mul (List.nth arr_dims 0) (List.nth indices 0) "2Doffset" llbuilder in
+                let offset = L.build_add offset (List.nth indices 1) "2Doffset" llbuilder in
+                get_access_type arr_ptr offset
+            else
+                let offset = (List.nth indices 0) in
+                get_access_type arr_ptr offset
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (maps, llbuilder) =
