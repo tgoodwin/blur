@@ -110,7 +110,8 @@ let translate (globals, functions) =
             StringMap.add name local_var local_vars
         in
 
-        (* return a list of integers *)
+        (* --- ARRAY HELPER FUNCTIONS --- *)
+        (* return a list of integers as dimensions *)
         let get_arrliteral_dims inputlist =
             let rec insert_at_end l i =
                 match l with
@@ -128,6 +129,14 @@ let translate (globals, functions) =
         let add_arrdim id dimension_list arr_dims =
             StringMap.add id dimension_list arr_dims
         in
+
+        let update_array_map name e arr_map =
+            match e with
+              A.ArrayListInit(el)    -> let arr_dim = get_arrliteral_dims el in add_arrdim name arr_dim arr_map
+            | A.ArraySizeInit(t, dl) -> add_arrdim name dl arr_map
+            | _                      -> arr_map
+        in
+        (* --- END OF ARRAY HELPER FUNCTIONS --- *)
 
         (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
          * which is a statement list *)
@@ -165,15 +174,38 @@ let translate (globals, functions) =
               | A.Geq   -> L.build_icmp Icmp.Sge lh rh "tmp" llbuilder
 
             in
+            let float_ops lh op rh =
+                match op with
+                A.Add   -> L.build_fadd lh rh "flt_addtmp" llbuilder
+              | A.Sub   -> L.build_fsub lh rh "flt_subtmp" llbuilder
+              | A.Mult  -> L.build_fmul lh rh "flt_multmp" llbuilder
+              | A.Div   -> L.build_fdiv lh rh "flt_divtmp" llbuilder
+              | A.Eq    -> L.build_fcmp Fcmp.Oeq lh rh "flt_eqtmp" llbuilder
+              | A.Neq   -> L.build_fcmp Fcmp.One lh rh "flt_neqtmp" llbuilder
+              | A.Lt    -> L.build_fcmp Fcmp.Ult lh rh "flt_lesstmp" llbuilder
+              | A.Leq   -> L.build_fcmp Fcmp.Ole lh rh "flt_leqtmp" llbuilder
+              | A.Gt    -> L.build_fcmp Fcmp.Ogt lh rh "flt_sgttmp" llbuilder
+              | A.Geq   -> L.build_fcmp Fcmp.Oge lh rh  "flt_sgetmp" llbuilder
+              | _       -> raise Exceptions.FloatOpNotSupported
+            in
+
             let arith_binop e1 op e2 =
                 let lh = codegen_expr (maps, llbuilder) e1
                 and rh = codegen_expr (maps, llbuilder) e2
                 in int_ops lh op rh
             in
+            let assign_binop e1 e2 =
+                let arr_dims = (snd maps) in
+                let id_str = (id_to_str e1) in
+                (* if the assignment involves array dimensions, update the arr_dims map *)
+                let arr_dims = update_array_map id_str e2 arr_dims in
+                let maps = ((fst maps), arr_dims) in
+                codegen_asn id_str e2 maps llbuilder
+            in
 
             let handle_binop e1 op e2 =
                 match op with
-                A.Asn         -> codegen_asn (id_to_str e1) e2 maps llbuilder
+                A.Asn         -> assign_binop e1 e2
               | _             -> arith_binop e1 op e2
 
             in
@@ -189,6 +221,7 @@ let translate (globals, functions) =
         (* helper to get the raw string from an ID expression type. MOVE TO A UTILS FILE *)
         and id_to_str id = match id with
             A.Id s      -> s
+          | _           -> raise Exceptions.NotAnId
 
         (* ASSIGN an expression (value) to a declared variable *)
 
@@ -211,7 +244,6 @@ let translate (globals, functions) =
               | _       -> f ^ "_result" )
             in L.build_call fdef (Array.of_list args) result llbuilder
 
-       (* TODO: ArrayListInit, CanvasInit, Noexpr *) 
         and codegen_expr (maps, llbuilder) e =
             match e with
             A.IntLit i        -> L.const_int i32_t i
@@ -238,13 +270,8 @@ let translate (globals, functions) =
             let arr_dims = (snd maps) in
 
             (* if array, keep track of its dimensions in the dimensions map*)
-            let arr_dims =
-                match vdecl.declInit with
-                  A.ArrayListInit(el)      -> let arr_dim = get_arrliteral_dims el in add_arrdim vdecl.declID arr_dim arr_dims
-                | A.ArraySizeInit(t, dl)   -> add_arrdim vdecl.declID dl arr_dims
-                | _                        -> arr_dims
-
-            in let maps = (local_vars, arr_dims) in
+            let arr_dims = update_array_map vdecl.declID vdecl.declInit arr_dims in
+            let maps = (local_vars, arr_dims) in
 
             let init_expr = vdecl.declInit in
             match init_expr with

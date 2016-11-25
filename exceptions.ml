@@ -1,1 +1,3 @@
 exception UnknownVariable of string
+exception NotAnId
+exception FloatOpNotSupported
