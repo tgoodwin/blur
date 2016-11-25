@@ -221,10 +221,10 @@ let translate (globals, functions) =
         
 
         (* codegen_return: handle return statements *)
-        and codegen_return e (maps, llbuilder) =
-            match func_decl.A.typ with
+        (*and codegen_return e (maps, llbuilder) =
+            ignore(match func_decl.A.typ with
             A.Datatype(A.Void)  -> L.build_ret_void llbuilder
-          | _       -> L.build_ret (codegen_expr (maps, llbuilder) e) llbuilder
+          | _       -> L.build_ret (codegen_expr (maps, llbuilder) e) llbuilder); llbuilder *)
         
         (* codegen_vdecl: handle variable declarations *)
         and codegen_vdecl (vdecl: A.vardecl) (maps, llbuilder) =
@@ -281,9 +281,9 @@ let translate (globals, functions) =
         and codegen_while pred body (maps, llbuilder) =
             let pred_bb = L.append_block context "while" f in
             ignore (L.build_br pred_bb llbuilder);
+
             let body_bb = L.append_block context "while_body" f in
-            let while_builder = (L.builder_at_end context body_bb) in
-            add_terminal (snd (codegen_stmt (maps, while_builder) body)) (L.build_br pred_bb);
+            add_terminal (snd (codegen_stmt (maps, (L.builder_at_end context body_bb)) body)) (L.build_br pred_bb);
 
             let pred_builder = L.builder_at_end context pred_bb in
             let bool_val = (codegen_expr (maps, pred_builder) pred) in
@@ -298,9 +298,9 @@ let translate (globals, functions) =
 
         and add_terminal llbuilder f =
             match L.block_terminator (L.insertion_block llbuilder) with
-                Some _  -> ()
-              | None    -> ignore (f llbuilder)
-
+              Some _ -> ()
+            | None      -> ignore (f llbuilder)
+           
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
         (* TODO: Continue, Break *)
@@ -308,9 +308,12 @@ let translate (globals, functions) =
             A.Block sl              -> List.fold_left codegen_stmt (maps, llbuilder) sl
           | A.Decl e                -> codegen_vdecl e (maps, llbuilder)
           | A.Expr e                -> ignore (codegen_expr (maps, llbuilder) e); maps, llbuilder
-          | A.Return e              -> ignore (codegen_return e (maps, llbuilder)); maps, llbuilder
-          | A.If(p, s1, s2)         -> ignore (codegen_conditional p s1 s2 (maps, llbuilder)); maps, llbuilder
-          | A.While(p, body)        -> ignore (codegen_while p body (maps, llbuilder)); maps, llbuilder
+          | A.Return e              -> ignore(match func_decl.A.typ with
+                                        A.Datatype(A.Void)      -> L.build_ret_void llbuilder
+                                      | _                       -> L.build_ret (codegen_expr (maps, llbuilder) e) llbuilder); maps, llbuilder
+
+          | A.If(p, s1, s2)         -> let builder = (codegen_conditional p s1 s2 (maps, llbuilder)) in maps, builder
+          | A.While(p, body)        -> let builder = (codegen_while p body (maps, llbuilder)) in maps, builder
           | A.For(e1, e2, e3, body) -> codegen_for e1 e2 e3 body (maps, llbuilder)
 
         (* build the code for each statement in the function *)
