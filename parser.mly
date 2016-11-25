@@ -201,8 +201,8 @@ expr:
   /*| LPAREN INT_LITERAL COMMA INT_LITERAL COMMA CHAR_LITERAL RPAREN { CanvasInit($2, $4, $6) } */
 
 dimension_args:
-    LBRACK INT_LITERAL                           { [$2] }
-  | dimension_args RBRACK LBRACK INT_LITERAL        { $4 :: $1 } 
+    LBRACK expr                                     { [$2] }
+  | dimension_args RBRACK LBRACK expr               { $4 :: $1 } 
 
 func_call:
     ID LPAREN RPAREN            { FuncCall($1, []) }
