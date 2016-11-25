@@ -122,6 +122,9 @@ let check_prog (globals, functions) =
   let _ = function_decl "main" in (* Ensure "main" is defined. *)
 
 	let check_function func =
+		List.iter check_not_void_arg func.args;
+
+		report_duplicate_arg (fun n -> "duplicate argument " ^ n) func.args;
 		
 		let local_vars = StringMap.empty in
 
@@ -144,9 +147,22 @@ let check_prog (globals, functions) =
 			with Not_found -> raise (Failure ("undeclared identifier " ^ v))
 		in
 
-		List.iter check_not_void_arg func.args;
+		(* Return the type of an expression or throw exception. *)
+		let rec expr = function
+				A.IntLit i -> Datatype(Int)
+		in
 
-		report_duplicate_arg (fun n -> "duplicate argument " ^ n) func.args;
+		let rec stmt = function
+				Block b -> let rec check_block = function
+						[Return _ as s] -> stmt s
+					| Return _ :: _ -> raise (Failure "nothing may follow a return")
+					| [] -> ()
+				in check_block b
+			| Expr e -> ignore (expr e)
+		in
+
+		(* Account for local var decls being part of func body stmt *)
+		stmt (Block func.body)
 
 	in
 	List.iter check_function functions
