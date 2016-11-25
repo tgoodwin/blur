@@ -84,10 +84,10 @@ let check_prog (globals, functions) =
 	in
 
 	(* Check assignment - type error *)
-	let check_assign lval rval err = 
-			if lval == rval then lval else raise err 
+	let check_assign lval_type rval_type err = 
+			if lval_type == rval_type then lval_type 
+			else raise err 
 	in 
-
 
 	(**** Check global vars ****)
 
@@ -125,7 +125,7 @@ let check_prog (globals, functions) =
 		List.iter check_not_void_arg func.args;
 
 		report_duplicate_arg (fun n -> "duplicate argument " ^ n) func.args;
-		
+
 		let local_vars = StringMap.empty in
 
 		let add_arg map (adecl: A.argdecl) =
@@ -146,19 +146,35 @@ let check_prog (globals, functions) =
 			try StringMap.find v local_vars
 			with Not_found -> raise (Failure ("undeclared identifier " ^ v))
 		in
+		
+		let rec binop typed_e1 op typed_e2 = 
+			check_assign typed_e1 typed_e2 (Failure ("illegal assignment"))
+		in
 
 		(* Return the type of an expression or throw exception. *)
 		let rec expr = function
-				A.IntLit i -> Datatype(Int)
+				IntLit _ -> Datatype(Int)
+			| DoubleLit _ -> Datatype(Double)
+			| CharLit _ -> Datatype(Char) 
+			| StrLit _ -> Datatype(String)
+			| BoolLit _ -> Datatype(Bool)
+			| Id t -> type_of_var t
+			| Binop (e1, op, e2) -> 
+					let checked_e1 = expr e1
+					and checked_e2 = expr e2
+					in binop checked_e1 op checked_e2
 		in
 
 		let rec stmt = function
-				Block b -> let rec check_block = function
+				Expr e -> ignore (expr e)
+			|	Block stmtlst -> let rec check_block = function
 						[Return _ as s] -> stmt s
 					| Return _ :: _ -> raise (Failure "nothing may follow a return")
+					| Block sl :: ss -> check_block (sl @ ss)
+					| s :: ss -> stmt s ; check_block ss
 					| [] -> ()
-				in check_block b
-			| Expr e -> ignore (expr e)
+				in check_block stmtlst
+
 		in
 
 		(* Account for local var decls being part of func body stmt *)
