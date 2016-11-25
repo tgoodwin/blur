@@ -23,7 +23,9 @@ let translate (globals, functions) =
     and i1_t = L.i1_type context
     and void_t = L.void_type context
     in
-    let string_t = L.pointer_type i8_t in
+    let string_t = L.pointer_type i8_t
+    and array_t = L.array_type in
+
 
     let rec ltype_of_array datatype = match datatype with
         Arraytype(t) -> ltype_of_primitive (Datatype(t))
@@ -44,6 +46,14 @@ let translate (globals, functions) =
     | A.String  -> string_t
     | A.Bool    -> i1_t
     | A.Void    -> void_t
+
+    (* literals *)
+    and ltype_of_literal e = match e with
+      A.IntLit i  -> i32_t
+    | A.DoubleLit d -> iFl_t
+    | A.CharLit c   -> i8_t
+    | A.StrLit s    -> string_t
+    | A.BoolLit b   -> i1_t
     in
     (*let get_size_of_typ = function
         A.Int           -> int_size
@@ -214,18 +224,12 @@ let translate (globals, functions) =
           | A.Unop(op, e)       -> codegen_unop op e maps llbuilder
           | A.FuncCall ("print", [e; typ])    -> codegen_print e typ maps llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
-          (*| A.ArrayListInit el          -> (* init_literal_array *) () *)
+          | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
           | A.ArraySizeInit (t, dl)     ->  build_array_blocks t dl maps llbuilder
           (*| A.ArrayAccess(n, dl)        -> (* build_array_access *) () *)
           | A.Noexpr            -> L.const_int i32_t 0
         
 
-        (* codegen_return: handle return statements *)
-        (*and codegen_return e (maps, llbuilder) =
-            ignore(match func_decl.A.typ with
-            A.Datatype(A.Void)  -> L.build_ret_void llbuilder
-          | _       -> L.build_ret (codegen_expr (maps, llbuilder) e) llbuilder); llbuilder *)
-        
         (* codegen_vdecl: handle variable declarations *)
         and codegen_vdecl (vdecl: A.vardecl) (maps, llbuilder) =
 
@@ -248,6 +252,15 @@ let translate (globals, functions) =
             | e             -> ignore(codegen_asn vdecl.declID e maps llbuilder); maps, llbuilder
 
 
+        (* BUILD 1D literal list *)
+        and build_array_of_list el (maps, llbuilder) =
+            let len = List.length el in
+            let hd = List.hd el in
+            let typ = ltype_of_literal (List.hd el) in
+            let gen_list = List.map (codegen_expr (maps, llbuilder)) el in
+            let arr = Array.of_list gen_list in
+            L.const_array (array_t typ len) arr
+            
         (* returns a pointer to a sequential memory region *)
         and build_array_blocks t dl maps llbuilder =
             let total_cells = List.fold_left (fun prod e -> prod * e) 1 dl in
