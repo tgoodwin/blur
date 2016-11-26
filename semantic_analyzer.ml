@@ -151,6 +151,15 @@ let check_prog (globals, functions) =
 			check_assign typed_e1 typed_e2 (Failure ("illegal assignment"))
 		in
 
+		let check_local_vardecl vdecl = 
+			let local_vars = add_local local_vars vdecl in
+
+      let init_expr = vdecl.declInit in
+      match init_expr with
+        A.Noexpr      -> ()
+      | e             -> ()
+		in
+
 		(* Return the type of an expression or throw exception. *)
 		let rec expr = function
 				IntLit _ -> Datatype(Int)
@@ -167,6 +176,7 @@ let check_prog (globals, functions) =
 
 		let rec stmt = function
 				Expr e -> ignore (expr e)
+			| Decl vardecl -> check_local_vardecl vardecl
 			|	Block stmtlst -> let rec check_block = function
 						[Return _ as s] -> stmt s
 					| Return _ :: _ -> raise (Failure "nothing may follow a return")
