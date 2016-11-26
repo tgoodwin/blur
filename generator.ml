@@ -308,6 +308,7 @@ let translate (globals, functions) =
             let gen_list = List.map (codegen_expr (maps, llbuilder)) el in
             let arr = Array.of_list gen_list in
             L.const_array (array_t typ len) arr
+            (* ^^ DONT DO THIS ANYMORE *)
             
         (* ARRAY SIZE INIT returns a pointer to a sequential memory region *)
         (* ONLY SUPPORT LISTS OF LENGTH 2 *)
