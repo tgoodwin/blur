@@ -330,7 +330,6 @@ let translate (globals, functions) =
 
         (* BUILD ARRAY ACCESS TYPE *)
         and build_array_access s il maps llbuilder isAssign =
-            let s = id_to_str s in
             let get_access_type arr_ptr offset =
                 if isAssign then
                     L.build_gep arr_ptr [| offset |] "isassign" llbuilder
