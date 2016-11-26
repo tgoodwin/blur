@@ -190,7 +190,7 @@ expr:
 
   /* lists */
   | type_tag dimension_args RBRACK { ArraySizeInit($1, List.rev $2) }
-  | ID dimension_args RBRACK       { ArrayAccess($1, List.rev $2) }
+  | expr dimension_args RBRACK       { ArrayAccess($1, List.rev $2) }
   | func_call { $1 }
 
   /* lists */

@@ -27,8 +27,9 @@ let translate (globals, functions) =
     and array_t = L.array_type in
 
 
+    (* THIS DOESNT WORK TODO TODO *)
     let rec ltype_of_array datatype = match datatype with
-        Arraytype(t) -> ltype_of_primitive (Datatype(t))
+        Arraytype(t) -> L.pointer_type (ltype_of_primitive (Datatype(t)))
     
     and ltype_of_primitive (d: A.datatype) = match d with
         Datatype(A.Int) -> i32_t
@@ -309,20 +310,26 @@ let translate (globals, functions) =
             L.const_array (array_t typ len) arr
             
         (* ARRAY SIZE INIT returns a pointer to a sequential memory region *)
+        (* ONLY SUPPORT LISTS OF LENGTH 2 *)
         and build_array_blocks t el maps llbuilder =
-            (*let total_cells = List.fold_left (fun prod e -> prod * e) 1 el in*)
             let int_list = List.rev (List.map (codegen_expr (maps, llbuilder)) (List.rev el)) in
-            let total_cells = L.build_mul (List.hd int_list) (List.nth int_list 1) "total" llbuilder in
+            let total_cells =
+            if List.length int_list = 2 then
+                L.build_mul (List.hd int_list) (List.nth int_list 1) "total" llbuilder
+            else
+                List.hd int_list
+            in
             let typ = ltype_of_p t in
-            let type_size = L.build_intcast (L.size_of typ) i32_t "tmp" llbuilder in
-            let total_size = L.build_mul type_size total_cells "tmp" llbuilder in
+            let type_size = L.build_intcast (L.size_of typ) i32_t "typsize" llbuilder in
+            let total_size = L.build_mul type_size total_cells "totsize" llbuilder in
 
-            let arr = L.build_array_alloca typ total_size "tmp" llbuilder in
-            let arr_ptr = L.build_pointercast arr (pointer_type typ) "tmp" llbuilder in
+            let arr = L.build_array_alloca typ total_size "thearr" llbuilder in
+            let arr_ptr = L.build_pointercast arr (pointer_type typ) "tmpptr" llbuilder in
             arr_ptr
 
         (* BUILD ARRAY ACCESS TYPE *)
         and build_array_access s il maps llbuilder isAssign =
+            let s = id_to_str s in
             let get_access_type arr_ptr offset =
                 if isAssign then
                     L.build_gep arr_ptr [| offset |] "isassign" llbuilder
