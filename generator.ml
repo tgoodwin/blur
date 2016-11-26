@@ -317,20 +317,24 @@ let translate (globals, functions) =
             in
             let typ = ltype_of_primitive t in
             let type_size = L.build_intcast (L.size_of typ) i32_t "typsize" llbuilder in
+
             let total_size = L.build_mul type_size total_cells "totsize" llbuilder in
 
-            let arr = L.build_array_alloca typ total_size "thearr" llbuilder in
-            let arr_ptr = L.build_pointercast arr (pointer_type typ) "tmpptr" llbuilder in
+            (* returns a pointer *)
+            let arr_ptr = L.build_array_alloca typ total_size "thearr" llbuilder in
+            let arr_ptr = L.build_pointercast arr_ptr (pointer_type typ) "tmpptr" llbuilder in
             arr_ptr
 
         (* BUILD ARRAY ACCESS TYPE *)
         and build_array_access s il maps llbuilder isAssign =
+
             let get_access_type arr_ptr offset =
                 if isAssign then
                     L.build_gep arr_ptr [| offset |] "isassign" llbuilder
                 else
                     (* pull value out of array at position *)
-                    L.build_load (L.build_gep arr_ptr [| offset |] "get" llbuilder) "load" llbuilder
+                    let loc = L.build_gep arr_ptr [| offset |] "get" llbuilder in
+                    L.build_load loc "load" llbuilder
             in
 
             let indices = List.map (codegen_expr (maps, llbuilder)) il in
