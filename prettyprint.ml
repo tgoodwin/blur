@@ -47,7 +47,7 @@ let rec string_of_expr = function
   | Unop(o, e) -> string_of_unop o ^ string_of_expr e
   | ArrayListInit(l) -> "[" ^ String.concat ", " (List.map string_of_expr l) ^ "]"
   | ArraySizeInit(t, n) -> string_of_typ t ^ "[" ^ String.concat "][" (List.map string_of_expr n) ^ "]"
-  | ArrayAccess(id, dl) -> "\t" ^ id ^ "[" ^ String.concat "][" (List.map string_of_expr dl) ^ "]"
+  | ArrayAccess(id, dl) -> "\t" ^ string_of_expr id ^ "[" ^ String.concat "][" (List.map string_of_expr dl) ^ "]"
   (*| CanvasInit(x, y, c) -> "(" ^ string_of_int x ^ ", " ^ string_of_int y ^ ", '" ^ Char.escaped c ^ "'}" *)
   | FuncCall(n, p) -> n ^ "(" ^ String.concat ", " (List.map string_of_expr p) ^ ")"
   | Noexpr -> ""
