@@ -43,13 +43,15 @@
 check(){
 #filebase=$(basename "${1}" ".blr")
 filebase=$(echo ${1} | cut -f 1 -d '.')
-if [ "$#" -ne 1 ]; then
-    echo "Usage: check filename"
-else
-    diff "${filebase}.blr" "${filebase}.blr" # .blr.pp
-    echo "${filebase} check: checked! "
-    cmp --silent "${filebase}.blr" "${filebase}.blr" || echo "Wrong Output"
-fi
+#if [ "$#" -ne 1 ]; then
+#    echo "Usage: check filename"
+#else
+#    diff "${filebase}.blr" "${filebase}.blr" # .blr.pp
+#    echo "${filebase} check: checked! "
+#    cmp --silent "${filebase}.blr" "${filebase}.blr" || echo "Wrong Output"
+#fi
+echo "${filebase} pretty print: "
+./prog -p < "${filebase}.blr"
 }
 
 testAll(){
