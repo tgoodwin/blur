@@ -186,8 +186,8 @@ let check_prog (globals, functions) =
 		in
 
 		let rec stmt map = function
-				Expr e -> ignore (expr e map);
-			| Decl vardecl -> check_local_vardecl map vardecl
+				Expr e -> ignore (expr e map) ; map
+			| Decl vardecl -> check_local_vardecl map vardecl ; map
 			|	Block stmtlst ->  List.fold_left stmt map stmtlst(*let rec check_block b map = function*)
 						(*[Return _ as s] -> stmt s map
 					| Return _ :: _ -> raise (Failure "nothing may follow a return")*)
