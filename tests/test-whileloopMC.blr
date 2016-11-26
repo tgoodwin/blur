@@ -4,6 +4,6 @@ void main() {
     while(i>0) {
         i = i - 1;
         print(i, "%d");
-    };
+    }
     print(42, "%d");
 }

@@ -6,12 +6,12 @@ void void() {
 
     if(a<b) {
 	print("check 1", "%s");
-    };
+    }
 
     if(a>b) {
 	print("should not print", "%s");
-    };
+    }
     else {
-	print("check 2 no print", "%s");
-    };
+	print("check 2", "%s");
+    }
 }
