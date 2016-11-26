@@ -142,53 +142,63 @@ let check_prog (globals, functions) =
 		(* Add function arguments to local_vars map. *)
 		let local_vars = List.fold_left add_arg local_vars func.args in
 
-		let type_of_var v =
-			try StringMap.find v local_vars
+		let type_of_var v map =
+			print_endline("declared?");
+			print_endline(v);
+			let pr = string_of_bool (StringMap.is_empty map) in
+			print_endline(pr);
+			try StringMap.find v map
 			with Not_found -> raise (Failure ("undeclared identifier " ^ v))
 		in
 		
-		let rec binop typed_e1 op typed_e2 = 
+		let rec binop typed_e1 op typed_e2 map = 
+			print_endline("bin");
+			let pr = string_of_bool (StringMap.is_empty map) in
+			print_endline(pr);
 			check_assign typed_e1 typed_e2 (Failure ("illegal assignment"))
 		in
 
-		let check_local_vardecl vdecl = 
-			let local_vars = add_local local_vars vdecl in
-
+		let check_local_vardecl map vdecl = 
+			(*let local_vars = add_local map vdecl in*)
+			let local_vars = StringMap.add vdecl.declID vdecl.declTyp map in
+			let pr = string_of_bool (StringMap.is_empty local_vars) in
+			print_endline(pr);
+      (* TODO: assignment *)
       let init_expr = vdecl.declInit in
       match init_expr with
-        A.Noexpr      -> ()
-      | e             -> ()
+        A.Noexpr      -> map
+      | e             -> map
 		in
 
 		(* Return the type of an expression or throw exception. *)
-		let rec expr = function
+		let rec expr e map = match e with
 				IntLit _ -> Datatype(Int)
 			| DoubleLit _ -> Datatype(Double)
 			| CharLit _ -> Datatype(Char) 
 			| StrLit _ -> Datatype(String)
 			| BoolLit _ -> Datatype(Bool)
-			| Id t -> type_of_var t
+			| Id t -> type_of_var t map
 			| Binop (e1, op, e2) -> 
-					let checked_e1 = expr e1
-					and checked_e2 = expr e2
-					in binop checked_e1 op checked_e2
+					print_endline("imma bin");
+					let checked_e1 = expr e1 map
+					and checked_e2 = expr e2 map
+					in binop checked_e1 op checked_e2 map
 		in
 
-		let rec stmt = function
-				Expr e -> ignore (expr e)
-			| Decl vardecl -> check_local_vardecl vardecl
-			|	Block stmtlst -> let rec check_block = function
-						[Return _ as s] -> stmt s
-					| Return _ :: _ -> raise (Failure "nothing may follow a return")
-					| Block sl :: ss -> check_block (sl @ ss)
-					| s :: ss -> stmt s ; check_block ss
-					| [] -> ()
-				in check_block stmtlst
-
-		in
+		let rec stmt map = function
+				Expr e -> ignore (expr e map);
+			| Decl vardecl -> check_local_vardecl map vardecl
+			|	Block stmtlst ->  List.fold_left stmt map stmtlst(*let rec check_block b map = function*)
+						(*[Return _ as s] -> stmt s map
+					| Return _ :: _ -> raise (Failure "nothing may follow a return")*)
+					(*| Block sl :: ss -> check_block (sl @ ss) map*)
+					(*| s :: ss -> stmt s map ; check_block ss map*)
+					(*| [] -> map*)
+				(*in check_block stmtlst map*)
+		 in
 
 		(* Account for local var decls being part of func body stmt *)
-		stmt (Block func.body)
+		stmt local_vars (Block func.body)
 
 	in
 	List.iter check_function functions
