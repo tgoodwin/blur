@@ -57,12 +57,6 @@ let translate (globals, functions) =
     | A.BoolLit b   -> i1_t
     | _             -> raise Exceptions.NotALiteral
     in
-    (*let get_size_of_typ = function
-        A.Int           -> int_size
-      | A.Double       -> double_size
-      | A.Char          -> one_32t
-      | A.Bool          -> one_32t
-    in *)
 
     let global_vars =
         (* FUNCTION global_var *)
@@ -227,6 +221,7 @@ let translate (globals, functions) =
         (* helper to get the raw string from an ID expression type. MOVE TO A UTILS FILE *)
         and id_to_str id = match id with
             A.Id s      -> s
+          | A.ArrayAccess(n, dl) -> n
           | _           -> raise Exceptions.NotAnId
 
         (* ASSIGN an expression (value) to a declared variable *)
