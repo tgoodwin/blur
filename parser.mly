@@ -89,11 +89,15 @@ type_tag:
   | two_d_array { Arraytype($1) }*/
 
 array_type:
-  type_tag LBRACK RBRACK { Arraytype($1) }
+  type_tag LBRACK brackets RBRACK { Arraytype($1) }
 
 datatype:
     type_tag    { Datatype($1) }
   | array_type  { $1 }
+
+brackets:
+    /* nothing */ {1}
+  | brackets RBRACK LBRACK {$1}
 
 vardecl:
     vardecl_simple { $1 }  
@@ -182,22 +186,23 @@ expr:
   | LPAREN expr RPAREN { $2 }
   
   | ID ASSIGN expr    { Binop(Id($1), Asn, $3) }
-  | ID LBRACK INT_LITERAL RBRACK ASSIGN expr  { Binop(ArrayAccess($1, $3), Asn, $6) }
+  /* | ID LBRACK INT_LITERAL RBRACK ASSIGN expr  { Binop(ArrayAccess($1, $3), Asn, $6) } */
 
   /* lists */
-  | type_tag dimension_args { ArraySizeInit($1, List.rev $2) }
+  | type_tag dimension_args RBRACK { ArraySizeInit($1, List.rev $2) }
+  | ID dimension_args RBRACK       { ArrayAccess($1, List.rev $2) }
   | func_call { $1 }
 
   /* lists */
   | LBRACK expr_list RBRACK { ArrayListInit($2) }
-  | ID LBRACK INT_LITERAL RBRACK { ArrayAccess($1, $3) }
+  /* | ID LBRACK INT_LITERAL RBRACK { ArrayAccess($1, $3) } */
 
   /* canvas */
-  | LPAREN INT_LITERAL COMMA INT_LITERAL COMMA CHAR_LITERAL RPAREN { CanvasInit($2, $4, $6) }
+  /*| LPAREN INT_LITERAL COMMA INT_LITERAL COMMA CHAR_LITERAL RPAREN { CanvasInit($2, $4, $6) } */
 
 dimension_args:
-    LBRACK INT_LITERAL RBRACK { [$2] }
-  | dimension_args LBRACK INT_LITERAL RBRACK { $3 :: $1 } 
+    LBRACK INT_LITERAL                           { [$2] }
+  | dimension_args RBRACK LBRACK INT_LITERAL        { $4 :: $1 } 
 
 func_call:
     ID LPAREN RPAREN            { FuncCall($1, []) }
