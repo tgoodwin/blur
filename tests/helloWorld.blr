@@ -1,4 +1,4 @@
-int main() {
+void main() {
         string a = "Hello, world!";
         print(a, "%s");
 }

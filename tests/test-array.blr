@@ -1,0 +1,10 @@
+int main(int a) {
+    int[] a;
+    a = [5, 341, 4];
+    a[1] = 2;
+    int x = a[1];
+    print(x, "%d");
+
+    b = int[10][5]; 
+    int[] z = int[10];
+}
