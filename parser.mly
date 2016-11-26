@@ -186,11 +186,13 @@ expr:
   | LPAREN expr RPAREN { $2 }
   
   | ID ASSIGN expr    { Binop(Id($1), Asn, $3) }
+  | array_access ASSIGN expr {Binop($1, Asn, $3) }
+
   /* | ID LBRACK INT_LITERAL RBRACK ASSIGN expr  { Binop(ArrayAccess($1, $3), Asn, $6) } */
 
   /* lists */
-  | type_tag dimension_args RBRACK { ArraySizeInit($1, List.rev $2) }
-  | ID dimension_args RBRACK       { ArrayAccess($1, List.rev $2) }
+  | array_size_init { $1 }
+  | array_access { $1 }
   | func_call { $1 }
 
   /* lists */
@@ -201,8 +203,14 @@ expr:
   /*| LPAREN INT_LITERAL COMMA INT_LITERAL COMMA CHAR_LITERAL RPAREN { CanvasInit($2, $4, $6) } */
 
 dimension_args:
-    LBRACK INT_LITERAL                           { [$2] }
-  | dimension_args RBRACK LBRACK INT_LITERAL        { $4 :: $1 } 
+    LBRACK expr                                     { [$2] }
+  | dimension_args RBRACK LBRACK expr               { $4 :: $1 } 
+
+array_size_init:
+    type_tag dimension_args RBRACK { ArraySizeInit($1, List.rev $2) }
+
+array_access:
+    ID dimension_args RBRACK { ArrayAccess($1, List.rev $2) }
 
 func_call:
     ID LPAREN RPAREN            { FuncCall($1, []) }
