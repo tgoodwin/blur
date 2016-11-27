@@ -21,15 +21,15 @@ let translate (globals, functions) =
     and iFl_t = L.double_type context
     and i8_t = L.i8_type context
     and i1_t = L.i1_type context
-    and void_t = L.void_type context
-    in
-    let string_t = L.pointer_type i8_t
-    and array_t = L.array_type in
+    and void_t = L.void_type context in
+
+    let string_t = L.pointer_type i8_t in
 
 
     (* THIS DOESNT WORK TODO TODO *)
     let rec ltype_of_array datatype = match datatype with
         Arraytype(t) -> L.pointer_type (ltype_of_typ (Datatype(t)))
+      | _            -> raise (Exceptions.NotAnArray)
     
     and ltype_of_typ (d: A.datatype) = match d with
         Datatype(A.Int) -> i32_t
@@ -39,6 +39,7 @@ let translate (globals, functions) =
       | Datatype(A.Bool) -> i1_t
       | Datatype(A.Void) -> void_t
       | Arraytype(t) -> ltype_of_array (Arraytype(t))
+      | _            -> raise (Exceptions.NotADatatype)
 
     and ltype_of_primitive (p: A.primitive) = match p with
       A.Int     -> i32_t
@@ -55,7 +56,7 @@ let translate (globals, functions) =
     | A.CharLit c   -> i8_t
     | A.StrLit s    -> string_t
     | A.BoolLit b   -> i1_t
-    | _             -> raise Exceptions.NotALiteral
+    | _             -> raise (Exceptions.NotALiteral)
     in
 
     let global_vars =
@@ -183,7 +184,7 @@ let translate (globals, functions) =
               | A.Leq   -> L.build_fcmp Fcmp.Ole lh rh "flt_leqtmp" llbuilder
               | A.Gt    -> L.build_fcmp Fcmp.Ogt lh rh "flt_sgttmp" llbuilder
               | A.Geq   -> L.build_fcmp Fcmp.Oge lh rh  "flt_sgetmp" llbuilder
-              | _       -> raise Exceptions.FloatOpNotSupported
+              | _       -> raise (Exceptions.FloatOpNotSupported)
             in
 
             let arith_binop e1 op e2 =
@@ -201,6 +202,7 @@ let translate (globals, functions) =
                 match e1 with
                   A.Id s        -> codegen_asn s e2 maps llbuilder
                 | A.ArrayAccess(n, dl) -> codegen_asn_arr e1 e2 maps llbuilder
+                | _                    -> raise (Exceptions.NotAssignable)
             in
 
             let handle_binop e1 op e2 =
@@ -233,7 +235,6 @@ let translate (globals, functions) =
         
 
         and codegen_asn_arr e1 e2 maps llbuilder =
-            let locals = fst maps and arrdims = snd maps in
             let gen_e1 = (match e1 with
               A.ArrayAccess(n, dl)    -> build_array_access n dl maps llbuilder true
               | _                       -> raise Exceptions.IllegalAssignment)
@@ -242,7 +243,7 @@ let translate (globals, functions) =
             ignore(L.build_store gen_e2 gen_e1 llbuilder); gen_e2
 
         and codegen_asn n e maps llbuilder =
-            let locals = fst maps and arrdims = snd maps in
+            let locals = fst maps in
             let gen_e = codegen_expr (maps, llbuilder) e in
             ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
@@ -297,7 +298,6 @@ let translate (globals, functions) =
 
         (* BUILD 1D array from a non-nested list *)
         and build_array_of_list el (maps, llbuilder) =
-            let len = List.length el in
             let typ = ltype_of_literal (List.hd el) in
             let plain_arr_ptr = build_array_blocks typ el maps llbuilder in
             let llvalues = List.map (codegen_expr (maps, llbuilder)) el in
