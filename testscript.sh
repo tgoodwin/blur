@@ -64,7 +64,7 @@ done
 
 code(){
     filebase=$(echo ${1} | cut -f 1 -d '.')
-    ./prog -l < "${filebase}.blr" > "${filebase}.ll" && lli "${filebase}.ll" > output.txt
+    ./prog -l < "${filebase}.blr" > "${filebase}.ll" && lli "${filebase}.ll" > output.txt 2> errors.txt
     #cmp --silent output.txt helloWorld.out || echo "Wrong Output"
     DIFF=$(diff -bBw output.txt "${filebase}.out")
     if [ "$DIFF" == "" ]; then
