@@ -1,0 +1,7 @@
+int main() {
+        int b = 4;
+        int[] a = int[10];
+        a[b] = b; 
+        int c = a[b];
+        print(c, "%d");
+}
