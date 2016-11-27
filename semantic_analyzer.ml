@@ -121,7 +121,7 @@ let check_prog (globals, functions) =
 
   let _ = function_decl "main" in (* Ensure "main" is defined. *)
 
-	let check_function func =
+	let check_function func env =
 		List.iter check_not_void_arg func.args;
 
 		report_duplicate_arg (fun n -> "duplicate argument " ^ n) func.args;
@@ -143,6 +143,7 @@ let check_prog (globals, functions) =
 		let local_vars = List.fold_left add_arg local_vars func.args in
 
 		let type_of_var v =
+			print_endline("decl?");
 			try StringMap.find v local_vars
 			with Not_found -> raise (Failure ("undeclared identifier " ^ v))
 		in
@@ -151,13 +152,13 @@ let check_prog (globals, functions) =
 			check_assign typed_e1 typed_e2 (Failure ("illegal assignment"))
 		in
 
-		let check_local_vardecl vdecl = 
-			let local_vars = add_local local_vars vdecl in
+		let check_local_vardecl vdecl map = 
+			let local_vars = add_local map vdecl in
 
       let init_expr = vdecl.declInit in
       match init_expr with
-        A.Noexpr      -> ()
-      | e             -> ()
+        A.Noexpr      -> local_vars
+      | e             -> local_vars
 		in
 
 		(* Return the type of an expression or throw exception. *)
@@ -175,20 +176,23 @@ let check_prog (globals, functions) =
 		in
 
 		let rec stmt = function
-				Expr e -> ignore (expr e)
-			| Decl vardecl -> check_local_vardecl vardecl
+				Expr e -> ignore (expr e) ; local_vars
+			| Decl vardecl -> 
+				(*let local_vars = check_local_vardecl vardecl map
+				in local_vars*)check_local_vardecl vardecl local_vars ; local_vars
 			|	Block stmtlst -> let rec check_block = function
 						[Return _ as s] -> stmt s
-					| Return _ :: _ -> raise (Failure "nothing may follow a return")
-					| Block sl :: ss -> check_block (sl @ ss)
-					| s :: ss -> stmt s ; check_block ss
-					| [] -> ()
+					| Return _ :: _ -> raise (Failure "nothing may follow a return") 
+					| Block sl :: ss -> check_block (sl @ ss) 
+					| s :: ss -> stmt s ; check_block ss 
+					| [] -> local_vars
 				in check_block stmtlst
 
 		in
 
 		(* Account for local var decls being part of func body stmt *)
-		stmt (Block func.body)
+		let _ = stmt (Block func.body) in ()
+
 
 	in
 	List.iter check_function functions
