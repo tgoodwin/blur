@@ -12,20 +12,42 @@ type symbol_table = {
 }
 
 (* see slide 73 of types lecture *)
-type func_type = {
+type func_entry = {
     name: string;
-    input_types: datatype list;
+    arg_types: datatype list;
     return_type: datatype
 }
 
-type translation_env = {
-    scope: symbol_table;
-    functions: func_type list;
+type env = {
+    symtab: symbol_table;
+    funcs: func_entry list;
     return_type: datatype option;
 }
 
 let check_prog (globals, functions) = 
-	(* Make a map of global variables *)
+	(* Add global variable declarations to the symbol table *)
+	let check_global_var (env : env) = 
+		let new_symbol_table =
+			{
+				(env.symtab)
+				with variables = [];
+			} in
+		let new_env = { (env) with symtab = new_symbol_table; }
+		in new_env 
+	in
+
+	(* Establish initial environment *)
+	let env = 
+		{
+			symtab = { parent = None; variables = []; };
+			funcs = []; (*built-in *)
+			return_type = None;
+		} in
+	let (_, decl_list) = 
+		(env, [])
+	in decl_list
+
+	(*(* Make a map of global variables *)
 	let global_vars = 
 		let global_var map (vdecl : A.vardecl) =
 			let name = vdecl.declID in
@@ -195,4 +217,4 @@ let check_prog (globals, functions) =
 
 
 	in
-	List.iter check_function functions
+	List.iter check_function functions*)
