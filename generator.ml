@@ -329,11 +329,12 @@ let translate (globals, functions) =
         and build_array_access s il maps llbuilder isAssign =
 
             let get_access_type arr_ptr offset =
+                let arr = L.build_load arr_ptr "load_arr" llbuilder in
                 if isAssign then
-                    L.build_gep arr_ptr [| offset |] "isassign" llbuilder
+                    L.build_gep arr [| offset |] "isassign" llbuilder
                 else
                     (* pull value out of array at position *)
-                    let loc = L.build_gep arr_ptr [| offset |] "get" llbuilder in
+                    let loc = L.build_gep arr [|  offset |] "get" llbuilder in
                     L.build_load loc "load" llbuilder
             in
 
