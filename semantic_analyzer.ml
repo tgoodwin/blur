@@ -26,7 +26,9 @@ type env = {
 
 let check_prog (globals, functions) = 
 	(* Add global variable declarations to the symbol table *)
+	print_endline("checking prog");
 	let check_global_var (env : env) = 
+		print_endline("checking global vars");
 		let new_symbol_table =
 			{
 				(env.symtab)
@@ -41,6 +43,7 @@ let check_prog (globals, functions) =
 	in*)
 
 	let check_variable_declaration (env : env) (decl: vardecl) = 
+		print_endline("checking var decls");
 		(* Ensure that declInit and declType match using check_expr *)
 		(try
 			let _ = 
@@ -66,6 +69,39 @@ let check_prog (globals, functions) =
 			in (new_env, vdecl))
 	in
 
+	(* Check function declaration and return new environment. *)
+	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
+		(* Get the types of the function's arguments. *)
+		let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
+		(* Make a function entry for the function. *)
+		let func_entry = 
+			{
+				name = fdecl.fname;
+				arg_types = a_types;
+				return_type = fdecl.typ;
+			} in
+		let new_funcs = func_entry :: env.funcs in
+		(* Make a new symbol table for the function scope. *)
+		let new_symbol_table = 
+			{
+				parent = Some env.symtab;
+				variables = [];
+			} in
+		(* Add the function to the environment 
+		For now, the symbol table and return type have empty local scope. *)
+		let new_env = 
+		{
+			(env)
+			with
+			symtab = new_symbol_table;
+			funcs =  new_funcs;
+			return_type = Some fdecl.typ;
+		} in
+		(* Add the args to the function scope. *)
+
+		(* Return the environment with this added function. *)
+		({ (env) with funcs = new_funcs; }, fdecl) 
+  in
 
 	(* Establish initial environment *)
 	let env = 
@@ -74,9 +110,17 @@ let check_prog (globals, functions) =
 			funcs = []; (*built-in *)
 			return_type = None;
 		} in
-	let (_, decl_list) = 
-		(env, [])
-	in decl_list
+	(* A program is made up of global vars and function decls. Global vars will be tracked in a separate list.
+	We have a tuple, acc accumulator of environment and function decls,
+	because only function decls can modify the environment.
+	 *)
+	let (_, fdecl_list) = 
+		List.fold_left
+			(fun acc fdecl -> 
+				let (new_env, f) = check_function_declaration (fst acc) fdecl
+				in (new_env, (f :: (snd acc))))  
+			(env, []) functions
+	in fdecl_list
 
 	(*(* Make a map of global variables *)
 	let global_vars = 
