@@ -140,12 +140,9 @@ let check_prog (globals, functions) =
 			 *)
 			let (_, fdecl_list) = 
 				print_endline("last");
-				List.fold_left
-					(fun acc fdecl -> 
-						let (new_env, f) = check_function_declaration (fst acc) fdecl
-						in (new_env, (f :: (snd acc))))  
-					(env, []) functions
-			in functions
+				List.fold_left (fun acc fdecl -> let (new_env, f) = check_function_declaration (fst acc) fdecl in (new_env, (f :: (snd acc))))  
+				(env, []) functions
+				in fdecl_list
 		in (globals, functions);
 		(*in List.iter check_function functions*)
 
