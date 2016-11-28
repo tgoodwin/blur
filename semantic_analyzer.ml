@@ -36,6 +36,37 @@ let check_prog (globals, functions) =
 		in new_env 
 	in
 
+	(*let check_expr (env : env) (expr : expr) = 
+
+	in*)
+
+	let check_variable_declaration (env : env) (decl: vardecl) = 
+		(* Ensure that declInit and declType match using check_expr *)
+		(try
+			let _ = 
+				(* Error out if local variable with same name already exists. *)
+				List.find 
+					(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
+			in raise (Failure ("Duplicate variable " ^ decl.declID))
+		with
+		| Not_found -> 
+			let new_symbol_table = 
+				{
+					(env.symtab)
+					with 
+					variables = decl :: env.symtab.variables;
+				} in
+			let new_env = { (env) with symtab = new_symbol_table; }
+			and vdecl = 
+				{
+					declTyp = decl.declTyp;
+					declID = decl.declID;
+					declInit = decl.declInit;
+				}
+			in (new_env, vdecl))
+	in
+
+
 	(* Establish initial environment *)
 	let env = 
 		{
