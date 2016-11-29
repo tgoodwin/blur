@@ -1,4 +1,4 @@
-int main(int a) {
+int main() {
     int[] a;
     a = [5, 341, 4];
     a[1] = 2;
