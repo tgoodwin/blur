@@ -1,15 +1,16 @@
 void main() {
-  int a;
-  double b;
-  char f;
-  bool d;
-  string e;
+    int a;
+    double b;
+    char f;
+    bool d;
+    string e;
 
-  a = 5;
-  b = 3.14;
-  f = 'c';
-  d = False;
-  e = "Hello World.";
-  print(a,"%d");
-  print(e,"%s");
+    a = 5;
+    b = 3.14;
+    f = 'c';
+    d = false;
+    e = "Hello World.";
+    print(a,"%d");
+    print(e,"%s");
+    /*print(d, "%s");*/
 }
