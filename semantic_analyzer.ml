@@ -58,53 +58,62 @@ let check_prog (globals, functions) =
 
 	List.iter check_not_void globals;
 
-			(* Check function declaration and return new environment. *)
-		let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
-			print_endline("checking func decl");
-			(* Get the types of the function's arguments. *)
-			let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
-			(* Make a function entry for the function. *)
-			let func_entry = 
-				{
-					name = fdecl.fname;
-					arg_types = a_types;
-					return_type = fdecl.typ;
-				} in
-			let new_funcs = func_entry :: env.funcs in
-			(* Make a new symbol table for the function scope. *)
-			let new_symbol_table = 
-				{
-					parent = Some env.symtab;
-					variables = [];
-				} in
-			(* Add the function to the environment 
-			For now, the symbol table and return type have empty local scope. *)
-			let new_env = 
+	(* Check function declaration and return new environment. *)
+	let check_function_declaration (env : env) (fdecl : funcdecl) =
+		print_endline("checking func decl");
+		(env)
+		(* Get the types of the function's arguments. *)
+		(*let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
+		(* Make a function entry for the function. *)
+		let func_entry = 
 			{
-				(env)
-				with
-				symtab = new_symbol_table;
-				funcs =  new_funcs;
-				return_type = Some fdecl.typ;
+				name = fdecl.fname;
+				arg_types = a_types;
+				return_type = fdecl.typ;
 			} in
-			(* Add the args to the function scope. *)
+		let new_funcs = func_entry :: env.funcs in
+		(* Make a new symbol table for the function scope. *)
+		let new_symbol_table = 
+			{
+				parent = Some env.symtab;
+				variables = [];
+			} in
+		(* Add the function to the environment 
+		For now, the symbol table and return type have empty local scope. *)
+		let new_env = 
+		{
+			(env)
+			with
+			symtab = new_symbol_table;
+			funcs =  new_funcs;
+			return_type = Some fdecl.typ;
+		} in
+		(* Add the args to the function scope. *)
 
-			(* Return the environment with this added function. *)
-			({ (env) with funcs = new_funcs; }, fdecl) 
-	  	in
+		(* Return the environment with this added function. *)
+		({ (env) with funcs = new_funcs; }, fdecl) *)
+  	in
 
 
-			(* Establish initial environment *)
-			let env = 
-				{
-					symtab = { parent = None; variables = []; };
-					funcs = []; (*built-in *)
-					return_type = None;
-				} in
+		(* Establish initial environment *)
+		let env = 
+			{
+				symtab = { parent = None; variables = []; };
+				funcs = []; (*built-in *)
+				return_type = None;
+			} in
 
-		 		print_endline("hurrr");
-				ignore (List.fold_left (fun acc fdecl -> let (new_env, f) = check_function_declaration (fst acc) fdecl in (new_env, (f :: (snd acc))))  
-				(env, []) functions);
+	 		print_endline("hurrr");
+	 		List.fold_left check_function_declaration env functions;
+	 		(*let (_, fdecl_list) = 
+	 			print_endline("in");
+	 			List.fold_left (fun acc fdecl ->
+	 				print_endline("in in");
+	 				let (new_env, f) = check_function_declaration (fst acc) fdecl
+	 				in (new_env, (f :: (snd acc)))) (env, []) functions
+	 		in fdecl_list;*)
+			(*List.fold_left (fun acc fdecl -> let (new_env, f) = check_function_declaration (fst acc) fdecl in (new_env, (f :: (snd acc))))  
+			(env, []) functions;*)
 
 	let check_function functions =  
 		print_endline("checking functions");
