@@ -8,12 +8,16 @@ sudo apt-get install binutils-gold ( for ubuntu >= 11.10 )
 sudo apt-get install libdevil-dev
 
 
-Linking the c files.
+Bindings functions for use in blur code:
 
-Easel
-compile c down to .o and llvm down to .o and link them.
-link them gcc
+int** readImage(char * filename)
 
-the prog file is what takes a blur file and produces llvm
-then in the makefile you need one more call that will link the llvm emitted from prog with the .o emitted from the c code.
+This reads an image file from a filename and returns an array of two pointers. The first pointer is an array containing {image_width, image_height}. The second pointer is a pointer to the RGB value image pixels. To iterate over the pixels use the following for loop:
 
+for(int i = 0; i < height; i++){
+      for(int j = 0; j < width; j++){
+        printf(" Red: %d\n", bytes[(i*width +j)*4 + 0]);
+        printf(" Green: %d\n", bytes[(i*width +j)*4 + 1]);
+        printf(" Blue: %d\n", bytes[(i*width +j)*4 + 2]);
+      }
+   }

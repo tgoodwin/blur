@@ -106,6 +106,53 @@ ILubyte * getImageData(char *filename)
     return bytes; 
 }
  
+int** readImage(char * filename){
+
+  // Check version of devil
+  if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION){
+    printf("wrong DevIL version \n");
+  }
+  ilInit();   
+
+  // Load the image into DevIL
+  int image;
+  image = LoadImage(filename);
+  if ( image == -1 ){
+    printf("Can't load picture file %s by DevIL \n", filename);
+  }
+
+  // Get a data pointer to the image 
+  ILubyte * bytes = getImageData(filename);
+
+  // Get the dimensions of the image
+  ILuint width, height;
+  width = ilGetInteger(IL_IMAGE_WIDTH);
+  height = ilGetInteger(IL_IMAGE_HEIGHT);
+
+  
+  //Make int pointer from byte pointer
+  int image_ptr[width*height*4];
+  for(int i=0; i<width*height*4; i++){
+    image_ptr[i] = bytes[i];
+  }
+  
+  // Return an array of two pointers
+  // First int pointer is to an array containing [width, height]
+  // Second int pointer is a pointer to the image data
+  int* dimensions;
+  dimensions = (int *) malloc(sizeof(int)*2);
+  dimensions[0] = width;
+  dimensions[1] = height;
+
+  int **output = { &dimensions, &image_ptr};
+  return output;
+}
+
+int * getIntensity(int* rgb_image){
+  // need to implement
+
+}
+
 int main(int argc, char **argv) 
 {
  
@@ -148,7 +195,15 @@ int main(int argc, char **argv)
 
     /* GET THE IMAGE DATA POINTER */
     ILubyte * bytes = getImageData(argv[1]);
- 
+
+    ILuint width, height;
+    width = ilGetInteger(IL_IMAGE_WIDTH);
+    height = ilGetInteger(IL_IMAGE_HEIGHT);
+  
+    int** output = readImage("Golden_Mushroom.jpg");
+    printf("width: %d",output[0][0]);
+    printf("height:%d",output[0][1]);
+
     /* OpenGL texture binding of the image loaded by DevIL  */
        glGenTextures(1, &texid); /* Texture name generation */
        glBindTexture(GL_TEXTURE_2D, texid); /* Binding of texture name */
