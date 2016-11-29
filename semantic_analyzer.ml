@@ -93,7 +93,7 @@ let check_prog (globals, functions) =
 			({ (env) with funcs = new_funcs; }, fdecl) 
 	  	in
 
-	  	
+
 			(* Establish initial environment *)
 			let env = 
 				{
@@ -102,7 +102,7 @@ let check_prog (globals, functions) =
 					return_type = None;
 				} in
 
-		 			print_endline("hurrr");
+		 		print_endline("hurrr");
 				ignore (List.fold_left (fun acc fdecl -> let (new_env, f) = check_function_declaration (fst acc) fdecl in (new_env, (f :: (snd acc))))  
 				(env, []) functions);
 
@@ -147,9 +147,7 @@ let check_prog (globals, functions) =
 			because only function decls can modify the environment.
 			 *)
 
-		 			print_endline("hurrr");
-				ignore (List.fold_left (fun acc fdecl -> let (new_env, f) = check_function_declaration (fst acc) fdecl in (new_env, (f :: (snd acc))))  
-				(env, []) functions) in
+		functions in
 
 		(*in ((List.fold_left global_var StringMap.empty globals), functions);*)
 	  
