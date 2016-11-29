@@ -58,41 +58,7 @@ let check_prog (globals, functions) =
 
 	List.iter check_not_void globals;
 
-	let check_function functions =  
-		print_endline("checking functions");
-
-		(*let check_expr (env : env) (expr : expr) = 
-
-		in*)
-
-		let check_variable_declaration (env : env) (decl: vardecl) = 
-			print_endline("checking var decls");
-			(* Ensure that declInit and declType match using check_expr *)
-			(try
-				let _ = 
-					(* Error out if local variable with same name already exists. *)
-					List.find 
-						(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
-				in raise (Failure ("Duplicate variable " ^ decl.declID))
-			with
-			| Not_found -> 
-				let new_symbol_table = 
-					{
-						(env.symtab)
-						with 
-						variables = decl :: env.symtab.variables;
-					} in
-				let new_env = { (env) with symtab = new_symbol_table; }
-				and vdecl = 
-					{
-						declTyp = decl.declTyp;
-						declID = decl.declID;
-						declInit = decl.declInit;
-					}
-				in (new_env, vdecl))
-		in
-
-		(* Check function declaration and return new environment. *)
+			(* Check function declaration and return new environment. *)
 		let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
 			print_endline("checking func decl");
 			(* Get the types of the function's arguments. *)
@@ -127,6 +93,7 @@ let check_prog (globals, functions) =
 			({ (env) with funcs = new_funcs; }, fdecl) 
 	  	in
 
+	  	
 			(* Establish initial environment *)
 			let env = 
 				{
@@ -134,16 +101,61 @@ let check_prog (globals, functions) =
 					funcs = []; (*built-in *)
 					return_type = None;
 				} in
+
+		 			print_endline("hurrr");
+				ignore (List.fold_left (fun acc fdecl -> let (new_env, f) = check_function_declaration (fst acc) fdecl in (new_env, (f :: (snd acc))))  
+				(env, []) functions);
+
+	let check_function functions =  
+		print_endline("checking functions");
+
+		(*let check_expr (env : env) (expr : expr) = 
+
+		in*)
+
+		let check_variable_declaration (env : env) (decl: vardecl) = 
+			print_endline("checking var decls");
+			(* Ensure that declInit and declType match using check_expr *)
+			(try
+				let _ = 
+					(* Error out if local variable with same name already exists. *)
+					List.find 
+						(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
+				in raise (Failure ("Duplicate variable " ^ decl.declID))
+			with
+			| Not_found -> 
+				let new_symbol_table = 
+					{
+						(env.symtab)
+						with 
+						variables = decl :: env.symtab.variables;
+					} in
+				let new_env = { (env) with symtab = new_symbol_table; }
+				and vdecl = 
+					{
+						declTyp = decl.declTyp;
+						declID = decl.declID;
+						declInit = decl.declInit;
+					}
+				in (new_env, vdecl))
+		in
+
+
+
 			(* A program is made up of global vars and function decls. Global vars will be tracked in a separate list.
 			We have a tuple, acc accumulator of environment and function decls,
 			because only function decls can modify the environment.
 			 *)
-			let (_, fdecl_list) = 
-				print_endline("last");
-				List.fold_left (fun acc fdecl -> let (new_env, f) = check_function_declaration (fst acc) fdecl in (new_env, (f :: (snd acc))))  
-				(env, []) functions
-				in fdecl_list
-		in (globals, functions);
+
+		 			print_endline("hurrr");
+				ignore (List.fold_left (fun acc fdecl -> let (new_env, f) = check_function_declaration (fst acc) fdecl in (new_env, (f :: (snd acc))))  
+				(env, []) functions) in
+
+		(*in ((List.fold_left global_var StringMap.empty globals), functions);*)
+	  
+		(*ignore(func_tuple functions);*)
+		(globals, functions);
+
 		(*in List.iter check_function functions*)
 
 	(*(* Make a map of global variables *)
