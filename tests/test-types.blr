@@ -4,14 +4,12 @@ void main() {
   char f;
   bool d;
   string e;
-  Canvas c;
 
   a = 5;
   b = 3.14;
   f = 'c';
   d = False;
   e = "Hello World.";
-  c = (5, 4, '*');
   print(a,"%d");
   print(e,"%s");
 }
