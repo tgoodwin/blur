@@ -8,10 +8,10 @@ module StringMap = Map.Make(String)
 
 type symbol_table = {
     parent: symbol_table option;
+    args: argdecl list;
     variables: vardecl list
 }
 
-(* see slide 73 of types lecture *)
 type func_entry = {
     name: string;
     arg_types: datatype list;
@@ -21,7 +21,7 @@ type func_entry = {
 type env = {
     symtab: symbol_table;
     funcs: func_entry list;
-    return_type: datatype option;
+    return_type: datatype option
 }
 
 let check_prog (globals, functions) = 
@@ -58,6 +58,21 @@ let check_prog (globals, functions) =
 
 	List.iter check_not_void globals;
 
+	(* Check arguments *)
+	let check_argdecl (env : env) (adecl : argdecl) = 
+		print_endline("checking arg decl");
+
+		(* An argument cannot have type void. *)
+		(*let check_not_void_arg (adecl : argdecl) = 
+			let arg_typ = (fun a -> a.argdeclType) adecl in
+					if arg_typ = Datatype(Void) then raise (Failure ("illegal void arg"))
+					else ()
+		in check_not_void_arg adecl*)
+		
+		(* Check for duplicate arg vars*)
+		(env, adecl)
+	in
+
 	(* Check function declaration and return new environment. *)
 	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
 		print_endline("checking func decl");
@@ -75,6 +90,7 @@ let check_prog (globals, functions) =
 		let new_symbol_table = 
 			{
 				parent = Some env.symtab;
+				args = [];
 				variables = [];
 			} in
 		(* Add the function to the environment 
@@ -88,6 +104,10 @@ let check_prog (globals, functions) =
 			return_type = Some fdecl.typ;
 		} in
 		(* Add the args to the function scope. *)
+		let (env_with_args, argdecl_list) = 
+			List.fold_left (fun acc argdecl ->
+				let (nenv, arg) = check_argdecl (fst acc) argdecl 
+				in (nenv, (arg :: (snd acc)))) (new_env, []) fdecl.args in
 
 		(* Return the environment with this added function. *)
 		({ (env) with funcs = new_funcs; }, fdecl) 
@@ -97,19 +117,16 @@ let check_prog (globals, functions) =
 	(* Establish initial environment *)
 	let env = 
 		{
-			symtab = { parent = None; variables = []; };
+			symtab = { parent = None; variables = []; args = []; };
 			funcs = []; (*built-in *)
 			return_type = None;
 		} in
 
- 		print_endline("hurrr");
- 		let (_, fdecl_list) = 
- 			print_endline("in");
- 			List.fold_left (fun acc fdecl ->
- 				print_endline("in in");
- 				let (new_env, f) = check_function_declaration (fst acc) fdecl
- 				in (new_env, (f :: (snd acc)))) (env, []) functions
- 		in fdecl_list;
+	let (_, fdecl_list) = 
+		List.fold_left (fun acc fdecl ->
+			let (new_env, f) = check_function_declaration (fst acc) fdecl
+			in (new_env, (f :: (snd acc)))) (env, []) functions
+	in fdecl_list;
 
 	let check_function functions =  
 		print_endline("checking functions");
@@ -152,11 +169,13 @@ let check_prog (globals, functions) =
 			because only function decls can modify the environment.
 			 *)
 
+		(* Return list of functions after checking functions. *)
 		functions in
-
-		(*in ((List.fold_left global_var StringMap.empty globals), functions);*)
 	  
 		(*ignore(func_tuple functions);*)
+
+		(* After semantically checking, we return the program -
+		a tuple of a list of globals and a list of functions. *)
 		(globals, functions);
 
 		(*in List.iter check_function functions*)
