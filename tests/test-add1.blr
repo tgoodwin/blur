@@ -1,0 +1,8 @@
+int main() {
+	int b;
+	int c;
+	b = 4;
+	c = 3;
+	print(b+c,"%d");
+	return 1;
+}
