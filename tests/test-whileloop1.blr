@@ -1,6 +1,0 @@
-void main() {
-    while(True) {
-	print("While True == inf loop", "%s");
-	break;
-    };
-}

@@ -4,7 +4,7 @@
 
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK
 %token SEMI COMMA FUNC
-%token INT DOUBLE STRING CHAR BOOL CANVAS
+%token INT DOUBLE STRING CHAR BOOL
 %token IF ELSE FOR WHILE VOID RETURN TRUE FALSE BREAK CONTINUE
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token EQUAL NEQUAL LT LEQ GT GEQ AND OR NOT
@@ -71,7 +71,6 @@ argdecl:
         }  
     }
 
-/* TODO: Reconsider typ of Canvas. */
 primitive:
     INT { Int }
   | DOUBLE { Double }
@@ -79,7 +78,6 @@ primitive:
   | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
-  | CANVAS { Canvas }
 
 type_tag:
     primitive { $1 }
@@ -198,9 +196,6 @@ expr:
   /* lists */
   | LBRACK expr_list RBRACK { ArrayListInit($2) }
   /* | ID LBRACK INT_LITERAL RBRACK { ArrayAccess($1, $3) } */
-
-  /* canvas */
-  /*| LPAREN INT_LITERAL COMMA INT_LITERAL COMMA CHAR_LITERAL RPAREN { CanvasInit($2, $4, $6) } */
 
 dimension_args:
     LBRACK expr                                     { [$2] }

@@ -24,7 +24,6 @@ type primitive =
   | String
   | Bool
   | Void
-  | Canvas
 
 type datatype = 
     Arraytype of primitive
@@ -44,7 +43,6 @@ type expr =
   | ArrayListInit of expr list
   | ArraySizeInit of primitive * expr list
   | ArrayAccess of string * expr list
-  (*| CanvasInit of int * int * char *)
   | FuncCall of string * expr list
   | Noexpr
 

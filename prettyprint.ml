@@ -28,7 +28,6 @@ let string_of_typ = function
   | String -> "string"
   | Bool -> "bool"
   | Void -> "void"
-  | Canvas -> "Canvas"
 
 let string_of_array t = string_of_typ t  ^ "[]" 
 
@@ -48,7 +47,6 @@ let rec string_of_expr = function
   | ArrayListInit(l) -> "[" ^ String.concat ", " (List.map string_of_expr l) ^ "]"
   | ArraySizeInit(t, n) -> string_of_typ t ^ "[" ^ String.concat "][" (List.map string_of_expr n) ^ "]"
   | ArrayAccess(id, dl) -> "\t" ^ id ^ "[" ^ String.concat "][" (List.map string_of_expr dl) ^ "]"
-  (*| CanvasInit(x, y, c) -> "(" ^ string_of_int x ^ ", " ^ string_of_int y ^ ", '" ^ Char.escaped c ^ "'}" *)
   | FuncCall(n, p) -> n ^ "(" ^ String.concat ", " (List.map string_of_expr p) ^ ")"
   | Noexpr -> ""
 
