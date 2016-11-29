@@ -59,11 +59,10 @@ let check_prog (globals, functions) =
 	List.iter check_not_void globals;
 
 	(* Check function declaration and return new environment. *)
-	let check_function_declaration (env : env) (fdecl : funcdecl) =
+	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
 		print_endline("checking func decl");
-		(env)
 		(* Get the types of the function's arguments. *)
-		(*let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
+		let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
 		(* Make a function entry for the function. *)
 		let func_entry = 
 			{
@@ -91,29 +90,26 @@ let check_prog (globals, functions) =
 		(* Add the args to the function scope. *)
 
 		(* Return the environment with this added function. *)
-		({ (env) with funcs = new_funcs; }, fdecl) *)
+		({ (env) with funcs = new_funcs; }, fdecl) 
   	in
 
 
-		(* Establish initial environment *)
-		let env = 
-			{
-				symtab = { parent = None; variables = []; };
-				funcs = []; (*built-in *)
-				return_type = None;
-			} in
+	(* Establish initial environment *)
+	let env = 
+		{
+			symtab = { parent = None; variables = []; };
+			funcs = []; (*built-in *)
+			return_type = None;
+		} in
 
-	 		print_endline("hurrr");
-	 		List.fold_left check_function_declaration env functions;
-	 		(*let (_, fdecl_list) = 
-	 			print_endline("in");
-	 			List.fold_left (fun acc fdecl ->
-	 				print_endline("in in");
-	 				let (new_env, f) = check_function_declaration (fst acc) fdecl
-	 				in (new_env, (f :: (snd acc)))) (env, []) functions
-	 		in fdecl_list;*)
-			(*List.fold_left (fun acc fdecl -> let (new_env, f) = check_function_declaration (fst acc) fdecl in (new_env, (f :: (snd acc))))  
-			(env, []) functions;*)
+ 		print_endline("hurrr");
+ 		let (_, fdecl_list) = 
+ 			print_endline("in");
+ 			List.fold_left (fun acc fdecl ->
+ 				print_endline("in in");
+ 				let (new_env, f) = check_function_declaration (fst acc) fdecl
+ 				in (new_env, (f :: (snd acc)))) (env, []) functions
+ 		in fdecl_list;
 
 	let check_function functions =  
 		print_endline("checking functions");
