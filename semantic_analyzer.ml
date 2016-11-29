@@ -63,11 +63,12 @@ let check_prog (globals, functions) =
 		print_endline("checking arg decl");
 
 		(* An argument cannot have type void. *)
-		(*let check_not_void_arg (adecl : argdecl) = 
+		let check_not_void_arg (adecl : argdecl) = 
 			let arg_typ = (fun a -> a.argdeclType) adecl in
 					if arg_typ = Datatype(Void) then raise (Failure ("illegal void arg"))
 					else ()
-		in check_not_void_arg adecl*)
+		in 
+		ignore(check_not_void_arg (adecl));
 		
 		(* Check for duplicate arg vars*)
 		(env, adecl)
