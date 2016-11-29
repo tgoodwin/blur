@@ -24,7 +24,6 @@ type primitive =
   | String
   | Bool
   | Void
-  | Canvas
 
 type datatype = 
     Arraytype of primitive
