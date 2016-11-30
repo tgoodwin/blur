@@ -198,7 +198,11 @@ let translate (globals, functions) =
             let arith_binop e1 op e2 =
                 let lh = codegen_expr (maps, llbuilder) e1
                 and rh = codegen_expr (maps, llbuilder) e2
-                in int_ops lh op rh
+                in
+                (* peanut brittle! *)
+                let op_typ = L.string_of_lltype (L.type_of lh) in match op_typ with
+                  "i32" -> int_ops lh op rh
+                | "double" -> float_ops lh op rh
             in
             let assign_binop e1 e2 =
                 let arr_dims = (snd maps) in
@@ -258,8 +262,8 @@ let translate (globals, functions) =
         and codegen_print e maps llbuilder =
             let param = (codegen_expr (maps, llbuilder) e) in
             let theType = L.string_of_lltype (L.type_of param) in
-            ignore(print_endline("; " ^ theType));
-            ignore(print_endline("; " ^ L.string_of_llvalue param));
+            (* ignore(print_endline("; " ^ theType)); *)
+            (* ignore(print_endline("; " ^ L.string_of_llvalue param)); *)
             let fmt_str = match theType with
               "i32"     -> int_format_str
             | "double"  -> flt_format_str
