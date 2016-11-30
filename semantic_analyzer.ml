@@ -27,26 +27,15 @@ type env = {
 let check_prog (globals, functions) = 
 	(* Add global variable declarations to the symbol table *)
 	print_endline("checking prog");
-	
-	(*let check_global_var (env : env) = 
-		print_endline("checking global vars");
-		let new_symbol_table =
-			{
-				(env.symtab)
-				with variables = [];
-			} in
-		let new_env = { (env) with symtab = new_symbol_table; }
-		in new_env 
-	in*)
 
 	(* Make a map of global variables *)
-	let global_vars = 
+	(*let global_vars = 
 		print_endline("mapping global vars");
 		let global_var map (vdecl : A.vardecl) =
 			let name = vdecl.declID in
 			let typ = vdecl.declTyp in
 		 	StringMap.add name typ map in 
-		List.fold_left global_var StringMap.empty globals in
+		List.fold_left global_var StringMap.empty globals in*)
 
 	(* A global variable cannot have type void. *)
 	let check_not_void (vdecl : vardecl) = 
@@ -190,6 +179,40 @@ let check_prog (globals, functions) =
 			funcs = []; (*built-in *)
 			return_type = None;
 		} in
+
+		(* Add global variables to the environment. *)
+	let check_global_var (env : env) (vdecl : vardecl) = 
+		print_endline("checking global vars");
+		(try
+			let _ =	
+
+				(* Error out if global variable with same name already exists. *)
+				List.find 
+					(fun v -> v.declID = vdecl.declID) env.symtab.variables
+			in raise (Failure ("Duplicate variable " ^ vdecl.declID))
+		with
+			| Not_found -> 
+				let new_symbol_table = 
+					{
+						(env.symtab)
+						with 
+						variables = vdecl :: env.symtab.variables;
+					} in
+				let new_env = { (env) with symtab = new_symbol_table; }
+				and vardecl = 
+					{
+						declTyp = vdecl.declTyp;
+						declID = vdecl.declID;
+						declInit = vdecl.declInit;
+					}
+				in (new_env, vardecl))
+	in
+
+	let(new_env, vars) = 
+		List.fold_left (fun acc v ->
+			let (nenv, v) = check_global_var (fst acc) v
+			in (nenv, (v :: (snd acc)))) (env, []) globals 
+	in 
 
 	let (_, fdecl_list) = 
 		List.fold_left (fun acc fdecl ->
