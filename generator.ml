@@ -90,6 +90,14 @@ let translate (globals, functions) =
 
         let llbuilder = L.builder_at_end context (L.entry_block f) in
 
+        (* format strings *)
+        let int_format_str = L.build_global_stringptr "%d\n" "int_fmt" llbuilder
+        and str_format_str = L.build_global_stringptr "%s\n" "str_fmt" llbuilder
+        and chr_format_str = L.build_global_stringptr "%c\n" "chr_fmt" llbuilder
+        and flt_format_str = L.build_global_stringptr "%f\n" "flt_fmt" llbuilder
+        in
+
+
         (* MAPS MAPS MAPS FAKE GLOBAL MAPS *)
         let local_vars = StringMap.empty in
         let arr_dims = StringMap.empty in
@@ -247,10 +255,19 @@ let translate (globals, functions) =
             let gen_e = codegen_expr (maps, llbuilder) e in
             ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
-        and codegen_print e typ maps llbuilder =
+        and codegen_print e maps llbuilder =
             let param = (codegen_expr (maps, llbuilder) e) in
-            let format_str = (codegen_expr (maps, llbuilder) typ) in (* should return string literal*)
-            L.build_call printf_func [| format_str; param |] "printf" llbuilder
+            let theType = L.string_of_lltype (L.type_of param) in
+            ignore(print_endline("; " ^ theType));
+            ignore(print_endline("; " ^ L.string_of_llvalue param));
+            let fmt_str = match theType with
+              "i32"     -> int_format_str
+            | "double"  -> flt_format_str
+            | "i8"      -> chr_format_str
+            | "i8*"     -> str_format_str
+            | "i1"      -> int_format_str
+            in
+            L.build_call printf_func [| fmt_str; param |] "printf" llbuilder
 
         (* blur built-ins  *)
         and codegen_call f el (maps, llbuilder) =
@@ -271,7 +288,7 @@ let translate (globals, functions) =
           | A.Id id           -> L.build_load (lookup id (fst maps)) id llbuilder (* todo: error-checking in lookup *)
           | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 maps llbuilder
           | A.Unop(op, e)       -> codegen_unop op e maps llbuilder
-          | A.FuncCall ("print", [e; typ])    -> codegen_print e typ maps llbuilder
+          | A.FuncCall ("print", [e])    -> codegen_print e maps llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
           | A.ArraySizeInit (t, dl)     -> build_array_blocks (ltype_of_primitive t) dl maps llbuilder
