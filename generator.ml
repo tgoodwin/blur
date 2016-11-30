@@ -28,7 +28,7 @@ let translate (globals, functions) =
 
     (* THIS DOESNT WORK TODO TODO *)
     let rec ltype_of_array datatype = match datatype with
-        Arraytype(t) -> L.pointer_type (ltype_of_typ (Datatype(t)))
+        Arraytype(t, d) -> L.pointer_type (ltype_of_typ (Datatype(t)))
       | _            -> raise (Exceptions.NotAnArray)
     
     and ltype_of_typ (d: A.datatype) = match d with
@@ -38,7 +38,7 @@ let translate (globals, functions) =
       | Datatype(A.String) -> string_t
       | Datatype(A.Bool) -> i1_t
       | Datatype(A.Void) -> void_t
-      | Arraytype(t) -> ltype_of_array (Arraytype(t))
+      | Arraytype(t, d) -> ltype_of_array (Arraytype(t, d))
       | _            -> raise (Exceptions.NotADatatype)
 
     and ltype_of_primitive (p: A.primitive) = match p with

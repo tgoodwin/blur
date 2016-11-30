@@ -29,10 +29,13 @@ let string_of_typ = function
   | Bool -> "bool"
   | Void -> "void"
 
-let string_of_array t = string_of_typ t  ^ "[]" 
+let rec str_brackets d str = if d > 0 then str_brackets (d - 1) ("[]" ^ str) else str
+
+let string_of_array t d = string_of_typ t  ^ (str_brackets d "")
+
 
 let string_of_datatype = function 
-    Arraytype(t) -> string_of_array t
+    Arraytype(t, d) -> string_of_array t d
   | Datatype(t) -> string_of_typ t
 
 let rec string_of_expr = function
