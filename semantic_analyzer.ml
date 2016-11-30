@@ -75,9 +75,19 @@ let check_prog (globals, functions) =
 		(env, adecl)
 	in
 
+	let check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
+		print_endline("checking stmt");
+	(env, stmt)
+  in
+
+	(* Each statement takes the environment updated from the previous statement. *)
 	let check_stmt_list (env : env) ( slist : stmt list ) :(env * stmt list) = 
 		print_endline("checking stmt list");
-		(env, slist) 
+		let(new_env, stmts) = 
+			List.fold_left (fun acc stmt ->
+				let (nenv, s) = check_stmt (fst acc) stmt
+			  in (nenv, (s :: (snd acc)))) (env, []) slist
+		in(new_env, List.rev stmts) 
 	in
 
 	(* Check function declaration and return new environment. *)
