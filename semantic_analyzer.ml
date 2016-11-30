@@ -58,6 +58,33 @@ let check_prog (globals, functions) =
 
 	List.iter check_not_void globals;
 
+	let check_variable_declaration (env : env) (decl: vardecl) = 
+		print_endline("checking var decls");
+		(* Ensure that declInit and declType match using check_expr *)
+		(try
+			let _ = 
+				(* Error out if local variable with same name already exists. *)
+				List.find 
+					(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
+			in raise (Failure ("Duplicate variable " ^ decl.declID))
+		with
+		| Not_found -> 
+			let new_symbol_table = 
+				{
+					(env.symtab)
+					with 
+					variables = decl :: env.symtab.variables;
+				} in
+			let new_env = { (env) with symtab = new_symbol_table; }
+			and vdecl = 
+				{
+					declTyp = decl.declTyp;
+					declID = decl.declID;
+					declInit = decl.declInit;
+				}
+			in (new_env, vdecl))
+	in	
+
 	(* Check arguments *)
 	let check_argdecl (env : env) (adecl : argdecl) = 
 		print_endline("checking arg decl");
@@ -77,8 +104,10 @@ let check_prog (globals, functions) =
 
 	let check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
 		print_endline("checking stmt");
-	(env, stmt)
-  in
+		match stmt with 
+		| Decl vdecl -> (* Return new env*)
+			let (new_env, vdecl) = check_variable_declaration env vdecl
+			in (new_env, stmt) in
 
 	(* Each statement takes the environment updated from the previous statement. *)
 	let check_stmt_list (env : env) ( slist : stmt list ) :(env * stmt list) = 
@@ -87,7 +116,7 @@ let check_prog (globals, functions) =
 			List.fold_left (fun acc stmt ->
 				let (nenv, s) = check_stmt (fst acc) stmt
 			  in (nenv, (s :: (snd acc)))) (env, []) slist
-		in(new_env, List.rev stmts) 
+		in (new_env, List.rev stmts) 
 	in
 
 	(* Check function declaration and return new environment. *)
@@ -155,32 +184,7 @@ let check_prog (globals, functions) =
 
 		in*)
 
-		let check_variable_declaration (env : env) (decl: vardecl) = 
-			print_endline("checking var decls");
-			(* Ensure that declInit and declType match using check_expr *)
-			(try
-				let _ = 
-					(* Error out if local variable with same name already exists. *)
-					List.find 
-						(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
-				in raise (Failure ("Duplicate variable " ^ decl.declID))
-			with
-			| Not_found -> 
-				let new_symbol_table = 
-					{
-						(env.symtab)
-						with 
-						variables = decl :: env.symtab.variables;
-					} in
-				let new_env = { (env) with symtab = new_symbol_table; }
-				and vdecl = 
-					{
-						declTyp = decl.declTyp;
-						declID = decl.declID;
-						declInit = decl.declInit;
-					}
-				in (new_env, vdecl))
-		in
+		
 
 
 
