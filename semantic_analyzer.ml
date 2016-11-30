@@ -41,10 +41,10 @@ let check_prog (globals, functions) =
 	let check_not_void (vdecl : vardecl) = 
 		(* Get the types of the globals *)
 		let global_typ = (fun v -> v.declTyp) vdecl in
-				if global_typ = Datatype(Void) then raise (Failure ("illegal var"))
+				if global_typ = Datatype(Void) then raise 
+					(Failure ("illegal void variable " ^  vdecl.declID))
 				else () 
 	in
-
 	List.iter check_not_void globals;
 
 	let check_variable_declaration (env : env) (decl: vardecl) = 
@@ -180,12 +180,11 @@ let check_prog (globals, functions) =
 			return_type = None;
 		} in
 
-		(* Add global variables to the environment. *)
+	(* Add global variables to the environment. *)
 	let check_global_var (env : env) (vdecl : vardecl) = 
 		print_endline("checking global vars");
 		(try
 			let _ =	
-
 				(* Error out if global variable with same name already exists. *)
 				List.find 
 					(fun v -> v.declID = vdecl.declID) env.symtab.variables
