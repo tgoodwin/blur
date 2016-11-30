@@ -3,7 +3,7 @@ void main() {
     i = 5;
     while(i>0) {
         i = i - 1;
-        print(i, "%d");
+        print(i);
     }
-    print(42, "%d");
+    print(42);
 }

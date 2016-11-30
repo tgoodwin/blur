@@ -1,4 +1,4 @@
 void main() {
     if(1 < 5)
-	print("if without brack", "%s");
+	print("if without brack");
 }

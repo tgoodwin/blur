@@ -5,13 +5,13 @@ void main() {
     b = 9;
 
     if(a<b) {
-	print("check 1", "%s");
+	print("check 1");
     }
 
     if(a>b) {
-	print("should not print", "%s");
+	print("should not print");
     }
     else {
-	print("check 2", "%s");
+	print("check 2");
     }
 }

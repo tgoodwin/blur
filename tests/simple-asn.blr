@@ -3,5 +3,5 @@ int main() {
         int[] a = int[10];
         a[b] = b; 
         int c = a[b];
-        print(c, "%d");
+        print(c);
 }
