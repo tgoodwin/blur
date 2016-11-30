@@ -1,5 +1,4 @@
 int add(int a, int a)
 {
   int c;
-  c = a + b;
 }

@@ -69,6 +69,7 @@ let check_prog (globals, functions) =
 			in raise (Failure ("Duplicate variable " ^ decl.declID))
 		with
 		| Not_found -> 
+			(* TODO: use same symbol table as symbol table from arg *)
 			let new_symbol_table = 
 				{
 					(env.symtab)
@@ -97,9 +98,28 @@ let check_prog (globals, functions) =
 					else ()
 		in 
 		ignore(check_not_void_arg (adecl));
-		
-		(* Check for duplicate arg vars*)
-		(env, adecl)
+
+		(try
+			let _ = 
+				(* Error out if local variable with same name already exists. *)
+				List.find 
+					(fun argdecl -> argdecl.argdeclID = adecl.argdeclID) env.symtab.args
+			in raise (Failure ("Duplicate variable " ^ adecl.argdeclID))
+		with
+		| Not_found -> 
+			let new_symbol_table = 
+				{
+					(env.symtab)
+					with 
+					args = adecl :: env.symtab.args;
+				} in
+			let new_env = { (env) with symtab = new_symbol_table; }
+			and arg = 
+				{
+					argdeclType = adecl.argdeclType;
+					argdeclID = adecl.argdeclID;
+				}
+			in (new_env, adecl))
 	in
 
 	let check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
