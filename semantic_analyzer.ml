@@ -64,6 +64,7 @@ let check_prog (globals, functions) =
 
 		(* An argument cannot have type void. *)
 		let check_not_void_arg (adecl : argdecl) = 
+			print_endline("checking void args");
 			let arg_typ = (fun a -> a.argdeclType) adecl in
 					if arg_typ = Datatype(Void) then raise (Failure ("illegal void arg"))
 					else ()
@@ -72,6 +73,11 @@ let check_prog (globals, functions) =
 		
 		(* Check for duplicate arg vars*)
 		(env, adecl)
+	in
+
+	let check_stmt_list (env : env) ( slist : stmt list ) :(env * stmt list) = 
+		print_endline("checking stmt list");
+		(env, slist) 
 	in
 
 	(* Check function declaration and return new environment. *)
@@ -109,7 +115,10 @@ let check_prog (globals, functions) =
 			List.fold_left (fun acc argdecl ->
 				let (nenv, arg) = check_argdecl (fst acc) argdecl 
 				in (nenv, (arg :: (snd acc)))) (new_env, []) fdecl.args in
-
+		(* No need to keep track of environment outside the scope of the function. *)
+		let (_, func_body) = 
+			check_stmt_list env_with_args fdecl.body in 
+		let func_body = func_body in
 		(* Return the environment with this added function. *)
 		({ (env) with funcs = new_funcs; }, fdecl) 
   	in
