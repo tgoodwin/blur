@@ -114,6 +114,8 @@ let check_prog (globals, functions) =
 
 	let rec check_expr (env : env) (expr : expr) :(env * expr) = 
 		print_endline("checking expr");
+		match expr with 
+		| Binop (e1, op, e2) -> print_endline("expr is binop");
 		(env, expr)
 	in
 
