@@ -112,11 +112,19 @@ let check_prog (globals, functions) =
 			in (new_env, adecl))
 	in
 
-	let rec check_expr (env : env) (expr : expr) :(env * expr) = 
-		print_endline("checking expr");
-		match expr with 
+	let check_binop (e1 : expr) (e2 : expr) (binop : binopr) (env : env) :expr = 
+		print_endline("checking binop");
+	e1
+  in
+
+	let rec check_expr (env : env) (expr : expr) =  
+		(*print_endline("checking expr");*)
+		match expr with
+			IntLit i -> Datatype(Int); expr
 		| Binop (e1, op, e2) -> print_endline("expr is binop");
-		(env, expr)
+			let checked_e1 = check_expr env e1
+			and checked_e2 = check_expr env e2
+			in check_binop checked_e1 checked_e2 op env;
 	in
 
 	let check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
