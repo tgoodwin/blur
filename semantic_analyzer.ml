@@ -40,6 +40,16 @@ let check_prog (globals, functions) =
 
 	let check_variable_declaration (env : env) (decl: vardecl) = 
 		print_endline("checking var decls");
+
+		(* A variable cannot have type void. *)
+		let check_not_void_var (decl : vardecl) = 
+			print_endline("checking void vars");
+			let var_typ = (fun v -> decl.declTyp) decl in
+					if var_typ = Datatype(Void) then raise (Failure ("illegal void variable " ^ decl.declID))
+					else ()
+		in 
+		ignore(check_not_void_var (decl));
+
 		(* Ensure that declInit and declType match using check_expr *)
 		(try
 			let _ = 
