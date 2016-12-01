@@ -112,9 +112,15 @@ let check_prog (globals, functions) =
 			in (new_env, adecl))
 	in
 
+	let rec check_expr (env : env) (expr : expr) :(env * expr) = 
+		print_endline("checking expr");
+		(env, expr)
+	in
+
 	let check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
 		print_endline("checking stmt");
 		match stmt with 
+			Expr e -> ignore(check_expr env e); (env, stmt) (* Expression cannot mutate the environment. *)
 		| Decl vdecl -> (* Return new env*)
 			let (new_env, vdecl) = check_variable_declaration env vdecl
 			in (new_env, stmt) in
