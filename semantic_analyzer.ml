@@ -28,15 +28,6 @@ let check_prog (globals, functions) =
 	(* Add global variable declarations to the symbol table *)
 	print_endline("checking prog");
 
-	(* Make a map of global variables *)
-	(*let global_vars = 
-		print_endline("mapping global vars");
-		let global_var map (vdecl : A.vardecl) =
-			let name = vdecl.declID in
-			let typ = vdecl.declTyp in
-		 	StringMap.add name typ map in 
-		List.fold_left global_var StringMap.empty globals in*)
-
 	(* A global variable cannot have type void. *)
 	let check_not_void (vdecl : vardecl) = 
 		(* Get the types of the globals *)
