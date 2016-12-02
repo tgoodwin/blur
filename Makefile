@@ -20,7 +20,6 @@ parser.ml parser.mli : parser.mly
 
 ast.cmo : 
 ast.cmx :
-<<<<<<< Updated upstream
 exceptions.cmo :
 exceptions.cmx :
 generator.cmo : ast.cmo exceptions.cmo
