@@ -8,4 +8,9 @@ exec:
 .PHONY: clean
 clean:
 	rm -f *.o
+	rm libclib.a
+
+.PHONY: cleantest
+cleantest:
+	rm -f *.o
 	rm libclib.a test
