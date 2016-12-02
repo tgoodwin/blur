@@ -39,13 +39,16 @@ let check_prog (globals, functions) =
 	List.iter check_not_void globals;
 
 	let rec get_variable_decl (symtab : symbol_table) (id : string) :vardecl =
+		print_endline("getting var decl");
+		print_endline(string_of_int(List.length symtab.variables));
 		try List.find (fun vdecl -> vdecl.declID = id) symtab.variables
 	  with
 	  | Not_found -> 
 	  	(match symtab.parent with
-	  		| Some parent -> get_variable_decl parent id 
+	  		| Some parent -> print_endline("look at parent"); get_variable_decl parent id 
 	  		| _ -> raise Not_found) in
 	let get_variable_type (symtab : symbol_table) (id : string) :datatype =
+		print_endline("getting var type");
 		let vdecl = get_variable_decl symtab id
 	  in vdecl.declTyp in
 	let check_variable_declaration (env : env) (decl: vardecl) = 
@@ -168,6 +171,7 @@ let check_prog (globals, functions) =
 	(* Check function declaration and return new environment. *)
 	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
 		print_endline("checking func decl");
+		print_endline(string_of_int(List.length env.symtab.variables));
 		(* Get the types of the function's arguments. *)
 		let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
 		(* Make a function entry for the function. *)
@@ -228,7 +232,9 @@ let check_prog (globals, functions) =
 			in raise (Failure ("Duplicate variable " ^ vdecl.declID))
 		with
 			| Not_found -> 
+				print_endline("add global to symbol tab");
 				let new_symbol_table = 
+					print_endline(string_of_int(List.length env.symtab.variables));
 					{
 						(env.symtab)
 						with 
@@ -245,15 +251,19 @@ let check_prog (globals, functions) =
 	in
 
 	let(new_env, vars) = 
+		print_endline("globals loop");
 		List.fold_left (fun acc v ->
 			let (nenv, v) = check_global_var (fst acc) v
 			in (nenv, (v :: (snd acc)))) (env, []) globals 
 	in 
 
+	print_endline("after globals run");
+	print_endline(string_of_int(List.length new_env.symtab.variables));
+
 	let (_, fdecl_list) = 
 		List.fold_left (fun acc fdecl ->
 			let (new_env, f) = check_function_declaration (fst acc) fdecl
-			in (new_env, (f :: (snd acc)))) (env, []) functions
+			in (new_env, (f :: (snd acc)))) (new_env, []) functions
 	in fdecl_list;
 
 	let check_function functions =  
