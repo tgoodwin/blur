@@ -25,10 +25,6 @@ type primitive =
   | Bool
   | Void
 
-type datatype = 
-    Arraytype of primitive * int
-  | Datatype of primitive
-
 type expr =
     Binop of expr * binopr * expr
   | Unop of unopr * expr
@@ -41,10 +37,14 @@ type expr =
   (*| Asn of string * expr *)
   (* | Seq of expr * expr *)
   | ArrayListInit of expr list
-  | ArraySizeInit of primitive * expr list
   | ArrayAccess of string * expr list
   | FuncCall of string * expr list
   | Noexpr
+
+type datatype =
+    SizedArray of primitive * expr list
+  | UnsizedArray of primitive * int
+  | Datatype of primitive
 
 type argdecl = {
   argdeclType : datatype;
