@@ -1,8 +1,13 @@
+LIBDIR = clib
+
 OBJS = ast.cmx parser.cmx scanner.cmx semantic_analyzer.cmx exceptions.cmx configuration.cmx generator.cmx prettyprint.cmx blur.cmx
 
 prog : $(OBJS)
 	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis -package llvm.bitwriter -package llvm.bitreader -package llvm.linker $(OBJS) -o prog
-
+	./prog -l < helloWorld.blr > "helloWorld.ll"
+	make libs		
+	llc helloWorld.ll > helloWorld.s
+	
 scanner.ml : scanner.mll
 	ocamllex scanner.mll
 
@@ -34,8 +39,13 @@ semantic_analyzer.cmo : ast.cmo sast.cmo
 semantic_analyzer.cmx : ast.cmx sast.cmx
 parser.cmi: ast.cmo
 
+.PHONY : libs
+libs :
+	cd clib && make clib
+
 .PHONY : clean
 clean :
 	rm -rf prog scanner.ml parser.ml parser.mli a.out
-	rm -rf *.cmo *.cmi *.cmx *.o *.bc
+	rm -rf *.cmo *.cmi *.cmx *.o *.bc *.ll *.s *.out
 	rm -f *~
+	cd clib && make clean
