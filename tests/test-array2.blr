@@ -1,0 +1,6 @@
+int main() {
+    int[] a = [5, 341, 4];
+    print(a[1]);
+    int x = a[2];
+    print(x);
+}
