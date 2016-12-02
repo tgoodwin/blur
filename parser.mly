@@ -94,11 +94,11 @@ unsized_array:
   type_tag LBRACK brackets RBRACK { UnsizedArray($1, $3) }
 
 sized_array:
-    type_tag dimension_args RBRACK { SizedArray($1, List.rev $2) }
+    type_tag lit_dimension_args RBRACK { SizedArray($1, List.rev $2) }
 
-dimension_args:
-    LBRACK expr         { [$2] }
-  | dimension_args RBRACK LBRACK expr   { $4::$1}
+lit_dimension_args:
+    LBRACK INT_LITERAL         { [$2] }
+  | lit_dimension_args RBRACK LBRACK INT_LITERAL   { $4::$1}
 
 datatype:
     type_tag    { Datatype($1) }
@@ -206,6 +206,9 @@ expr:
   | LBRACK expr_list RBRACK { ArrayListInit($2) }
   /* | ID LBRACK INT_LITERAL RBRACK { ArrayAccess($1, $3) } */
 
+dimension_args:
+    LBRACK expr { [$2] }
+  | dimension_args RBRACK LBRACK expr { $4::$1 }
 
 array_access:
     ID dimension_args RBRACK { ArrayAccess($1, List.rev $2) }

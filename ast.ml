@@ -42,7 +42,7 @@ type expr =
   | Noexpr
 
 type datatype =
-    SizedArray of primitive * expr list
+    SizedArray of primitive * int list
   | UnsizedArray of primitive * int
   | Datatype of primitive
 
