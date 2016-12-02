@@ -38,6 +38,16 @@ let check_prog (globals, functions) =
 	in
 	List.iter check_not_void globals;
 
+	let rec get_variable_decl (symtab : symbol_table) (id : string) :vardecl =
+		try List.find (fun vdecl -> vdecl.declID = id) symtab.variables
+	  with
+	  | Not_found -> 
+	  	(match symtab.parent with
+	  		| Some parent -> get_variable_decl parent id 
+	  		| _ -> raise Not_found) in
+	let get_variable_type (symtab : symbol_table) (id : string) :datatype =
+		let vdecl = get_variable_decl symtab id
+	  in vdecl.declTyp in
 	let check_variable_declaration (env : env) (decl: vardecl) = 
 		print_endline("checking var decls");
 
@@ -122,7 +132,12 @@ let check_prog (globals, functions) =
 	let rec check_expr (env : env) (expr : expr) = 
 		match expr with 
 			IntLit i -> print_endline("int"); Datatype(Int)
-		| Id s -> Datatype(Int)
+		| Id s -> print_endline("id"); 
+			let t =
+				(try get_variable_type env.symtab s 
+				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
+				) in 
+			Datatype(Int) (* Get type of var*)
 		| Binop (e1, op, e2) -> print_endline("expr is binop");
 			let e1 = check_expr env e1 
 			and e2 = check_expr env e2 in
