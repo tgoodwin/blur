@@ -10,7 +10,7 @@ void main() {
     f = 'c';
     d = false;
     e = "Hello World.";
-    print(a,"%d");
-    print(e,"%s");
-    /*print(d, "%s");*/
+    print(a);
+    print(e);
+    /*print(d);*/
 }

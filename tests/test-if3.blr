@@ -1,6 +1,6 @@
 void main() {
     if(false) {
-	print("this should print", "%s");
-	print("this should not print", "%s");
+	print("this should print");
+	print("this should not print");
     }
 }

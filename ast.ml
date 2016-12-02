@@ -26,7 +26,7 @@ type primitive =
   | Void
 
 type datatype = 
-    Arraytype of primitive
+    Arraytype of primitive * int
   | Datatype of primitive
 
 type expr =

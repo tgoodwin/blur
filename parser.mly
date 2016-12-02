@@ -87,15 +87,15 @@ type_tag:
   | two_d_array { Arraytype($1) }*/
 
 array_type:
-  type_tag LBRACK brackets RBRACK { Arraytype($1) }
+  type_tag LBRACK brackets RBRACK { Arraytype($1, $3) }
 
 datatype:
     type_tag    { Datatype($1) }
   | array_type  { $1 }
 
 brackets:
-    /* nothing */ {1}
-  | brackets RBRACK LBRACK {$1}
+    /* nothing */ { 1 }
+  | brackets RBRACK LBRACK {$1 + 1}
 
 vardecl:
     vardecl_simple { $1 }  
