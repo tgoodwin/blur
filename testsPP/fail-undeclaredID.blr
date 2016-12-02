@@ -1,4 +1,6 @@
 void main() {
-	q = 1;
-	return q;
+	int a = 7;
+	int b;
+	b = 6;
+	c = 11;
 }
