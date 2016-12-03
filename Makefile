@@ -42,7 +42,7 @@ blur:
 	./prog -l < $(file) > "out.ll"
 	make libs		
 	llc out.ll > out.s
-	gcc -I ${LIBDIR} -o out_final out.s -L${LIBDIR} -llibclib.a
+	gcc -I ${LIBDIR} -o out_final out.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
 .PHONY : libs
 libs :
