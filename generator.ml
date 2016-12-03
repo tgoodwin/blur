@@ -303,7 +303,6 @@ let translate (globals, functions) =
           | A.FuncCall ("print", [e])    -> codegen_print e maps llbuilder
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
-          (*| A.ArraySizeInit (t, dl)     -> build_array_blocks (ltype_of_primitive t) dl maps llbuilder *)
           | A.ArrayAccess(n, dl)        -> build_array_access n dl maps llbuilder false
           | A.Noexpr            -> L.const_int i32_t 0
         
@@ -332,67 +331,26 @@ let translate (globals, functions) =
                 | e             -> let exp = (codegen_expr (maps, llbuilder) e) in ignore(codegen_asn vdecl.declID exp maps llbuilder); maps, llbuilder
 
 
-
-            (* add to local_vars map no matter what. if already exists, policy is to overwrite *)
-            (*let local_vars = add_local vdecl (fst maps) in
-            let arr_dims = (snd maps) in *)
-
-            (* if array, keep track of its dimensions in the dimensions map*)
-
-        (* BUILD 1D array from a non-nested list *)
+        (* BUILD n-dimensional array from Literal *)
         and build_array_of_list el (maps, llbuilder) =
-            let typ = ltype_of_literal (List.hd el) in
-            let plain_arr_ptr = build_array_blocks typ el maps llbuilder in
             let llvalues = List.map (codegen_expr (maps, llbuilder)) el in
-            List.iteri(fun i llval ->
-                let idx_ptr = L.build_gep plain_arr_ptr [| L.const_int i32_t i |] "tmpidx" llbuilder in
-                ignore(L.build_store llval idx_ptr llbuilder); ) llvalues; plain_arr_ptr
+            let len = List.length llvalues in
+            let typ = (L.type_of (List.hd llvalues)) in
+            let cool_array = Array.of_list llvalues in
+            let res = L.const_array (array_t i32_t len) cool_array in
+            ignore(print_endline("; " ^ L.string_of_lltype (L.type_of res))); res
+
+       (* ----------------------------- *)
             
-        (* ARRAY SIZE INIT returns a pointer to a sequential memory region *)
-        (* ONLY SUPPORT LISTS OF LENGTH 2 *)
-        and build_array_blocks typ el maps llbuilder =
-            let int_list = List.rev (List.map (codegen_expr (maps, llbuilder)) (List.rev el)) in
-            let total_cells =
-            if List.length int_list = 2 then
-                L.build_mul (List.hd int_list) (List.nth int_list 1) "total" llbuilder
+        and build_array_access name idx_list maps llbuilder isAssign =
+            let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
+            let idx_list = (L.const_int i32_t 0)::[]@idx_list in
+
+            let idx_arr = Array.of_list idx_list in
+            if isAssign then
+                L.build_gep (lookup name (fst maps)) idx_arr name llbuilder
             else
-                List.hd int_list
-            in
-            let type_size = L.build_intcast (L.size_of typ) i32_t "typsize" llbuilder in
-
-            let total_size = L.build_mul type_size total_cells "totsize" llbuilder in
-
-            (* returns a pointer *)
-            let arr_ptr = L.build_array_alloca typ total_size "thearr" llbuilder in
-            let arr_ptr = L.build_pointercast arr_ptr (pointer_type typ) "tmpptr" llbuilder in
-            arr_ptr
-
-        (* BUILD ARRAY ACCESS TYPE *)
-        and build_array_access s il maps llbuilder isAssign =
-
-            let get_access_type arr_ptr offset =
-                (* need to dereference arr_ptr to give the actual sequential blocks to the build_gep instruction
-                 * which then computes the access offsets *)
-                let arr = L.build_load arr_ptr "load_arr" llbuilder in
-                if isAssign then
-                    L.build_gep arr [| offset |] "isassign" llbuilder
-                else
-                    (* pull value out of array at position *)
-                    let loc = L.build_gep arr [|  offset |] "get" llbuilder in
-                    L.build_load loc "load" llbuilder
-            in
-
-            let indices = List.map (codegen_expr (maps, llbuilder)) il in
-            let arr_ptr = (lookup s (fst maps)) in
-            let arr_dims = (lookup_arr s (snd maps)) in
-            (* currently hardcoding 2D functionality, should generalize later *)
-            if List.length arr_dims = 2 then
-                let offset = L.build_mul (List.nth arr_dims 0) (List.nth indices 0) "2Doffset" llbuilder in
-                let offset = L.build_add offset (List.nth indices 1) "2Doffset" llbuilder in
-                get_access_type arr_ptr offset
-            else
-                let offset = (List.nth indices 0) in
-                get_access_type arr_ptr offset
+                L.build_load (L.build_gep (lookup name (fst maps)) idx_arr name llbuilder) name llbuilder
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (maps, llbuilder) =
@@ -411,7 +369,7 @@ let translate (globals, functions) =
             ignore (L.build_cond_br bool_val then_bb else_bb llbuilder);
             L.builder_at_end context merge_bb
 
-        (* WHILE LOOP: todo - figure out if scoping behaves right *)
+        (* WHILE LOOP *)
         and codegen_while pred body (maps, llbuilder) =
             let pred_bb = L.append_block context "while" f in
             ignore (L.build_br pred_bb llbuilder);
