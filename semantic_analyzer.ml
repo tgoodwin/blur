@@ -24,6 +24,17 @@ type env = {
     return_type: datatype option
 }
 
+let string_of_typ = function
+    Int -> "int"
+  | Double -> "double"
+  | Char -> "char"
+  | String -> "string"
+  | Bool -> "bool"
+  | Void -> "void"
+
+let string_of_datatype = function 
+  | Datatype(t) -> string_of_typ t
+
 let check_prog (globals, functions) = 
 	(* Add global variable declarations to the symbol table *)
 	print_endline("checking prog");
@@ -144,12 +155,15 @@ let check_prog (globals, functions) =
 			let t1 = check_expr env e1 
 			and t2 = check_expr env e2 in
 			match op with 
+			| Add | Sub | Mult | Div -> print_endline("arith");
+			ignore(print_endline(string_of_datatype t1));
+			ignore(print_endline(string_of_datatype t1));
+			if t1 <> t2 then raise (Failure ("illegal operation")) 
+			else t1
 			| Asn -> print_endline("asn");
 				if t1 = t2 then t1
 				else raise (Failure ("illegal assignment")) 
 	in
-
-
 
 	let check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
 		print_endline("checking stmt");
