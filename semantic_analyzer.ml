@@ -39,6 +39,11 @@ let check_prog (globals, functions) =
 	(* Add global variable declarations to the symbol table *)
 	print_endline("checking prog");
 
+	let built_in_functions = 
+		(* TODO: print takes an expr, not an string. See if we need to change this later. *)
+		[ {name = "print"; arg_types = [Datatype(String)]; return_type = Datatype(Void);} ]
+	in
+
 	(* A global variable cannot have type void. *)
 	let check_not_void (vdecl : vardecl) = 
 		(* Get the types of the globals *)
@@ -160,6 +165,7 @@ let check_prog (globals, functions) =
 			ignore(print_endline(string_of_datatype t1));
 			if t1 <> t2 then raise (Failure ("illegal operation")) 
 			else t1
+			(* TODO: fail if type is not int or double *)
 			| Asn -> print_endline("asn");
 				if t1 = t2 then t1
 				else raise (Failure ("illegal assignment")) 
@@ -187,6 +193,8 @@ let check_prog (globals, functions) =
 	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
 		print_endline("checking func decl");
 		print_endline(string_of_int(List.length env.symtab.variables));
+		if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
+		raise (Failure ("Cannot overwrite print function!!")) else
 		(* Get the types of the function's arguments. *)
 		let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
 		(* Make a function entry for the function. *)
@@ -232,7 +240,7 @@ let check_prog (globals, functions) =
 	let env = 
 		{
 			symtab = { parent = None; variables = []; args = []; };
-			funcs = []; (*built-in *)
+			funcs = built_in_functions; 
 			return_type = None;
 		} in
 
