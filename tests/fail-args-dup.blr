@@ -7,5 +7,4 @@ void argsdup(int a, int a) {
 void main() {
     int a = 5;
     argsdup(a, a);
-    print(z);
 }
