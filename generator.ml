@@ -79,9 +79,14 @@ let translate (globals, functions) =
             in StringMap.add name (L.define_global name init the_module) map in
         List.fold_left global_var StringMap.empty globals in
 
-    (* declare built ins *)
+    (* DECLARE EXTERNAL LIBRARY FUNCTIONS *)
     let printf_t = L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
     let printf_func = L.declare_function "printf" printf_t the_module in
+
+    let foo_t = L.var_arg_function_type i32_t [| i32_t |] in
+    let foo_func = L.declare_function "foo" foo_t the_module in
+
+    (* ---- end externals ------ *)
 
     (* define each function w/ args and return type so we can call it *)
     let function_decls =
@@ -304,6 +309,7 @@ let translate (globals, functions) =
           (* --- built in functions --- *)
           | A.FuncCall ("print", [e])    -> codegen_print e maps llbuilder
           | A.FuncCall ("len", [arr])     -> L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr)))
+          | A.FuncCall ("foo", [e])     -> L.build_call foo_func [| (codegen_expr (maps, llbuilder) e) |] "foo" llbuilder
           (* --- end built-ins --- *)
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
