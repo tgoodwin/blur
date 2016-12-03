@@ -1,0 +1,10 @@
+int z;
+
+void argsdup(int a, int a) {
+    z = a + a;
+}
+
+void main() {
+    int a = 5;
+    argsdup(a, a);
+}
