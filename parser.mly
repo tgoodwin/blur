@@ -59,9 +59,6 @@ args_list:
     argdecl                 { [$1] }
   | args_list COMMA argdecl { $3 :: $1 } 
 
-/*argdecl:
-    datatype ID { Arg($1, $2) }*/
-
 argdecl:
     datatype ID
     { 
@@ -82,10 +79,6 @@ primitive:
 type_tag:
     primitive { $1 }
 
-/*array_type:
-    one_d_array { Arraytype($1) }
-  | two_d_array { Arraytype($1) }*/
-
 array_type:
     unsized_array { $1 }
   | sized_array   { $1 }
@@ -93,12 +86,12 @@ array_type:
 unsized_array:
   type_tag LBRACK brackets RBRACK { UnsizedArray($1, $3) }
 
-sized_array:
-    type_tag lit_dimension_args RBRACK { SizedArray($1, List.rev $2) }
+literal_dimension_args:
+    LBRACK INT_LITERAL          { [$2] }
+  | literal_dimension_args RBRACK LBRACK INT_LITERAL { $4::$1 }
 
-lit_dimension_args:
-    LBRACK INT_LITERAL         { [$2] }
-  | lit_dimension_args RBRACK LBRACK INT_LITERAL   { $4::$1}
+sized_array:
+    type_tag literal_dimension_args RBRACK { SizedArray($1, List.rev $2) }
 
 datatype:
     type_tag    { Datatype($1) }
