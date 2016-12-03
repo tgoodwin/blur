@@ -300,7 +300,9 @@ let translate (globals, functions) =
           | A.Id id           -> L.build_load (lookup id (fst maps)) id llbuilder (* todo: error-checking in lookup *)
           | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 maps llbuilder
           | A.Unop(op, e)       -> codegen_unop op e maps llbuilder
+          (* built in functions *)
           | A.FuncCall ("print", [e])    -> codegen_print e maps llbuilder
+          | A.FuncCall ("len", [arr])     -> L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr)))
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
           | A.ArrayAccess(n, dl)        -> build_array_access n dl maps llbuilder false
@@ -317,12 +319,31 @@ let translate (globals, functions) =
                 (StringMap.add vdecl.declID local_var locals), gen_e
             in
 
+            (*let rec dynamic_sized_array t el locals =
+                let array_type =
+                if (List.length el) = 2 then
+                    let dim1 = codegen_expr (maps, llbuilder) (List.nth el 0)
+                    and dim2 = codegen_expr (maps, llbuilder) (List.nth el 1) in
+                    array_t (array_t (ltype_of_typ (Datatype(t))) dim2) dim1
+                else
+                    array_t (ltype_of_typ (Datatype(t))) (codegen_expr (maps, llbuilder) (List.hd el))
+                in let local_var = L.build_alloca array_type vdecl.declID llbuilder in
+                StringMap.add vdecl.declID local_var locals
+            in *)
+
+
             let local_vars = (fst maps) in
             match vdecl.declTyp with
               A.UnsizedArray(p, d) ->
                 let local_vars, exp = get_expr_type_then_add vdecl local_vars in
                 let maps = (local_vars, (snd maps)) in
                 ignore(codegen_asn vdecl.declID exp maps llbuilder); maps, llbuilder
+            (*| A.SizedArray(t, el) ->
+                let local_vars = dynamic_sized_array t el local_vars in
+                let maps = (local_vars, (snd maps)) in
+                match vdecl.declInit with
+                  A.Noexpr -> maps, llbuilder
+                | e        -> let exp = (codegen_expr (maps, llbuilder) e) in ignore(codegen_asn vdecl.declID exp maps llbuilder); maps, llbuilder *)
             | _         ->
                 let local_vars = add_local vdecl local_vars in
                 let maps = (local_vars, (snd maps)) in
