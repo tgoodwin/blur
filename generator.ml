@@ -29,8 +29,10 @@ let translate (globals, functions) =
 
     (* THIS DOESNT WORK TODO TODO *)
     let rec ltype_of_unsized_array t d =
-        if d = 2 then array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0
-        else array_t (ltype_of_typ (Datatype(t))) 0
+        match d with
+          3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0) 0
+        | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0
+        | 1 -> array_t (ltype_of_typ (Datatype(t))) 0
 
     and ltype_of_sized_array t el =
         match (List.length el) with
