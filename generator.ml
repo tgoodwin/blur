@@ -33,11 +33,10 @@ let translate (globals, functions) =
         else array_t (ltype_of_typ (Datatype(t))) 0
 
     and ltype_of_sized_array t el =
-        if (List.length el) = 2 then
-            array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 1)) (List.nth el 0)
-        else
-            array_t (ltype_of_typ (Datatype(t))) (List.hd el)
-
+        match (List.length el) with
+            3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 2)) (List.nth el 1)) (List.nth el 0)
+          | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 1)) (List.nth el 0)
+          | 1 -> array_t (ltype_of_typ (Datatype(t))) (List.hd el)
     
     and ltype_of_typ (d: A.datatype) = match d with
         Datatype(A.Int) -> i32_t

@@ -8,3 +8,4 @@ exception NotAnArray
 exception NotADatatype
 exception NotAssignable
 exception UnsizedArrayWithoutAssignment
+exception UnsupportedDimensions
