@@ -136,16 +136,17 @@ let check_prog (globals, functions) =
 		match expr with 
 			IntLit i -> print_endline("int"); Datatype(Int)
 		| Id s -> print_endline("id"); 
-			let t =
 				(try get_variable_type env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
-				) in 
-			Datatype(Int) (* Get type of var*)
+				) 
+			(*Datatype(Int)*) (* Get type of var*)
 		| Binop (e1, op, e2) -> print_endline("expr is binop");
-			let e1 = check_expr env e1 
-			and e2 = check_expr env e2 in
+			let t1 = check_expr env e1 
+			and t2 = check_expr env e2 in
 			match op with 
-			| Asn -> print_endline("asn"); Datatype(Int)
+			| Asn -> print_endline("asn");
+				if t1 = t2 then t1
+				else raise (Failure ("illegal assignment")) 
 	in
 
 
