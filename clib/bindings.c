@@ -11,6 +11,10 @@
 int glutInitialized = 0;    // Ensure glutInit() is not called twice
                             // the only function that calls it is readDimensions()
  
+int foo(int x) {
+    return x + 2;
+}
+
 /* Handler for window-repaint event. Called back when the window first appears and
    whenever the window needs to be re-painted. */
 void display() 
@@ -220,12 +224,14 @@ int** readGrayscaleImage(char* filename){
   return grayImage;
 }
 
+/*
+
 int main(int argc, char **argv) 
 {
     GLuint texid;
     int    image;
  
-    if ( argc < 1){ return -1; /* no image file to  display */ }
+    if ( argc < 1){ return -1; }
 
     int** colorimg = readColorImage(argv[1]);
     int* dimensions = readDimensions(argv[1]);
@@ -249,7 +255,6 @@ int main(int argc, char **argv)
       }
     }
     
-    /* s
     // OpenGL texture binding of the image loaded by DevIL
        glGenTextures(1, &texid); // Texture name generation 
        glBindTexture(GL_TEXTURE_2D, texid); // Binding of texture name
@@ -267,5 +272,4 @@ int main(int argc, char **argv)
      glDeleteTextures(1, &texid);
     
      return 0;
-     */
-}
+} */
