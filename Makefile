@@ -50,7 +50,7 @@ libs :
 
 .PHONY : clean
 clean :
-	rm -rf prog scanner.ml parser.ml parser.mli a.out
+	rm -rf prog scanner.ml parser.ml parser.mli a.out out_final
 	rm -rf *.cmo *.cmi *.cmx *.o *.bc *.ll *.s *.out
 	rm -f *~
 	cd clib && make clean
