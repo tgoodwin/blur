@@ -28,15 +28,18 @@ let string_of_typ = function
   | String -> "string"
   | Bool -> "bool"
   | Void -> "void"
-  | Canvas -> "Canvas"
 
-let string_of_array t = string_of_typ t  ^ "[]" 
+let rec str_brackets d str = if d > 0 then str_brackets (d - 1) ("[]" ^ str) else str
 
-let string_of_datatype = function 
-    Arraytype(t) -> string_of_array t
+let string_of_array t d = string_of_typ t  ^ (str_brackets d "")
+
+
+let rec string_of_datatype = function 
+    UnsizedArray(t, d) -> string_of_array t d
+  | SizedArray(t, el)   -> string_of_typ t ^ "[" ^ String.concat "][" (List.map string_of_int el) ^ "]"
   | Datatype(t) -> string_of_typ t
 
-let rec string_of_expr = function
+and string_of_expr = function
     IntLit(l) -> string_of_int l
   | DoubleLit(l) -> string_of_float l
   | StrLit(l) -> "\"" ^ l ^ "\""
@@ -46,9 +49,8 @@ let rec string_of_expr = function
   | Binop(e1, o, e2) -> "\t" ^ string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_unop o ^ string_of_expr e
   | ArrayListInit(l) -> "[" ^ String.concat ", " (List.map string_of_expr l) ^ "]"
-  | ArraySizeInit(t, n) -> string_of_typ t ^ "[" ^ String.concat ", " (List.map string_of_int n) ^ "]"
-  | ArrayAccess(id, i) -> "\t" ^ id ^ "[" ^ string_of_int i ^ "]"
-  | CanvasInit(x, y, c) -> "(" ^ string_of_int x ^ ", " ^ string_of_int y ^ ", '" ^ Char.escaped c ^ "'}"
+  (*| ArraySizeInit(t, n) -> string_of_typ t ^ "[" ^ String.concat "][" (List.map string_of_expr n) ^ "]" *)
+  | ArrayAccess(id, dl) -> "\t" ^ id ^ "[" ^ String.concat "][" (List.map string_of_expr dl) ^ "]"
   | FuncCall(n, p) -> n ^ "(" ^ String.concat ", " (List.map string_of_expr p) ^ ")"
   | Noexpr -> ""
 

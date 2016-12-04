@@ -1,6 +1,8 @@
 /* Print test */
 
-print("hello","%s");
-print(12345,"%d");
-print(1.12345,"%f");
-print('a',"%c");
+void main() {
+    print("hello");
+    print(12345);
+    print(1.12345);
+    print('a');
+}

@@ -2,6 +2,6 @@ void main() {
     int i;
     /* basic for loop */
     for(i=0; i<3; i=i+1) {
-	print(i, "%d");
-    };
+	print(i);
+    }
 }

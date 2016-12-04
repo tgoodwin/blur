@@ -24,11 +24,6 @@ type primitive =
   | String
   | Bool
   | Void
-  | Canvas
-
-type datatype = 
-    Arraytype of primitive
-  | Datatype of primitive
 
 type expr =
     Binop of expr * binopr * expr
@@ -42,11 +37,14 @@ type expr =
   (*| Asn of string * expr *)
   (* | Seq of expr * expr *)
   | ArrayListInit of expr list
-  | ArraySizeInit of primitive * int list
-  | ArrayAccess of string * int
-  | CanvasInit of int * int * char
+  | ArrayAccess of string * expr list
   | FuncCall of string * expr list
   | Noexpr
+
+type datatype =
+    SizedArray of primitive * int list
+  | UnsizedArray of primitive * int
+  | Datatype of primitive
 
 type argdecl = {
   argdeclType : datatype;

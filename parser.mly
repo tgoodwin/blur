@@ -4,7 +4,7 @@
 
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK
 %token SEMI COMMA FUNC
-%token INT DOUBLE STRING CHAR BOOL CANVAS
+%token INT DOUBLE STRING CHAR BOOL
 %token IF ELSE FOR WHILE VOID RETURN TRUE FALSE BREAK CONTINUE
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token EQUAL NEQUAL LT LEQ GT GEQ AND OR NOT
@@ -59,9 +59,6 @@ args_list:
     argdecl                 { [$1] }
   | args_list COMMA argdecl { $3 :: $1 } 
 
-/*argdecl:
-    datatype ID { Arg($1, $2) }*/
-
 argdecl:
     datatype ID
     { 
@@ -71,7 +68,6 @@ argdecl:
         }  
     }
 
-/* TODO: Reconsider typ of Canvas. */
 primitive:
     INT { Int }
   | DOUBLE { Double }
@@ -79,21 +75,31 @@ primitive:
   | STRING { String }
   | BOOL { Bool }
   | VOID { Void }
-  | CANVAS { Canvas }
 
 type_tag:
     primitive { $1 }
 
-/*array_type:
-    one_d_array { Arraytype($1) }
-  | two_d_array { Arraytype($1) }*/
-
 array_type:
-  type_tag LBRACK RBRACK { Arraytype($1) }
+    unsized_array { $1 }
+  | sized_array   { $1 }
+
+unsized_array:
+  type_tag LBRACK brackets RBRACK { UnsizedArray($1, $3) }
+
+literal_dimension_args:
+    LBRACK INT_LITERAL          { [$2] }
+  | literal_dimension_args RBRACK LBRACK INT_LITERAL { $4::$1 }
+
+sized_array:
+    type_tag literal_dimension_args RBRACK { SizedArray($1, List.rev $2) }
 
 datatype:
     type_tag    { Datatype($1) }
   | array_type  { $1 }
+
+brackets:
+    /* nothing */ { 1 }
+  | brackets RBRACK LBRACK {$1 + 1}
 
 vardecl:
     vardecl_simple { $1 }  
@@ -182,22 +188,23 @@ expr:
   | LPAREN expr RPAREN { $2 }
   
   | ID ASSIGN expr    { Binop(Id($1), Asn, $3) }
-  | ID LBRACK INT_LITERAL RBRACK ASSIGN expr  { Binop(ArrayAccess($1, $3), Asn, $6) }
+  | array_access ASSIGN expr {Binop($1, Asn, $3) }
+
 
   /* lists */
-  | type_tag dimension_args { ArraySizeInit($1, List.rev $2) }
+  | array_access { $1 }
   | func_call { $1 }
 
   /* lists */
   | LBRACK expr_list RBRACK { ArrayListInit($2) }
-  | ID LBRACK INT_LITERAL RBRACK { ArrayAccess($1, $3) }
-
-  /* canvas */
-  | LPAREN INT_LITERAL COMMA INT_LITERAL COMMA CHAR_LITERAL RPAREN { CanvasInit($2, $4, $6) }
+  /* | ID LBRACK INT_LITERAL RBRACK { ArrayAccess($1, $3) } */
 
 dimension_args:
-    LBRACK INT_LITERAL RBRACK { [$2] }
-  | dimension_args LBRACK INT_LITERAL RBRACK { $3 :: $1 } 
+    LBRACK expr { [$2] }
+  | dimension_args RBRACK LBRACK expr { $4::$1 }
+
+array_access:
+    ID dimension_args RBRACK { ArrayAccess($1, List.rev $2) }
 
 func_call:
     ID LPAREN RPAREN            { FuncCall($1, []) }

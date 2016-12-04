@@ -1,0 +1,8 @@
+int main()
+{
+    int[] a = int[8];
+    a[3] = 4;
+    int z;
+    z = a[3];
+    print(z);
+}
