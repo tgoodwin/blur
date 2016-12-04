@@ -58,7 +58,7 @@ testAll(){
 if [ -f "results.out" ]; then
     rm "results.out"
 fi
-for i in testsPP/*.blr
+for i in tests/*.blr
 do
     check $i >> results.out;
 done

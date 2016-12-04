@@ -1,4 +1,3 @@
 void main() {
-        string a = "Hello, world!";
-        print(a);
+    string a = "Hello, world!";
 }
