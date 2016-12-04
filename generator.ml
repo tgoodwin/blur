@@ -29,16 +29,17 @@ let translate (globals, functions) =
 
 
     (* THIS DOESNT WORK TODO TODO *)
-    let rec ltype_of_unsized_array t d = get_array_pointer (Datatype(t)) d
-         (* 3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0) 0
+    let rec ltype_of_unsized_array t d =
+        match d with
+          3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0) 0
         | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0
-        | 1 -> array_t (ltype_of_typ (Datatype(t))) 0 *)
+        | 1 -> array_t (ltype_of_typ (Datatype(t))) 0 
 
-    and ltype_of_sized_array t el = get_array_pointer (Datatype(t)) (List.length el)
-        (*match (List.length el) with
+    and ltype_of_sized_array t el = (*get_array_pointer (Datatype(t)) (List.length el) *)
+        match (List.length el) with
             3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 2)) (List.nth el 1)) (List.nth el 0)
           | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 1)) (List.nth el 0)
-          | 1 -> array_t (ltype_of_typ (Datatype(t))) (List.hd el) *)
+          | 1 -> array_t (ltype_of_typ (Datatype(t))) (List.hd el)
     
     and get_array_pointer typ dims =
         let lltype = ltype_of_typ typ in
@@ -327,10 +328,11 @@ let translate (globals, functions) =
         (* codegen_vdecl: handle variable declarations *)
         and codegen_vdecl (vdecl: A.vardecl) (maps, llbuilder) =
 
-            let get_expr_type_then_add (vdecl: A.vardecl) locals =
+            let get_expr_type_then_add (prim, dims) (vdecl: A.vardecl) locals =
                 let gen_e = codegen_expr(maps, llbuilder) vdecl.declInit in
+                let ptr_typ = get_array_pointer (Datatype(prim)) dims in
                 let exp_typ = (L.type_of gen_e) in
-                let local_var = L.build_alloca exp_typ vdecl.declID llbuilder in
+                let local_var = L.build_alloca ptr_typ vdecl.declID llbuilder in
                 (StringMap.add vdecl.declID local_var locals), gen_e
             in
 
@@ -356,7 +358,7 @@ let translate (globals, functions) =
             let local_vars = (fst maps) in
             match vdecl.declTyp with
               A.UnsizedArray(p, d) ->
-                let local_vars, exp = get_expr_type_then_add vdecl local_vars in
+                let local_vars, exp = get_expr_type_then_add (p, d) vdecl local_vars in
                 let maps = (local_vars, (snd maps)) in
                 ignore(codegen_asn vdecl.declID exp maps llbuilder); maps, llbuilder
             (*| A.SizedArray(t, el) ->
