@@ -156,6 +156,7 @@ let check_prog (globals, functions) =
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
 				) 
 			(*Datatype(Int)*) (* Get type of var*)
+		| FuncCall (s, elist) -> print_endline("func call"); Datatype(Int)
 		| Binop (e1, op, e2) -> print_endline("expr is binop");
 			let t1 = check_expr env e1 
 			and t2 = check_expr env e2 in
