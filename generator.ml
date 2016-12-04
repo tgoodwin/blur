@@ -25,6 +25,7 @@ let translate (globals, functions) =
 
     let string_t = L.pointer_type i8_t in
     let array_t = L.array_type in
+    let zero_t = L.const_int i32_t 0 in
 
 
     (* THIS DOESNT WORK TODO TODO *)
@@ -388,6 +389,15 @@ let translate (globals, functions) =
             else
                 L.build_load (L.build_gep (lookup name (fst maps)) idx_arr name llbuilder) name llbuilder
 
+        (* s is expected to be the ID expression of an already declared array *)
+        and build_array_reference s dims (maps, llbuilder) =
+            let id = id_to_str s in
+            let s_val = (lookup id (fst maps)) in
+            match dims with
+              1 -> L.build_in_bounds_gep s_val [| zero_t; zero_t |] id llbuilder
+            | 2 -> L.build_in_bounds_gep s_val [| zero_t; zero_t; zero_t |] id llbuilder
+            | 3 -> L.build_in_bounds_gep s_val [| zero_t; zero_t; zero_t; zero_t |] id llbuilder
+
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (maps, llbuilder) =
             let bool_val = (codegen_expr (maps, llbuilder) pred) in
@@ -428,6 +438,12 @@ let translate (globals, functions) =
             match L.block_terminator (L.insertion_block llbuilder) with
               Some _ -> ()
             | None      -> ignore (f llbuilder)
+
+        and codegen_return ret_e (maps, llbuilder) =
+            match func_decl.A.typ with
+              A.Datatype(A.Void)        -> L.build_ret_void llbuilder
+            | A.UnsizedArray(p, d)      -> L.build_ret (build_array_reference ret_e d (maps, llbuilder)) llbuilder
+            | _                         -> L.build_ret (codegen_expr (maps, llbuilder) ret_e) llbuilder
            
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
@@ -436,10 +452,7 @@ let translate (globals, functions) =
             A.Block sl              -> List.fold_left codegen_stmt (maps, llbuilder) sl
           | A.Decl e                -> codegen_vdecl e (maps, llbuilder)
           | A.Expr e                -> ignore (codegen_expr (maps, llbuilder) e); maps, llbuilder
-          | A.Return e              -> ignore(match func_decl.A.typ with
-                                        A.Datatype(A.Void)      -> L.build_ret_void llbuilder
-                                      | _                       -> L.build_ret (codegen_expr (maps, llbuilder) e) llbuilder); maps, llbuilder
-
+          | A.Return e              -> ignore (codegen_return e (maps, llbuilder)); maps, llbuilder
           | A.If(p, s1, s2)         -> let builder = (codegen_conditional p s1 s2 (maps, llbuilder)) in maps, builder
           | A.While(p, body)        -> let builder = (codegen_while p body (maps, llbuilder)) in maps, builder
           | A.For(e1, e2, e3, body) -> codegen_for e1 e2 e3 body (maps, llbuilder)
