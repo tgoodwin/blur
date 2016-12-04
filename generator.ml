@@ -29,18 +29,24 @@ let translate (globals, functions) =
 
 
     (* THIS DOESNT WORK TODO TODO *)
-    let rec ltype_of_unsized_array t d =
-        match d with
-          3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0) 0
+    let rec ltype_of_unsized_array t d = get_array_pointer (Datatype(t)) d
+         (* 3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0) 0
         | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0
-        | 1 -> array_t (ltype_of_typ (Datatype(t))) 0
+        | 1 -> array_t (ltype_of_typ (Datatype(t))) 0 *)
 
-    and ltype_of_sized_array t el =
-        match (List.length el) with
+    and ltype_of_sized_array t el = get_array_pointer (Datatype(t)) (List.length el)
+        (*match (List.length el) with
             3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 2)) (List.nth el 1)) (List.nth el 0)
           | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 1)) (List.nth el 0)
-          | 1 -> array_t (ltype_of_typ (Datatype(t))) (List.hd el)
+          | 1 -> array_t (ltype_of_typ (Datatype(t))) (List.hd el) *)
     
+    and get_array_pointer typ dims =
+        let lltype = ltype_of_typ typ in
+        match dims with
+          1 -> L.pointer_type lltype
+        | 2 -> L.pointer_type (L.pointer_type lltype)
+        | 3 -> L.pointer_type (L.pointer_type (L.pointer_type lltype))
+
     and ltype_of_typ (d: A.datatype) = match d with
         Datatype(A.Int) -> i32_t
       | Datatype(A.Double) -> iFl_t
