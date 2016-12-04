@@ -5,8 +5,6 @@ OBJS = ast.cmx parser.cmx scanner.cmx semantic_analyzer.cmx exceptions.cmx confi
 prog : $(OBJS)
 	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis -package llvm.bitwriter -package llvm.bitreader -package llvm.linker $(OBJS) -o prog
 	./prog -l < helloWorld.blr > "helloWorld.ll"
-	make libs		
-	llc helloWorld.ll > helloWorld.s
 	
 scanner.ml : scanner.mll
 	ocamllex scanner.mll
