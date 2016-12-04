@@ -141,12 +141,10 @@ let check_prog (globals, functions) =
 			in (new_env, adecl))
 	in
 
-	(*let rec check_binop e1 e2 binop env = 
-		print_endline("checking binop");
-		let checked_e1 = check_expr e1 in
-
+	let check_func_call (id : string) (args : expr list) (env : env) = 
+		print_endline("checking function call");
 		Datatype(Int)
-  in*)
+	in
 
 	let rec check_expr (env : env) (expr : expr) = 
 		match expr with 
@@ -156,7 +154,7 @@ let check_prog (globals, functions) =
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
 				) 
 			(*Datatype(Int)*) (* Get type of var*)
-		| FuncCall (s, elist) -> print_endline("func call"); Datatype(Int)
+		| FuncCall (s, arglist) -> check_func_call s arglist env
 		| Binop (e1, op, e2) -> print_endline("expr is binop");
 			let t1 = check_expr env e1 
 			and t2 = check_expr env e2 in
