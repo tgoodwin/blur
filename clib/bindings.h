@@ -17,4 +17,6 @@ int* readDimensions(char *filename);
 
 int** readGrayscaleImage(char *filename);
 
+int** canvas(char *filename, char* option);
+
 #endif
