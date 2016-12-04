@@ -4,10 +4,7 @@ OBJS = ast.cmx parser.cmx scanner.cmx semantic_analyzer.cmx exceptions.cmx confi
 
 prog : $(OBJS)
 	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis -package llvm.bitwriter -package llvm.bitreader -package llvm.linker $(OBJS) -o prog
-	./prog -l < helloWorld.blr > "helloWorld.ll"
-	make libs		
-	llc helloWorld.ll > helloWorld.s
-	
+		
 scanner.ml : scanner.mll
 	ocamllex scanner.mll
 
@@ -39,9 +36,17 @@ semantic_analyzer.cmo : ast.cmo sast.cmo
 semantic_analyzer.cmx : ast.cmx sast.cmx
 parser.cmi: ast.cmo
 
+.PHONY : blur
+blur:
+	make prog
+	./prog -l < $(file) > "out.ll"
+	make libs		
+	llc out.ll > out.s
+	gcc -I ${LIBDIR} -o out_final out.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
+
 .PHONY : libs
 libs :
-	cd clib && make clib
+	cd ${LIBDIR} && make clib
 
 .PHONY : clean
 clean :

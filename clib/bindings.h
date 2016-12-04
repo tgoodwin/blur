@@ -5,6 +5,8 @@ void initGL(int w, int h);
 
 int LoadImage(char *filename);
 
+int foo(int x);
+
 ILubyte * getImageData(char *filename);
 
 void initializeGlDevIL(char *filename);
