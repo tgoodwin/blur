@@ -30,6 +30,7 @@ rule token = parse
 | "&&"  { AND }
 | "||"  { OR }
 | '!'   { NOT }
+| '|'	{ BAR }
 | "int" 	{ INT }
 | "double"      { DOUBLE }
 | "string"      { STRING }
