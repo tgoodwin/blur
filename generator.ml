@@ -331,7 +331,6 @@ let translate (globals, functions) =
             let get_expr_type_then_add (prim, dims) (vdecl: A.vardecl) locals =
                 let gen_e = codegen_expr(maps, llbuilder) vdecl.declInit in
                 let ptr_typ = get_array_pointer (Datatype(prim)) dims in
-                let exp_typ = (L.type_of gen_e) in
                 let local_var = L.build_alloca ptr_typ vdecl.declID llbuilder in
                 (StringMap.add vdecl.declID local_var locals), gen_e
             in
@@ -359,8 +358,10 @@ let translate (globals, functions) =
             match vdecl.declTyp with
               A.UnsizedArray(p, d) ->
                 let local_vars, exp = get_expr_type_then_add (p, d) vdecl local_vars in
+                let actual_arr = L.build_alloca (L.type_of exp) vdecl.declID llbuilder in
                 let maps = (local_vars, (snd maps)) in
-                ignore(codegen_asn vdecl.declID exp maps llbuilder); maps, llbuilder
+                let arr_ptr = build_array_reference actual_arr (Datatype(p)) vdecl.declID d (maps, llbuilder) in
+                ignore(codegen_asn vdecl.declID arr_ptr maps llbuilder); maps, llbuilder
             (*| A.SizedArray(t, el) ->
                 ignore(print_endline("fuck"));
                 let local_vars = dynamic_sized_array t el local_vars in
@@ -398,13 +399,12 @@ let translate (globals, functions) =
                 L.build_load (L.build_gep (lookup name (fst maps)) idx_arr name llbuilder) name llbuilder
 
         (* s is expected to be the ID expression of an already declared array *)
-        and build_array_reference s dims (maps, llbuilder) =
-            let id = id_to_str s in
-            let s_val = (lookup id (fst maps)) in
+        and build_array_reference the_arr typ id dims (maps, llbuilder) =
+            let ptr_typ = get_array_pointer typ dims in
             match dims with
-              1 -> L.build_in_bounds_gep s_val [| zero_t; zero_t |] id llbuilder
-            | 2 -> L.build_in_bounds_gep s_val [| zero_t; zero_t; zero_t |] id llbuilder
-            | 3 -> L.build_in_bounds_gep s_val [| zero_t; zero_t; zero_t; zero_t |] id llbuilder
+              1 -> L.build_in_bounds_gep the_arr [| zero_t; zero_t |] id llbuilder
+            | 2 -> L.build_pointercast (L.build_in_bounds_gep the_arr [| zero_t; zero_t; zero_t |] id llbuilder) ptr_typ (id ^ "_ref") llbuilder
+            | 3 -> L.build_pointercast (L.build_in_bounds_gep the_arr [| zero_t; zero_t; zero_t; zero_t |] id llbuilder) ptr_typ (id ^ "_ref") llbuilder
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (maps, llbuilder) =
@@ -450,7 +450,7 @@ let translate (globals, functions) =
         and codegen_return ret_e (maps, llbuilder) =
             match func_decl.A.typ with
               A.Datatype(A.Void)        -> L.build_ret_void llbuilder
-            | A.UnsizedArray(p, d)      -> L.build_ret (build_array_reference ret_e d (maps, llbuilder)) llbuilder
+            (*| A.UnsizedArray(p, d)      -> L.build_ret (build_array_reference ret_e d (maps, llbuilder)) llbuilder *)
             | _                         -> L.build_ret (codegen_expr (maps, llbuilder) ret_e) llbuilder
            
         (* build instructions in the given builder for the statement,
