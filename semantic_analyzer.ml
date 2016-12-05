@@ -141,11 +141,17 @@ let check_prog (globals, functions) =
 			in (new_env, adecl))
 	in
 
+	(* Checking function call returns the type of the function. *)
 	let check_func_call (id : string) (args : expr list) (env : env) = 
 		print_endline("checking function call");
-		Datatype(Int)
+		print_endline(string_of_int(List.length env.funcs));
+		try
+			let func_entry = List.find (fun f -> f.name = id) env.funcs in
+			Datatype(Int)
+		with | Not_found -> raise (Failure ("undeclared function " ^ id)) 
 	in
 
+	(* Returns type of expression. *)
 	let rec check_expr (env : env) (expr : expr) = 
 		match expr with 
 			IntLit i -> print_endline("int"); Datatype(Int)
@@ -170,13 +176,21 @@ let check_prog (globals, functions) =
 				else raise (Failure ("illegal assignment")) 
 	in
 
+	(* Return env and stmt tuple. *)
 	let check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
 		print_endline("checking stmt");
 		match stmt with 
 			Expr e -> ignore(check_expr env e); (env, stmt) (* Expression cannot mutate the environment. *)
 		| Decl vdecl -> (* Return new env*)
 			let (new_env, vdecl) = check_variable_declaration env vdecl
-			in (new_env, stmt) in
+			in (new_env, stmt)
+		| Return e -> let e_type = check_expr env e in
+			(match env.return_type with
+				| Some return_type ->
+					if e_type = return_type then (env, stmt)
+					else raise (Failure ("incorrect return type"))
+					| None -> raise (Failure ("no return")))
+	in
 
 	(* Each statement takes the environment updated from the previous statement. *)
 	let check_stmt_list (env : env) ( slist : stmt list ) :(env * stmt list) = 
@@ -221,6 +235,8 @@ let check_prog (globals, functions) =
 			funcs =  new_funcs;
 			return_type = Some fdecl.typ;
 		} in
+		print_endline("func count:");
+		print_endline(string_of_int(List.length new_env.funcs));
 		(* Add the args to the function scope. *)
 		let (env_with_args, argdecl_list) = 
 			List.fold_left (fun acc argdecl ->
@@ -283,26 +299,20 @@ let check_prog (globals, functions) =
 	print_endline(string_of_int(List.length new_env.symtab.variables));
 
 	let (_, fdecl_list) = 
+		print_endline("function list size");
+		print_endline(string_of_int(List.length functions));
 		List.fold_left (fun acc fdecl ->
+			print_endline("folding");
+			print_endline(fdecl.fname);
 			let (new_env, f) = check_function_declaration (fst acc) fdecl
 			in (new_env, (f :: (snd acc)))) (new_env, []) functions
 	in fdecl_list;
 
 	let check_function functions =  
 		print_endline("checking functions");
-		
-
-
-
-			(* A program is made up of global vars and function decls. Global vars will be tracked in a separate list.
-			We have a tuple, acc accumulator of environment and function decls,
-			because only function decls can modify the environment.
-			 *)
 
 		(* Return list of functions after checking functions. *)
 		functions in
-	  
-		(*ignore(func_tuple functions);*)
 
 		(* After semantically checking, we return the program -
 		a tuple of a list of globals and a list of functions. *)
