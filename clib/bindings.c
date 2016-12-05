@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <string.h>
 #include <GL/glut.h>
 #include <IL/il.h>
 
@@ -11,6 +13,10 @@
 int glutInitialized = 0;    // Ensure glutInit() is not called twice
                             // the only function that calls it is readDimensions()
  
+int foo(int x) {
+    return x + 2;
+}
+
 /* Handler for window-repaint event. Called back when the window first appears and
    whenever the window needs to be re-painted. */
 void display() 
@@ -220,12 +226,48 @@ int** readGrayscaleImage(char* filename){
   return grayImage;
 }
 
+int** canvas(char *filename, char* option){
+
+  int* dimensions = readDimensions(filename);
+  int width = dimensions[0];
+  int height = dimensions[1];
+  int **canvas = (int **) malloc(width * height * sizeof(int *));
+  
+  if( strcmp( option, "color") == 0 ){
+    for(int i=0; i<width*height; i++){ canvas[i] = (int *) malloc(sizeof(int) * 3); } 
+    canvas = readColorImage(filename); 
+  }
+  else if( strcmp(option, "grayscale") == 0 ){
+    for(int i=0; i<width*height; i++){ canvas[i] = (int *) malloc(sizeof(int) * 1); } 
+    canvas = readColorImage(filename); 
+  }
+  else{
+	printf("invalid argument to command <canvas>");
+	exit(1);
+  } 
+  return canvas;
+}
+
+
+/*
 int main(int argc, char **argv) 
 {
     GLuint texid;
     int    image;
  
-    if ( argc < 1){ return -1; /* no image file to  display */ }
+    if ( argc < 1){ return -1; }
+
+    int* dimensions = readDimensions(argv[1]);
+    int width = dimensions[0];
+    int height = dimensions[1];
+
+    int** canvass = canvas(argv[1],"grayscale");
+
+    for(int i = 0; i < height; i++){
+      for(int j = 0; j < width; j++){
+        printf(" Intensity: %d\n", canvass[(i*width) +j][0] );
+      }
+    }
 
     int** colorimg = readColorImage(argv[1]);
     int* dimensions = readDimensions(argv[1]);
@@ -248,8 +290,8 @@ int main(int argc, char **argv)
         printf("Intensity: %d\n", gsimg[(width*i+j)][0] );
       }
     }
-    
-    /* s
+ 
+     
     // OpenGL texture binding of the image loaded by DevIL
        glGenTextures(1, &texid); // Texture name generation 
        glBindTexture(GL_TEXTURE_2D, texid); // Binding of texture name
@@ -265,7 +307,6 @@ int main(int argc, char **argv)
     // Delete used resources and quit
      ilDeleteImages(1, &image); // Because we have already copied image data into texture data we can release memory used by image.
      glDeleteTextures(1, &texid);
-    
      return 0;
-     */
-}
+} 
+*/

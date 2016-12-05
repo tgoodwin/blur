@@ -1,5 +1,4 @@
 void main() {
-    int[] a = int[5];
+    int[5] a;
     int z = a[2];
-    print(z);
 }

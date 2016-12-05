@@ -1,1 +1,1 @@
-ERROR
+Fatal error: exception Exceptions.UnknownVariable("b")

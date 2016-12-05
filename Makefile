@@ -37,13 +37,21 @@ semantic_analyzer.cmo : ast.cmo sast.cmo
 semantic_analyzer.cmx : ast.cmx sast.cmx
 parser.cmi: ast.cmo
 
+.PHONY : blur
+blur:
+	make prog
+	./prog -l < $(file) > "out.ll"
+	make libs		
+	llc out.ll > out.s
+	gcc -I ${LIBDIR} -o out_final out.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
+
 .PHONY : libs
 libs :
-	cd clib && make clib
+	cd ${LIBDIR} && make clib
 
 .PHONY : clean
 clean :
-	rm -rf prog scanner.ml parser.ml parser.mli a.out
+	rm -rf prog scanner.ml parser.ml parser.mli a.out out_final
 	rm -rf *.cmo *.cmi *.cmx *.o *.bc *.ll *.s *.out
 	rm -f *~
 	cd clib && make clean
