@@ -55,8 +55,8 @@ let translate (globals, functions) =
       | Datatype(A.String) -> string_t
       | Datatype(A.Bool) -> i1_t
       | Datatype(A.Void) -> void_t
-      | UnsizedArray(t, d) -> ltype_of_unsized_array t d
-      | SizedArray(t, el)  -> ltype_of_sized_array t el
+      | UnsizedArray(t, d) -> get_array_pointer (Datatype(t)) d
+      | SizedArray(t, el)  -> get_array_pointer (Datatype(t)) (List.length el)
       | _            -> raise (Exceptions.NotADatatype)
 
     and ltype_of_primitive (p: A.primitive) = match p with
@@ -332,6 +332,7 @@ let translate (globals, functions) =
                 let gen_e = codegen_expr(maps, llbuilder) vdecl.declInit in
                 let ptr_typ = get_array_pointer (Datatype(prim)) dims in
                 let local_var = L.build_alloca ptr_typ vdecl.declID llbuilder in
+                ignore(print_endline("; putmap "^ L.string_of_llvalue(local_var)));
                 (StringMap.add vdecl.declID local_var locals), gen_e
             in
 
@@ -361,6 +362,8 @@ let translate (globals, functions) =
                 let actual_arr = L.build_alloca (L.type_of exp) vdecl.declID llbuilder in
                 let maps = (local_vars, (snd maps)) in
                 let arr_ptr = build_array_reference actual_arr (Datatype(p)) vdecl.declID d (maps, llbuilder) in
+                ignore(print_endline("; arr_ptr " ^ L.string_of_lltype(L.type_of arr_ptr)));
+                ignore(print_endline("; in map: " ^ L.string_of_lltype(L.type_of (lookup vdecl.declID local_vars))));
                 ignore(codegen_asn vdecl.declID arr_ptr maps llbuilder); maps, llbuilder
             (*| A.SizedArray(t, el) ->
                 ignore(print_endline("fuck"));
@@ -389,18 +392,24 @@ let translate (globals, functions) =
        (* ----------------------------- *)
             
         and build_array_access name idx_list maps llbuilder isAssign =
+            let the_ptr = (lookup name (fst maps)) in
+            ignore(print_endline("; accessptr " ^ (L.string_of_llvalue (the_ptr))));
+            let the_arr = L.build_load the_ptr name llbuilder in
+            ignore(print_endline("; loadaccessptr " ^ (L.string_of_llvalue (the_arr)))); (* first val in arr *)
+            (* now we should have the *)
             let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
             let idx_list = (L.const_int i32_t 0)::[]@idx_list in
 
             let idx_arr = Array.of_list idx_list in
             if isAssign then
-                L.build_gep (lookup name (fst maps)) idx_arr name llbuilder
+                L.build_gep the_arr idx_arr name llbuilder
             else
-                L.build_load (L.build_gep (lookup name (fst maps)) idx_arr name llbuilder) name llbuilder
+                L.build_load (L.build_load the_arr name llbuilder) name llbuilder
 
         (* s is expected to be the ID expression of an already declared array *)
         and build_array_reference the_arr typ id dims (maps, llbuilder) =
             let ptr_typ = get_array_pointer typ dims in
+            ignore(print_endline("; build arr ref " ^ (L.string_of_lltype (ptr_typ))));
             match dims with
               1 -> L.build_in_bounds_gep the_arr [| zero_t; zero_t |] id llbuilder
             | 2 -> L.build_pointercast (L.build_in_bounds_gep the_arr [| zero_t; zero_t; zero_t |] id llbuilder) ptr_typ (id ^ "_ref") llbuilder
