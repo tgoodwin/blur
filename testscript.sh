@@ -56,6 +56,10 @@ echo "${filebase} pretty print: "
 
 testAll(){
 #rm results.out
+=======
+if [ -f "results.out" ]; then
+    rm "results.out"
+fi
 for i in tests/*.blr
 do
     check $i >> results.out;

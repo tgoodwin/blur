@@ -1,0 +1,4 @@
+int dupArg(int a, void b) {
+    int c = a;
+    return c;
+}

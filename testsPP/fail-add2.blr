@@ -1,0 +1,7 @@
+void main (int x, int y) {
+ int x = 5;
+ string y = "hello";
+ int z;
+ z = 5 + 3;
+ z = x + y;
+}
