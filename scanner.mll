@@ -1,7 +1,7 @@
 (* Ocammlex scanner for Blur lang *)
 { open Parser }
 
-let character = ['a'-'z' 'A'-'Z']
+let character = ['a'-'z' 'A'-'Z' '$' '@' '%' '&' '#' '*' '/' '|' '(' ')' '{' '}' '[' ']' '?' '-' '_' '+' '~' '<' '>' '!' ';' ':' '^' ',' '.' ' ' ]
 let number = ['0'-'9']
 let double = ((number+ '.' number*) | ('.' number+))
 
