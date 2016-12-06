@@ -155,6 +155,7 @@ let check_prog (globals, functions) =
 	let rec check_expr (env : env) (expr : expr) = 
 		match expr with 
 			IntLit i -> print_endline("int"); Datatype(Int)
+		| DoubleLit d -> print_endline("double"); Datatype(Double)
 		| Id s -> print_endline("id"); 
 				(try get_variable_type env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
