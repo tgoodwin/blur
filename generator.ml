@@ -52,6 +52,13 @@ let translate (globals, functions) =
       | SizedArray(t, el)  -> ltype_of_sized_array t el
       | _            -> raise (Exceptions.NotADatatype)
 
+    and get_array_pointer typ dims =
+        let lltype = ltype_of_typ typ in
+        match dims with
+          1 -> L.pointer_type lltype
+        | 2 -> L.pointer_type (L.pointer_type lltype)
+        | 3 -> L.pointer_type (L.pointer_type (L.pointer_type lltype))
+
     and ltype_of_primitive (p: A.primitive) = match p with
       A.Int     -> i32_t
     | A.Double  -> iFl_t
@@ -69,6 +76,8 @@ let translate (globals, functions) =
     | A.BoolLit b   -> i1_t
     | _             -> raise (Exceptions.NotALiteral)
     in
+
+    
 
     let global_vars =
         (* FUNCTION global_var *)
@@ -328,38 +337,23 @@ let translate (globals, functions) =
                 (StringMap.add vdecl.declID local_var locals), gen_e
             in
 
-            (*let rec dynamic_sized_array t el locals =
-                let array_type =
-                if (List.length el) = 2 then
-                    let dim1 = codegen_expr (maps, llbuilder) (List.nth el 0)
-                    and dim2 = codegen_expr (maps, llbuilder) (List.nth el 1) in
-                    ignore(print_endline("; ok here" ^ L.string_of_llvalue dim1));
-                    (*let dim1 = int_of_string (L.string_of_llvalue dim1)
-                    and dim2 = int_of_string (L.string_of_llvalue dim2) in *)
-                    array_t (array_t (ltype_of_typ (Datatype(t))) 3) 3
-                else
-                    let dim1 = codegen_expr (maps, llbuilder) (List.hd el) in
-                    (*let dim1 = int_of_string (L.string_of_llvalue dim1) in *)
-                    ignore(print_endline("; ok here" ^ L.string_of_llvalue dim1));
-                    array_t (ltype_of_typ (Datatype(t))) 5
-                in let local_var = L.build_alloca array_type vdecl.declID llbuilder in
-                StringMap.add vdecl.declID local_var locals
-            in *)
-
-
             let local_vars = (fst maps) in
             match vdecl.declTyp with
               A.UnsizedArray(p, d) ->
-                let local_vars, exp = get_expr_type_then_add vdecl local_vars in
+                let gen_exp = codegen_expr (maps, llbuilder) vdecl.declInit in
+                let ptr_typ = get_array_pointer (Datatype(p)) d in
+                let local_var_as_ptr = L.build_alloca ptr_typ vdecl.declID llbuilder in
+                let local_vars = StringMap.add vdecl.declID local_var_as_ptr local_vars in
                 let maps = (local_vars, (snd maps)) in
-                ignore(codegen_asn vdecl.declID exp maps llbuilder); maps, llbuilder
-            (*| A.SizedArray(t, el) ->
-                ignore(print_endline("fuck"));
-                let local_vars = dynamic_sized_array t el local_vars in
-                let maps = (local_vars, (snd maps)) in
-                (match vdecl.declInit with
-                  A.Noexpr -> maps, llbuilder
-                | e        -> let exp = (codegen_expr (maps, llbuilder) e) in ignore(codegen_asn vdecl.declID exp maps llbuilder); maps, llbuilder) *)
+
+                let actual_arr = L.build_alloca (L.type_of gen_exp) vdecl.declID llbuilder in
+                ignore(L.build_store gen_exp actual_arr llbuilder);
+
+                let actual_arr_ptr = build_array_ptr actual_arr (Datatype(p)) vdecl.declID d (maps, llbuilder) in
+                
+                ignore(codegen_asn vdecl.declID actual_arr_ptr maps llbuilder); maps, llbuilder
+
+
             | _         ->
                 let local_vars = add_local vdecl local_vars in
                 let maps = (local_vars, (snd maps)) in
@@ -380,33 +374,52 @@ let translate (globals, functions) =
        (* ----------------------------- *)
             
         and build_array_access name idx_list maps llbuilder isAssign =
-            let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
-           (* let idx_list = (L.const_int i32_t 0)::[]@idx_list in *)
+            let arr_ptr = (lookup name (fst maps)) in
+            let the_arr_ref = L.build_load arr_ptr (name ^ "_thearr") llbuilder in
+            ignore(print_endline("; loaded_arrptr " ^ (L.string_of_llvalue (the_arr_ref))));
+            let the_arr_head = L.build_load the_arr_ref (name ^ "_arrhead") llbuilder in
+            ignore(print_endline("; arrhead " ^ (L.string_of_lltype (L.type_of the_arr_head))));
+            (* the_arr_head is the literal first memory value in the 1D case, where the_arr_ref is an i32* *)
 
-            let idx_arr = Array.of_list idx_list in
+
+            
+            let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
+            let idx_arr = Array.of_list(idx_list) in
+            let fst_idx = Array.get idx_arr 0 in
             let gep =
-            if List.length (idx_list) = 2 then
-                let fst_idx_arr = Array.of_list((L.const_int i32_t 0)::[]@[(List.nth idx_list 1)]) in
-                let snd_idx_arr = Array.of_list((L.const_int i32_t 0)::[]@[(List.nth idx_list 1)]) in
-                let fst_idx_ptr = L.build_gep (lookup name (fst maps)) fst_idx_arr "fst_idx" llbuilder in
-                L.build_gep fst_idx_ptr snd_idx_arr "snd_idx" llbuilder
-            else
-                L.build_gep (lookup name (fst maps)) (Array.of_list((L.const_int i32_t 0)::[]@(idx_list))) "fst_idx" llbuilder
+                ignore(print_endline("; okok"));
+                if List.length idx_list = 2 then
+                    let fst_idx_ptr = L.build_gep the_arr_ref [| fst_idx |] ("fst_idx") llbuilder in
+                    L.build_gep fst_idx_ptr [| (Array.get idx_arr 1) |] "snd_idx" llbuilder
+                else
+                    let sad = ignore(print_endline("; ok, so " ^ L.string_of_lltype(L.type_of the_arr_ref))); in
+                    let geep = L.build_in_bounds_gep the_arr_ref [| fst_idx |] "fst_idx" llbuilder in
+                    ignore(print_endline("; geep " ^ (L.string_of_lltype (L.type_of geep)))); geep
             in
             if isAssign then
                 gep
             else
-                L.build_load (gep) (name ^ "_load") llbuilder
+                if List.length idx_list = 2 then
+                    L.build_load (L.build_load gep name llbuilder) name llbuilder
+                else
+                    L.build_load gep name llbuilder
 
 
         (* s is expected to be the ID expression of an already declared array *)
-        and build_array_reference s dims (maps, llbuilder) =
-            let id = id_to_str s in
-            let s_val = (lookup id (fst maps)) in
-            match dims with
-              1 -> L.build_in_bounds_gep s_val [| zero_t; zero_t |] id llbuilder
-            | 2 -> L.build_in_bounds_gep s_val [| zero_t; zero_t; zero_t |] id llbuilder
-            | 3 -> L.build_in_bounds_gep s_val [| zero_t; zero_t; zero_t; zero_t |] id llbuilder
+        and build_array_ptr the_arr prim_typ id dims (maps, llbuilder) =
+            let ptr_typ = get_array_pointer prim_typ dims in (* i32** or something *)
+
+            let gep_head =
+                if dims = 2 then
+                    let fst_idx_ptr = L.build_in_bounds_gep the_arr [| zero_t; zero_t |] (id ^ "_fst_ptr") llbuilder in
+                    let snd_idx_ptr = L.build_in_bounds_gep fst_idx_ptr [| zero_t; zero_t |] (id ^ "_snd_ptr") llbuilder in
+                    L.build_pointercast snd_idx_ptr ptr_typ (id ^ "_ref") llbuilder
+                else
+                    let fst_idx_ptr = L.build_in_bounds_gep the_arr [| zero_t; zero_t |] (id ^ "_fst_ptr") llbuilder in
+                    L.build_pointercast fst_idx_ptr ptr_typ (id ^ "_ref") llbuilder
+            in gep_head
+
+
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (maps, llbuilder) =
@@ -452,7 +465,7 @@ let translate (globals, functions) =
         and codegen_return ret_e (maps, llbuilder) =
             match func_decl.A.typ with
               A.Datatype(A.Void)        -> L.build_ret_void llbuilder
-            | A.UnsizedArray(p, d)      -> L.build_ret (build_array_reference ret_e d (maps, llbuilder)) llbuilder
+            (*| A.UnsizedArray(p, d)      -> L.build_ret (build_array_reference ret_e d (maps, llbuilder)) llbuilder *)
             | _                         -> L.build_ret (codegen_expr (maps, llbuilder) ret_e) llbuilder
            
         (* build instructions in the given builder for the statement,
