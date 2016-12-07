@@ -160,6 +160,9 @@ expr_list:
     expr                 { [$1] }
   | expr COMMA expr_list { $1::$3 }
 
+mag:
+    BAR expr BAR        { Unop(Mag, $2) }
+
 expr:
   /* literals */
     INT_LITERAL       { IntLit($1) }
@@ -182,6 +185,7 @@ expr:
   | expr GEQ expr     { Binop($1, Geq, $3) }
   | expr AND expr     { Binop($1, And, $3) }
   | expr OR expr      { Binop($1, Or, $3) }
+  | mag { $1 }
 
   /* unary operators */
   | NOT expr %prec UNOP         { Unop(Not, $2) }

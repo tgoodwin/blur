@@ -247,6 +247,7 @@ let translate (globals, functions) =
             match op with
             A.Neg       -> L.build_neg exp "int_unoptmp" llbuilder
           | A.Not       -> L.build_not exp "bool_unoptmp" llbuilder
+          (* A.Mag      -> L.build_funccall [| exp |] "charToIntensity" llbuilder *)
 
         (* helper to get the raw string from an ID expression type. MOVE TO A UTILS FILE *)
         and id_to_str id = match id with

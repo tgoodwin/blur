@@ -14,7 +14,7 @@ type binopr =
   | Or
   | Asn
 
-type unopr = Not | Neg
+type unopr = Not | Neg | Mag
 
 (* BLUR TYPES *)
 type primitive =
