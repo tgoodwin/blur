@@ -29,7 +29,7 @@ let translate (globals, functions) =
 
 
     (* THIS DOESNT WORK TODO TODO *)
-(*     let rec ltype_of_unsized_array t d =
+     let rec ltype_of_unsized_array t d =
         match d with
           3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0) 0
         | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0
@@ -39,7 +39,7 @@ let translate (globals, functions) =
         match (List.length el) with
             3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 2)) (List.nth el 1)) (List.nth el 0)
           | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 1)) (List.nth el 0)
-          | 1 -> array_t (ltype_of_typ (Datatype(t))) (List.hd el) *)
+          | 1 -> array_t (ltype_of_typ (Datatype(t))) (List.hd el)
     
     and ltype_of_typ (d: A.datatype) = match d with
         Datatype(A.Int) -> i32_t
@@ -366,7 +366,7 @@ let translate (globals, functions) =
                 (* special handling of case when array returns as a pointer from C backend *)
                 (* here, also update the dimensions map for later use *)
                 if ((L.type_of gen_exp) = (L.pointer_type i32_t)) then
-                    ignore(codegen_asn vdecl.declID gen_exp maps llbuilder);
+                    (ignore(codegen_asn vdecl.declID gen_exp maps llbuilder); maps, llbuilder)
 
                 else
                     let actual_arr_ptr = build_array_ptr actual_arr (Datatype(p)) vdecl.declID d (maps, llbuilder) in
@@ -415,9 +415,10 @@ let translate (globals, functions) =
                     let snd = L.build_in_bounds_gep fst_idx_ptr [| (Array.get idx_arr 1) |] "snd_idx" llbuilder in
                     ignore(print_endline("; snd_idxptr " ^ L.string_of_lltype(L.type_of snd))); snd
                 else
-                    let sad = ignore(print_endline("; ok, so " ^ L.string_of_lltype(L.type_of the_arr_ref))); in
-                    let geep = L.build_in_bounds_gep the_arr_ref [| fst_idx |] "fst_idx" llbuilder in
-                    ignore(print_endline("; geep " ^ (L.string_of_lltype (L.type_of geep)))); geep
+                    let sad = 4 in
+                    ignore(print_endline("; ok, so " ^ L.string_of_lltype(L.type_of the_arr_ref)));
+                    let gep = L.build_in_bounds_gep the_arr_ref [| fst_idx |] "fst_idx" llbuilder in
+                    ignore(print_endline("; geep " ^ (L.string_of_lltype (L.type_of gep)))); gep
             in
             if isAssign then
                 gep
