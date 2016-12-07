@@ -302,11 +302,13 @@ let check_prog (globals, functions) =
 	let (_, fdecl_list) = 
 		print_endline("function list size");
 		print_endline(string_of_int(List.length functions));
-		List.fold_left (fun acc fdecl ->
+		(*List.fold_left (fun acc fdecl ->
 			print_endline("folding");
 			print_endline(fdecl.fname);
 			let (new_env, f) = check_function_declaration (fst acc) fdecl
-			in (new_env, (f :: (snd acc)))) (new_env, []) functions
+			in (new_env, (f :: (snd acc)))) (new_env, []) functions*)
+			ignore(List.iter (fun f -> print_endline(f.fname); check_function_declaration env f; ()) functions);
+			(new_env, [])
 	in fdecl_list;
 
 	let check_function functions =  
