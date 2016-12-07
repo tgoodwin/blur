@@ -376,21 +376,23 @@ let translate (globals, functions) =
         and build_array_access name idx_list maps llbuilder isAssign =
             let arr_ptr = (lookup name (fst maps)) in
             let the_arr_ref = L.build_load arr_ptr (name ^ "_thearr") llbuilder in
-            ignore(print_endline("; loaded_arrptr " ^ (L.string_of_llvalue (the_arr_ref))));
-            let the_arr_head = L.build_load the_arr_ref (name ^ "_arrhead") llbuilder in
-            ignore(print_endline("; arrhead " ^ (L.string_of_lltype (L.type_of the_arr_head))));
-            (* the_arr_head is the literal first memory value in the 1D case, where the_arr_ref is an i32* *)
+            ignore(print_endline("; array_ref_type " ^ (L.string_of_lltype (L.type_of the_arr_ref))));
+            (*let the_arr_head = L.build_load the_arr_ref (name ^ "_arrhead") llbuilder in *)
+            (*ignore(print_endline("; arrhead " ^ (L.string_of_lltype (L.type_of the_arr_head)))); *)
 
+            (* the_arr_head is the literal first memory value in the 1D case, where the_arr_ref is an i32*.
+             * In the case of a 2D array, it will be an int32**.  *)
 
             
             let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
             let idx_arr = Array.of_list(idx_list) in
             let fst_idx = Array.get idx_arr 0 in
             let gep =
-                ignore(print_endline("; okok"));
                 if List.length idx_list = 2 then
-                    let fst_idx_ptr = L.build_gep the_arr_ref [| fst_idx |] ("fst_idx") llbuilder in
-                    L.build_gep fst_idx_ptr [| (Array.get idx_arr 1) |] "snd_idx" llbuilder
+                    let fst_idx_ptr = L.build_in_bounds_gep the_arr_ref [| fst_idx |] ("fst_idx") llbuilder in
+                    ignore(print_endline("; fst_idxptr " ^ L.string_of_lltype(L.type_of fst_idx_ptr)));
+                    let snd = L.build_in_bounds_gep fst_idx_ptr [| (Array.get idx_arr 1) |] "snd_idx" llbuilder in
+                    ignore(print_endline("; snd_idxptr " ^ L.string_of_lltype(L.type_of snd))); snd
                 else
                     let sad = ignore(print_endline("; ok, so " ^ L.string_of_lltype(L.type_of the_arr_ref))); in
                     let geep = L.build_in_bounds_gep the_arr_ref [| fst_idx |] "fst_idx" llbuilder in
@@ -412,8 +414,10 @@ let translate (globals, functions) =
             let gep_head =
                 if dims = 2 then
                     let fst_idx_ptr = L.build_in_bounds_gep the_arr [| zero_t; zero_t |] (id ^ "_fst_ptr") llbuilder in
+                    ignore(print_endline("; fstptrtype " ^ (L.string_of_lltype(L.type_of fst_idx_ptr))));
                     let snd_idx_ptr = L.build_in_bounds_gep fst_idx_ptr [| zero_t; zero_t |] (id ^ "_snd_ptr") llbuilder in
-                    L.build_pointercast snd_idx_ptr ptr_typ (id ^ "_ref") llbuilder
+                    ignore(print_endline("; sndptrtype " ^ (L.string_of_lltype(L.type_of snd_idx_ptr))));
+                    L.build_pointercast fst_idx_ptr ptr_typ (id ^ "_ref") llbuilder
                 else
                     let fst_idx_ptr = L.build_in_bounds_gep the_arr [| zero_t; zero_t |] (id ^ "_fst_ptr") llbuilder in
                     L.build_pointercast fst_idx_ptr ptr_typ (id ^ "_ref") llbuilder
