@@ -301,18 +301,19 @@ let check_prog (globals, functions) =
 
 	ignore(print_endline("how many fns"));
 	ignore(print_endline(string_of_int(List.length functions)));
-	ignore(List.iter (fun f -> print_endline("woot")) functions);
+	(*ignore(List.iter (fun f -> print_endline("woot")) functions);*) (*This prints woot 4 times if there are 4 functions*)
+	(*ignore(List.iter (fun f -> ignore(check_function_declaration new_env f); ()) functions);*)
 
 	let (_, fdecl_list) = 
 		print_endline("function list size");
 		print_endline(string_of_int(List.length functions));
-		(*List.fold_left (fun acc fdecl ->
+		List.fold_left (fun acc fdecl ->
 			print_endline("folding");
 			print_endline(fdecl.fname);
 			let (new_env, f) = check_function_declaration (fst acc) fdecl
-			in (new_env, (f :: (snd acc)))) (new_env, []) functions*)
-			ignore(List.iter (fun f -> print_endline(f.fname); check_function_declaration env f; ()) functions);
-			(new_env, [])
+			in (new_env, (f :: (snd acc)))) (new_env, []) functions
+			(*ignore(List.iter (fun f -> print_endline(f.fname); check_function_declaration env f; ()) functions);
+			(new_env, [])*)
 	in fdecl_list;
 
 	let check_function functions =  
