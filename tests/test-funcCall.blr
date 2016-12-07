@@ -1,0 +1,19 @@
+int main() {
+	add(5, 4);
+	sub(3,2);
+	return 8;
+}
+
+int add(int x, int y) {
+	int z = x + y;
+	return z;
+}
+
+int sub(int x, int y) {
+	int z = x-y;
+	return z;
+}
+int mult(int x, int y) {
+	int z = x*y;
+	return z;
+}

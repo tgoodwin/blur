@@ -190,7 +190,7 @@ let check_prog (globals, functions) =
 				| Some return_type ->
 					if e_type = return_type then (env, stmt)
 					else raise (Failure ("incorrect return type"))
-					| None -> raise (Failure ("no return")))
+					| None -> (env, stmt))(*raise (Failure ("no return")))*)
 	in
 
 	(* Each statement takes the environment updated from the previous statement. *)
@@ -203,10 +203,9 @@ let check_prog (globals, functions) =
 		in (new_env, List.rev stmts) 
 	in
 
-	(* Check function declaration and return new environment. *)
-	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
-		print_endline("checking func decl");
-		(*print_endline(string_of_int(List.length env.symtab.variables));*)
+	(* Add function declaration to the environment. *)
+	let add_function_declaration (env : env) (fdecl : funcdecl) :(env * funcdecl) = 
+		print_endline("adding function declaration to env");
 		if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
 		raise (Failure ("Cannot overwrite print function!!")) else
 		(* Get the types of the function's arguments. *)
@@ -243,12 +242,59 @@ let check_prog (globals, functions) =
 			List.fold_left (fun acc argdecl ->
 				let (nenv, arg) = check_argdecl (fst acc) argdecl 
 				in (nenv, (arg :: (snd acc)))) (new_env, []) fdecl.args in
-		(* No need to keep track of environment outside the scope of the function. *)
-		let (_, func_body) = 
-			check_stmt_list env_with_args fdecl.body in 
-		let func_body = func_body in
+		
 		(* Return the environment with this added function. *)
 		({ (env) with funcs = new_funcs; }, fdecl) 
+ 	in
+
+
+
+	(* Check function declaration and return new environment. *)
+	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
+		print_endline("checking func decl");
+		(*print_endline(string_of_int(List.length env.symtab.variables));*)
+		(*if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
+		raise (Failure ("Cannot overwrite print function!!")) else
+		(* Get the types of the function's arguments. *)
+		let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
+		(* Make a function entry for the function. *)
+		let func_entry = 
+			{
+				name = fdecl.fname;
+				arg_types = a_types;
+				return_type = fdecl.typ;
+			} in
+		let new_funcs = func_entry :: env.funcs in
+		(* Make a new symbol table for the function scope. *)
+		let new_symbol_table = 
+			{
+				parent = Some env.symtab;
+				args = [];
+				variables = [];
+			} in
+		(* Add the function to the environment 
+		For now, the symbol table and return type have empty local scope. *)
+		let new_env = 
+		{
+			(env)
+			with
+			symtab = new_symbol_table;
+			funcs =  new_funcs;
+			return_type = Some fdecl.typ;
+		} in
+		print_endline("func count:");
+		print_endline(string_of_int(List.length new_env.funcs));
+		(* Add the args to the function scope. *)
+		let (env_with_args, argdecl_list) = 
+			List.fold_left (fun acc argdecl ->
+				let (nenv, arg) = check_argdecl (fst acc) argdecl 
+				in (nenv, (arg :: (snd acc)))) (new_env, []) fdecl.args in*)
+		(* No need to keep track of environment outside the scope of the function. *)
+		let (_, func_body) = 
+			check_stmt_list env fdecl.body in 
+		let func_body = func_body in
+		(* Return the environment with this added function. *)
+		(env, fdecl) 
   	in
 
 
@@ -304,9 +350,14 @@ let check_prog (globals, functions) =
 	(*ignore(List.iter (fun f -> print_endline("woot")) functions);*) (*This prints woot 4 times if there are 4 functions*)
 	(*ignore(List.iter (fun f -> ignore(check_function_declaration new_env f); ()) functions);*)
 
+	let (new_env, funcs) = 
+		List.fold_left (fun acc f -> 
+			let(nenv, f) = add_function_declaration (fst acc) f
+			in (nenv, (f :: (snd acc)))) (env, []) functions 
+	in
+
 	let (_, fdecl_list) = 
-		print_endline("function list size");
-		print_endline(string_of_int(List.length functions));
+		print_endline("another one");
 		List.fold_left (fun acc fdecl ->
 			print_endline("folding");
 			print_endline(fdecl.fname);
