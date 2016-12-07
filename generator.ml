@@ -186,6 +186,7 @@ let translate (globals, functions) =
               | A.Sub   -> L.build_sub lh rh "tmp" llbuilder
               | A.Mult  -> L.build_mul lh rh "tmp" llbuilder
               | A.Div   -> L.build_sdiv lh rh "tmp" llbuilder
+              | A.Mod   -> L.build_srem lh rh "whocares" llbuilder
               | A.And   -> L.build_and lh rh "tmp" llbuilder
               | A.Or    -> L.build_or lh rh "tmp" llbuilder
               | A.Eq    -> L.build_icmp Icmp.Eq lh rh "tmp" llbuilder
@@ -202,6 +203,7 @@ let translate (globals, functions) =
               | A.Sub   -> L.build_fsub lh rh "flt_subtmp" llbuilder
               | A.Mult  -> L.build_fmul lh rh "flt_multmp" llbuilder
               | A.Div   -> L.build_fdiv lh rh "flt_divtmp" llbuilder
+              | A.Mod   -> L.build_frem lh rh "frem" llbuilder
               | A.Eq    -> L.build_fcmp Fcmp.Oeq lh rh "flt_eqtmp" llbuilder
               | A.Neq   -> L.build_fcmp Fcmp.One lh rh "flt_neqtmp" llbuilder
               | A.Lt    -> L.build_fcmp Fcmp.Ult lh rh "flt_lesstmp" llbuilder
@@ -241,13 +243,17 @@ let translate (globals, functions) =
             in
             handle_binop e1 op e2
                 
-        (* TODO: type handling for float, etc *)
         and codegen_unop op e maps llbuilder =
             let exp = (codegen_expr (maps, llbuilder)) e in
+            if (L.type_of exp) = iFl_t then
+                L.build_fneg exp "flt_unoptmp" llbuilder
+            else
             match op with
             A.Neg       -> L.build_neg exp "int_unoptmp" llbuilder
           | A.Not       -> L.build_not exp "bool_unoptmp" llbuilder
           (* A.Mag      -> L.build_funccall [| exp |] "charToIntensity" llbuilder *)
+          (* A.Lighten -> L.build_funccall [| exp |] "lightenChar" llbuilder *)
+          (* A.Darken -> L.build_funccall [| exp |] "darkenChar" llbuilder *)
 
         (* helper to get the raw string from an ID expression type. MOVE TO A UTILS FILE *)
         and id_to_str id = match id with

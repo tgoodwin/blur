@@ -2,11 +2,12 @@ open Ast
 
 (* Pretty-printing functions *)
 
-let string_of_op = function
+let rec string_of_op = function
     Add -> "+"
   | Sub -> "-"
   | Mult -> "*"
   | Div -> "/"
+  | Mod -> "%"
   | Asn -> "="
   | Eq -> "=="
   | Neq -> "!="
@@ -17,11 +18,12 @@ let string_of_op = function
   | And -> "&&"
   | Or -> "||"
 
-let string_of_unop = function
-    Not -> "!"
-  | Neg -> "-"
+and string_of_unop o e = match o with
+    Not -> "!" ^ string_of_expr e
+  | Neg -> "-" ^ string_of_expr e
+  | Mag -> "|" ^ string_of_expr e ^ "|"
 
-let string_of_typ = function
+and string_of_typ = function
     Int -> "int"
   | Double -> "double"
   | Char -> "char"
@@ -29,12 +31,12 @@ let string_of_typ = function
   | Bool -> "bool"
   | Void -> "void"
 
-let rec str_brackets d str = if d > 0 then str_brackets (d - 1) ("[]" ^ str) else str
+and  str_brackets d str = if d > 0 then str_brackets (d - 1) ("[]" ^ str) else str
 
-let string_of_array t d = string_of_typ t  ^ (str_brackets d "")
+and string_of_array t d = string_of_typ t  ^ (str_brackets d "")
 
 
-let rec string_of_datatype = function 
+and string_of_datatype = function 
     UnsizedArray(t, d) -> string_of_array t d
   | SizedArray(t, el)   -> string_of_typ t ^ "[" ^ String.concat "][" (List.map string_of_int el) ^ "]"
   | Datatype(t) -> string_of_typ t
@@ -47,7 +49,7 @@ and string_of_expr = function
   | BoolLit(l) -> string_of_bool l
   | Id(s) -> s
   | Binop(e1, o, e2) -> "\t" ^ string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
-  | Unop(o, e) -> string_of_unop o ^ string_of_expr e
+  | Unop(o, e) -> string_of_unop o e
   | ArrayListInit(l) -> "[" ^ String.concat ", " (List.map string_of_expr l) ^ "]"
   (*| ArraySizeInit(t, n) -> string_of_typ t ^ "[" ^ String.concat "][" (List.map string_of_expr n) ^ "]" *)
   | ArrayAccess(id, dl) -> "\t" ^ id ^ "[" ^ String.concat "][" (List.map string_of_expr dl) ^ "]"

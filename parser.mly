@@ -6,7 +6,7 @@
 %token SEMI COMMA FUNC
 %token INT DOUBLE STRING CHAR BOOL
 %token IF ELSE FOR WHILE VOID RETURN TRUE FALSE BREAK CONTINUE
-%token PLUS MINUS TIMES DIVIDE ASSIGN
+%token PLUS MINUS TIMES DIVIDE ASSIGN MOD
 %token EQUAL NEQUAL LT LEQ GT GEQ AND OR NOT
 %token BAR DARKEN LIGHTEN
 %token <string> ID
@@ -24,7 +24,7 @@
 %left EQUAL NEQUAL
 %left LT GT LEQ GEQ
 %left PLUS MINUS
-%left TIMES DIVIDE
+%left TIMES DIVIDE MOD
 %right NOT
 %nonassoc UNOP /* for unary op precedence */
 
@@ -181,6 +181,7 @@ expr:
   | expr MINUS expr   { Binop($1, Sub, $3) }
   | expr TIMES expr   { Binop($1, Mult, $3) }
   | expr DIVIDE expr  { Binop($1, Div, $3) }
+  | expr MOD expr     { Binop($1, Mod, $3) }
   | expr EQUAL expr   { Binop($1, Eq, $3) }
   | expr NEQUAL expr  { Binop($1, Neq, $3) }
   | expr LT expr      { Binop($1, Lt, $3) }

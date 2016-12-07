@@ -4,6 +4,7 @@ type binopr =
   | Sub
   | Mult
   | Div
+  | Mod
   | Eq
   | Neq
   | Lt
