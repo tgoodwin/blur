@@ -381,13 +381,23 @@ let translate (globals, functions) =
             
         and build_array_access name idx_list maps llbuilder isAssign =
             let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
-            let idx_list = (L.const_int i32_t 0)::[]@idx_list in
+           (* let idx_list = (L.const_int i32_t 0)::[]@idx_list in *)
 
             let idx_arr = Array.of_list idx_list in
-            if isAssign then
-                L.build_gep (lookup name (fst maps)) idx_arr name llbuilder
+            let gep =
+            if List.length (idx_list) = 2 then
+                let fst_idx_arr = Array.of_list((L.const_int i32_t 0)::[]@[(List.nth idx_list 1)]) in
+                let snd_idx_arr = Array.of_list((L.const_int i32_t 0)::[]@[(List.nth idx_list 1)]) in
+                let fst_idx_ptr = L.build_gep (lookup name (fst maps)) fst_idx_arr "fst_idx" llbuilder in
+                L.build_gep fst_idx_ptr snd_idx_arr "snd_idx" llbuilder
             else
-                L.build_load (L.build_gep (lookup name (fst maps)) idx_arr name llbuilder) name llbuilder
+                L.build_gep (lookup name (fst maps)) (Array.of_list((L.const_int i32_t 0)::[]@(idx_list))) "fst_idx" llbuilder
+            in
+            if isAssign then
+                gep
+            else
+                L.build_load (gep) (name ^ "_load") llbuilder
+
 
         (* s is expected to be the ID expression of an already declared array *)
         and build_array_reference s dims (maps, llbuilder) =
