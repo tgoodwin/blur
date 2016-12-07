@@ -1,1 +1,1 @@
-Fatal error: exception Exceptions.UnknownVariable("b")
+Fatal error: exception Failure("undeclared identifier b")
