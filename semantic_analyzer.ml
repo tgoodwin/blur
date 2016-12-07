@@ -206,7 +206,7 @@ let check_prog (globals, functions) =
 	(* Check function declaration and return new environment. *)
 	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
 		print_endline("checking func decl");
-		print_endline(string_of_int(List.length env.symtab.variables));
+		(*print_endline(string_of_int(List.length env.symtab.variables));*)
 		if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
 		raise (Failure ("Cannot overwrite print function!!")) else
 		(* Get the types of the function's arguments. *)
@@ -298,6 +298,10 @@ let check_prog (globals, functions) =
 
 	print_endline("after globals run");
 	print_endline(string_of_int(List.length new_env.symtab.variables));
+
+	ignore(print_endline("how many fns"));
+	ignore(print_endline(string_of_int(List.length functions)));
+	ignore(List.iter (fun f -> print_endline("woot")) functions);
 
 	let (_, fdecl_list) = 
 		print_endline("function list size");
