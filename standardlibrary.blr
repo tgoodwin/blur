@@ -1,19 +1,43 @@
 
 char intensityToChar(int intensity){
     
-    /* string chars = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,^. "; */
-   /* char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','\','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; */
+    char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; 
 
-    char[] map = ['B','M','a','k','d','q','m','O','L','J','Y','z','v','n','r','f','i','I'];
     int factor = 255 / len(map); /* scale factor to map intensity (0-255) to char (0-len(map) */
     int index = intensity / factor;
-    return map[index];
+    return map[index-1];
 }
+
+/*
+int charToIntensity(char c){
+
+    char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; 
+
+    int index = -1;
+    int i;
+    for(i=0; i<len(map); i=i+1){
+        if(map[i] == c){   char comparison must be implemented
+		index = i; 
+	}
+    }
+
+    int factor = 255 / len(map);
+    intensity = index * factor;
+    return intensity;
+}
+
+
+int[][] canvas(string
+*/
 
 int main(){
 
-    char i;
-    i = intensityToChar(200);
-    print(i);
-
+    char a;
+    a = intensityToChar(90);
+    print(a);
+    /*
+    int x;
+    x = charToIntensity('o');
+    print(x); 
+    */
 }
