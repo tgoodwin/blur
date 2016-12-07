@@ -8,7 +8,7 @@
 %token IF ELSE FOR WHILE VOID RETURN TRUE FALSE BREAK CONTINUE
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token EQUAL NEQUAL LT LEQ GT GEQ AND OR NOT
-%token BAR
+%token BAR DARKEN LIGHTEN
 %token <string> ID
 %token <int> INT_LITERAL
 %token <float> DOUBLE_LITERAL
@@ -163,6 +163,10 @@ expr_list:
 mag:
     BAR expr BAR        { Unop(Mag, $2) }
 
+saturate:
+    DARKEN mag  { Unop(Darken, $2) }
+  | LIGHTEN mag { Unop(Lighten, $2) }
+
 expr:
   /* literals */
     INT_LITERAL       { IntLit($1) }
@@ -186,6 +190,7 @@ expr:
   | expr AND expr     { Binop($1, And, $3) }
   | expr OR expr      { Binop($1, Or, $3) }
   | mag { $1 }
+  | saturate { $1 }
 
   /* unary operators */
   | NOT expr %prec UNOP         { Unop(Not, $2) }

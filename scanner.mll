@@ -31,6 +31,8 @@ rule token = parse
 | "||"  { OR }
 | '!'   { NOT }
 | '|'	{ BAR }
+| ">>" { DARKEN }
+| "<<" { LIGHTEN }
 | "int" 	{ INT }
 | "double"      { DOUBLE }
 | "string"      { STRING }
