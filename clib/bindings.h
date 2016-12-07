@@ -7,6 +7,8 @@ int LoadImage(char *filename);
 
 int foo(int x);
 
+int *getArr();
+
 ILubyte * getImageData(char *filename);
 
 void initializeGlDevIL(char *filename);

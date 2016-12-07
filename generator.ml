@@ -96,6 +96,9 @@ let translate (globals, functions) =
     let foo_t = L.var_arg_function_type i32_t [| i32_t |] in
     let foo_func = L.declare_function "foo" foo_t the_module in
 
+    let getarr_t = L.var_arg_function_type (L.pointer_type i32_t) [| |] in
+    let getarr_func = L.declare_function "getArr" getarr_t the_module in
+
     (* ---- end externals ------ *)
 
     (* define each function w/ args and return type so we can call it *)
@@ -306,6 +309,14 @@ let translate (globals, functions) =
               | _       -> f ^ "_result" )
             in L.build_call fdef (Array.of_list args) result llbuilder
 
+        and get_arr_handler llbuilder =
+            ignore(print_endline("; in get_arr_handler"));
+            let arr_loc = L.build_alloca (L.pointer_type i32_t) "arrloc" llbuilder in
+            let res = L.build_call getarr_func [| |] "arrfunccall" llbuilder in
+            ignore(print_endline("; now? " ^ L.string_of_lltype (L.type_of res)));
+            ignore(L.build_store res arr_loc llbuilder); res
+
+
         and codegen_expr (maps, llbuilder) e =
             match e with 
             A.IntLit i        -> L.const_int i32_t i
@@ -320,6 +331,7 @@ let translate (globals, functions) =
           | A.FuncCall ("print", [e])    -> codegen_print e maps llbuilder
           | A.FuncCall ("len", [arr])     -> L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr)))
           | A.FuncCall ("foo", [e])     -> L.build_call foo_func [| (codegen_expr (maps, llbuilder) e) |] "foo" llbuilder
+          | A.FuncCall ("getArr", el)   -> get_arr_handler llbuilder
           (* --- end built-ins --- *)
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
@@ -349,9 +361,16 @@ let translate (globals, functions) =
                 let actual_arr = L.build_alloca (L.type_of gen_exp) vdecl.declID llbuilder in
                 ignore(L.build_store gen_exp actual_arr llbuilder);
 
-                let actual_arr_ptr = build_array_ptr actual_arr (Datatype(p)) vdecl.declID d (maps, llbuilder) in
-                
-                ignore(codegen_asn vdecl.declID actual_arr_ptr maps llbuilder); maps, llbuilder
+                let maps, llbuilder =
+                ignore(print_endline("; ok" ^ L.string_of_lltype(L.type_of gen_exp)));
+                if ((L.type_of gen_exp) = (L.pointer_type i32_t)) then
+                    (ignore(print_endline("; about to assign"));
+                    ignore(codegen_asn vdecl.declID gen_exp maps llbuilder);
+                    ignore(print_endline("; after assign")); maps, llbuilder)
+                else
+                    let actual_arr_ptr = build_array_ptr actual_arr (Datatype(p)) vdecl.declID d (maps, llbuilder) in
+                    ignore(codegen_asn vdecl.declID actual_arr_ptr maps llbuilder); maps, llbuilder
+                in maps, llbuilder
 
 
             | _         ->
