@@ -178,15 +178,21 @@ let check_prog (globals, functions) =
 	in
 
 	(* Return env and stmt tuple. *)
-	let check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
+	let rec check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
 		print_endline("checking stmt");
 		match stmt with 
 			Expr e -> ignore(check_expr env e); (env, stmt) (* Expression cannot mutate the environment. *)
+		(* Return current env since Blocks have their own scope. *)
+		| Block stmt_list -> 
+			let new_symbol_table = { parent = Some env.symtab; variables = []; args = []; } in
+			let (_, checked_stmts) = check_stmt_list { (env) with symtab = new_symbol_table; } stmt_list in
+			(env, stmt)
 		| Decl vdecl -> (* Return new env*)
 			let (new_env, vdecl) = check_variable_declaration env vdecl
 			in (new_env, stmt)
 		| While (e, s) -> 
-			let checked_expr = check_expr env e in
+			let checked_expr = check_expr env e 
+			and (_, checked_stmt) = check_stmt env s in
 			(env, stmt)
 		| Return e -> let e_type = check_expr env e in
 			(match env.return_type with
@@ -194,10 +200,8 @@ let check_prog (globals, functions) =
 					if e_type = return_type then (env, stmt)
 					else raise (Failure ("incorrect return type"))
 					| None -> (env, stmt))(*raise (Failure ("no return")))*)
-	in
-
 	(* Each statement takes the environment updated from the previous statement. *)
-	let check_stmt_list (env : env) ( slist : stmt list ) :(env * stmt list) = 
+	and check_stmt_list (env : env) ( slist : stmt list ) :(env * stmt list) = 
 		print_endline("checking stmt list");
 		let(new_env, stmts) = 
 			List.fold_left (fun acc stmt ->
