@@ -17,6 +17,13 @@ int foo(int x) {
     return x + 2;
 }
 
+int *getArr() {
+    int * arr = malloc(4 * sizeof(int));
+    arr[0] = 7;
+    arr[1] = 10;
+    return arr;
+}
+
 /* Handler for window-repaint event. Called back when the window first appears and
    whenever the window needs to be re-painted. */
 void display() 
