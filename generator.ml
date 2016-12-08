@@ -353,25 +353,23 @@ let translate (globals, functions) =
               (* also do case checking here to see if gen_exp is a pointer.
                * UnsizedArrays will be the only case where we could be getting a pointer back from C. *)
                 let gen_exp = codegen_expr (maps, llbuilder) vdecl.declInit in
-                let ptr_typ = get_array_pointer (Datatype(p)) d in
-                let local_var_as_ptr = L.build_alloca ptr_typ vdecl.declID llbuilder in
-                let local_vars = StringMap.add vdecl.declID local_var_as_ptr local_vars in
-                let maps = (local_vars, (snd maps)) in
 
-                let actual_arr = L.build_alloca (L.type_of gen_exp) vdecl.declID llbuilder in
-                ignore(L.build_store gen_exp actual_arr llbuilder);
+                let local_vars =
 
-                let maps, llbuilder =
-                ignore(print_endline("; ok" ^ L.string_of_lltype(L.type_of gen_exp)));
-                (* special handling of case when array returns as a pointer from C backend *)
-                (* here, also update the dimensions map for later use *)
+                (* array pointer coming from the C backend *)
                 if ((L.type_of gen_exp) = (L.pointer_type i32_t)) then
-                    (ignore(codegen_asn vdecl.declID gen_exp maps llbuilder); maps, llbuilder)
+                    let ptr_typ = get_array_pointer (Datatype(p)) d in
+                    let local_var_as_ptr = L.build_alloca ptr_typ vdecl.declID llbuilder in
+                    StringMap.add vdecl.declID local_var_as_ptr local_vars
 
+                (* normal case, i.e. int[] a = [1,2]; *)
                 else
-                    let actual_arr_ptr = build_array_ptr actual_arr (Datatype(p)) vdecl.declID d (maps, llbuilder) in
-                    ignore(codegen_asn vdecl.declID actual_arr_ptr maps llbuilder); maps, llbuilder
-                in maps, llbuilder
+                    let exp_typ = (L.type_of gen_exp) in
+                    let local_var = L.build_alloca exp_typ vdecl.declID llbuilder in
+                    StringMap.add vdecl.declID local_var local_vars
+                in
+                let maps = (local_vars, (snd maps)) in
+                ignore(codegen_asn vdecl.declID gen_exp maps llbuilder); maps, llbuilder
 
 
             | _         ->
