@@ -166,7 +166,7 @@ let check_prog (globals, functions) =
 			let t1 = check_expr env e1 
 			and t2 = check_expr env e2 in
 			match op with 
-			| Add | Sub | Mult | Div -> print_endline("arith");
+			| Add | Sub | Mult | Div | Lt | Leq | Gt | Geq -> print_endline("arith");
 			ignore(print_endline(string_of_datatype t1));
 			ignore(print_endline(string_of_datatype t1));
 			if t1 <> t2 then raise (Failure ("illegal operation")) 
@@ -185,6 +185,9 @@ let check_prog (globals, functions) =
 		| Decl vdecl -> (* Return new env*)
 			let (new_env, vdecl) = check_variable_declaration env vdecl
 			in (new_env, stmt)
+		| While (e, s) -> 
+			let checked_expr = check_expr env e in
+			(env, stmt)
 		| Return e -> let e_type = check_expr env e in
 			(match env.return_type with
 				| Some return_type ->
@@ -252,43 +255,6 @@ let check_prog (globals, functions) =
 	(* Check function declaration and return new environment. *)
 	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
 		print_endline("checking func decl");
-		(*print_endline(string_of_int(List.length env.symtab.variables));*)
-		(*if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
-		raise (Failure ("Cannot overwrite print function!!")) else
-		(* Get the types of the function's arguments. *)
-		let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
-		(* Make a function entry for the function. *)
-		let func_entry = 
-			{
-				name = fdecl.fname;
-				arg_types = a_types;
-				return_type = fdecl.typ;
-			} in
-		let new_funcs = func_entry :: env.funcs in
-		(* Make a new symbol table for the function scope. *)
-		let new_symbol_table = 
-			{
-				parent = Some env.symtab;
-				args = [];
-				variables = [];
-			} in
-		(* Add the function to the environment 
-		For now, the symbol table and return type have empty local scope. *)
-		let new_env = 
-		{
-			(env)
-			with
-			symtab = new_symbol_table;
-			funcs =  new_funcs;
-			return_type = Some fdecl.typ;
-		} in
-		print_endline("func count:");
-		print_endline(string_of_int(List.length new_env.funcs));
-		(* Add the args to the function scope. *)
-		let (env_with_args, argdecl_list) = 
-			List.fold_left (fun acc argdecl ->
-				let (nenv, arg) = check_argdecl (fst acc) argdecl 
-				in (nenv, (arg :: (snd acc)))) (new_env, []) fdecl.args in*)
 		(* No need to keep track of environment outside the scope of the function. *)
 		let (_, func_body) = 
 			check_stmt_list env fdecl.body in 
