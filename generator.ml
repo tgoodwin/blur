@@ -163,6 +163,7 @@ let translate (globals, functions) =
             StringMap.add id dimension_list arr_dims
         in
 
+
         (* --- END OF ARRAY HELPER FUNCTIONS --- *)
 
         (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
@@ -354,22 +355,30 @@ let translate (globals, functions) =
                * UnsizedArrays will be the only case where we could be getting a pointer back from C. *)
                 let gen_exp = codegen_expr (maps, llbuilder) vdecl.declInit in
 
-                let local_vars =
+                let local_vars, arr_src  =
 
                 (* array pointer coming from the C backend *)
                 if ((L.type_of gen_exp) = (L.pointer_type i32_t)) then
                     let ptr_typ = get_array_pointer (Datatype(p)) d in
                     let local_var_as_ptr = L.build_alloca ptr_typ vdecl.declID llbuilder in
-                    StringMap.add vdecl.declID local_var_as_ptr local_vars
+                    let local_vars = StringMap.add vdecl.declID local_var_as_ptr local_vars in
+                    let arr_src = StringMap.add vdecl.declID false (snd maps) in local_vars, arr_src
 
                 (* normal case, i.e. int[] a = [1,2]; *)
                 else
                     let exp_typ = (L.type_of gen_exp) in
                     let local_var = L.build_alloca exp_typ vdecl.declID llbuilder in
-                    StringMap.add vdecl.declID local_var local_vars
+                    let local_vars = StringMap.add vdecl.declID local_var local_vars in
+                    let arr_src = StringMap.add vdecl.declID true (snd maps) in local_vars, arr_src
                 in
-                let maps = (local_vars, (snd maps)) in
+                let maps = (local_vars, arr_src) in
                 ignore(codegen_asn vdecl.declID gen_exp maps llbuilder); maps, llbuilder
+
+            (* cannot be initialized, only declared *)
+            | A.SizedArray(p, d) ->
+                    let local_vars = add_local vdecl local_vars in
+                    let arr_dims = StringMap.add vdecl.declID true (snd maps) in
+                    let maps = (local_vars, arr_dims) in maps, llbuilder
 
 
             | _         ->
@@ -380,7 +389,7 @@ let translate (globals, functions) =
                 | e             -> let exp = (codegen_expr (maps, llbuilder) e) in ignore(codegen_asn vdecl.declID exp maps llbuilder); maps, llbuilder
 
 
-        (* BUILD n-dimensional array from Literal *)
+        (* BUILD 1-dimensional array from Literal *)
         and build_array_of_list el (maps, llbuilder) =
             let llvalues = List.map (codegen_expr (maps, llbuilder)) el in
             let len = List.length llvalues in
@@ -395,18 +404,32 @@ let translate (globals, functions) =
         (* off the bat, have a conditional to see if its returned from C or is regular. *)
         (* if pointer, get dims, compute overall idx, build_gep to it or load it *)
 
-            let arr_ptr = (lookup name (fst maps)) in
-            let the_arr_ref = L.build_load arr_ptr (name ^ "_thearr") llbuilder in
-            ignore(print_endline("; array_ref_type " ^ (L.string_of_lltype (L.type_of the_arr_ref))));
+            let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
+            let arr_handle = (lookup name (fst maps)) in
+            let arr_srcs = (snd maps) in
 
-            (* the_arr_head is the literal first memory value in the 1D case, where the_arr_ref is an i32*.
-             * In the case of a 2D array, it will be an int32**.  *)
+            if StringMap.find name arr_srcs then
+
+                let idx_list = (L.const_int i32_t 0)::[]@idx_list in
+                let idx_arr = Array.of_list idx_list in
+                let gep = L.build_gep (lookup name (fst maps)) idx_arr name llbuilder in
+                if isAssign then
+                    gep
+                else
+                    L.build_load gep name llbuilder
+
+            else
+
+                let the_arr_ref = L.build_load arr_handle (name ^ "_thearr") llbuilder in
+                ignore(print_endline("; array_ref_type " ^ (L.string_of_lltype (L.type_of the_arr_ref))));
+
+                (* the_arr_head is the literal first memory value in the 1D case, where the_arr_ref is an i32*.
+                 * In the case of a 2D array, it will be an int32**.  *)
 
             
-            let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
-            let idx_arr = Array.of_list(idx_list) in
-            let fst_idx = Array.get idx_arr 0 in
-            let gep =
+                let idx_arr = Array.of_list(idx_list) in
+                let fst_idx = Array.get idx_arr 0 in
+                let gep =
                 if List.length idx_list = 2 then
                     let fst_idx_ptr = L.build_in_bounds_gep the_arr_ref [| fst_idx |] ("fst_idx") llbuilder in
                     ignore(print_endline("; fst_idxptr " ^ L.string_of_lltype(L.type_of fst_idx_ptr)));
@@ -417,14 +440,14 @@ let translate (globals, functions) =
                     ignore(print_endline("; ok, so " ^ L.string_of_lltype(L.type_of the_arr_ref)));
                     let gep = L.build_in_bounds_gep the_arr_ref [| fst_idx |] "fst_idx" llbuilder in
                     ignore(print_endline("; geep " ^ (L.string_of_lltype (L.type_of gep)))); gep
-            in
-            if isAssign then
-                gep
-            else
-                if List.length idx_list = 2 then
-                    L.build_load (L.build_load gep name llbuilder) name llbuilder
+                in
+                if isAssign then
+                    gep
                 else
-                    L.build_load gep name llbuilder
+                    if List.length idx_list = 2 then
+                        L.build_load (L.build_load gep name llbuilder) name llbuilder
+                    else
+                        L.build_load gep name llbuilder
 
 
         (* s is expected to be the ID expression of an already declared array *)
