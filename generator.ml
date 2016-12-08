@@ -28,14 +28,7 @@ let translate (globals, functions) =
     let zero_t = L.const_int i32_t 0 in
 
 
-    (* THIS DOESNT WORK TODO TODO *)
-     let rec ltype_of_unsized_array t d =
-        match d with
-          3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0) 0
-        | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) 0) 0
-        | 1 -> array_t (ltype_of_typ (Datatype(t))) 0
-
-    and ltype_of_sized_array t el =
+    let rec ltype_of_sized_array t el =
         match (List.length el) with
             3 -> array_t (array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 2)) (List.nth el 1)) (List.nth el 0)
           | 2 -> array_t (array_t (ltype_of_typ (Datatype(t))) (List.nth el 1)) (List.nth el 0)
@@ -48,7 +41,7 @@ let translate (globals, functions) =
       | Datatype(A.String) -> string_t
       | Datatype(A.Bool) -> i1_t
       | Datatype(A.Void) -> void_t
-      | UnsizedArray(t, d) -> ltype_of_unsized_array t d
+      | UnsizedArray(t, d) -> get_array_pointer (Datatype(t)) d
       | SizedArray(t, el)  -> ltype_of_sized_array t el
       | _            -> raise (Exceptions.NotADatatype)
 
@@ -101,11 +94,9 @@ let translate (globals, functions) =
 
     (* define each function w/ args and return type so we can call it *)
     let function_decls =
-        (* FUNCTION function_decl *)
         let function_decl map fdecl =
             let name = fdecl.A.fname
             and formal_types = Array.of_list (List.map (fun (typ) -> ltype_of_typ typ.argdeclType) fdecl.A.args) in
-            (* use sast here prob *)
             let ftype = L.function_type (ltype_of_typ fdecl.A.typ) formal_types in
             StringMap.add name (L.define_function name ftype the_module, fdecl) map in
 
@@ -185,10 +176,6 @@ let translate (globals, functions) =
             with Not_found -> raise (Exceptions.UninitializedArray name)
         in
 
-        (*and func_lookup fname =
-            match (L.lookup_function fname the_module) with
-            (*None        -> raise (exception LLVMFunctionNotFound fname)*)
-            Some f      -> f *)
 
          let rec codegen_binop e1 op e2 maps llbuilder =
             let int_ops lh op rh  =
@@ -265,13 +252,6 @@ let translate (globals, functions) =
           | A.ArrayAccess(n, dl) -> n
           | _           -> raise Exceptions.NotAnId
 
-        (* ASSIGN an expression (value) to a declared variable *)
-        (*and update_array_map name e arr_map (maps, llbuilder) =
-            match e with
-              A.ArrayListInit(el)    -> let arr_dim = get_arrliteral_dims el in add_arrdim name arr_dim arr_map
-            | A.ArraySizeInit(t, dl) -> add_arrdim name (List.map (codegen_expr (maps, llbuilder)) dl) arr_map
-            | _                      -> arr_map *)
-        
 
         and codegen_asn_arr e1 e2 maps llbuilder =
             let gen_e1 = (match e1 with
@@ -288,8 +268,6 @@ let translate (globals, functions) =
         and codegen_print e maps llbuilder =
             let param = (codegen_expr (maps, llbuilder) e) in
             let theType = L.string_of_lltype (L.type_of param) in
-            (* ignore(print_endline("; " ^ theType)); *)
-            (* ignore(print_endline("; " ^ L.string_of_llvalue param)); *)
             let fmt_str = match theType with
               "i32"     -> int_format_str
             | "double"  -> flt_format_str
@@ -314,38 +292,40 @@ let translate (globals, functions) =
             ignore(print_endline("; response datatype: " ^ L.string_of_lltype (L.type_of res)));
             ignore(L.build_store res arr_loc llbuilder); res
 
+        and arr_len_handler arr (maps, llbuilder) =
+            (* blur-initialized array *)
+            if StringMap.find (id_to_str arr) (snd maps) then
+                let exp = codegen_expr (maps, llbuilder) arr in
+                L.const_int i32_t (L.array_length (L.type_of(exp)))
+            (* from C, get length at ptr *)
+            else
+                L.const_int i32_t 0
+
 
         and codegen_expr (maps, llbuilder) e =
             match e with 
-            A.IntLit i        -> L.const_int i32_t i
-          | A.DoubleLit i     -> L.const_float iFl_t i
-          | A.StrLit s        -> L.build_global_stringptr s "tmp" llbuilder
-          | A.CharLit c       -> L.const_int i8_t (Char.code c)
-          | A.BoolLit b       -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
-          | A.Id id           -> L.build_load (lookup id (fst maps)) id llbuilder (* todo: error-checking in lookup *)
-          | A.Binop(e1, op, e2) -> codegen_binop e1 op e2 maps llbuilder
-          | A.Unop(op, e)       -> codegen_unop op e maps llbuilder
+            A.IntLit i                  -> L.const_int i32_t i
+          | A.DoubleLit i               -> L.const_float iFl_t i
+          | A.StrLit s                  -> L.build_global_stringptr s "tmp" llbuilder
+          | A.CharLit c                 -> L.const_int i8_t (Char.code c)
+          | A.BoolLit b                 -> if b then L.const_int i1_t 1 else L.const_int i1_t 0
+          | A.Id id                     -> L.build_load (lookup id (fst maps)) id llbuilder
+          | A.Binop(e1, op, e2)         -> codegen_binop e1 op e2 maps llbuilder
+          | A.Unop(op, e)               -> codegen_unop op e maps llbuilder
           (* --- built in functions --- *)
-          | A.FuncCall ("print", [e])    -> codegen_print e maps llbuilder
-          | A.FuncCall ("len", [arr])     -> L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr)))
+          | A.FuncCall ("print", [e])   -> codegen_print e maps llbuilder
+          | A.FuncCall ("len", [arr])   -> L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr)))
           | A.FuncCall ("foo", [e])     -> L.build_call foo_func [| (codegen_expr (maps, llbuilder) e) |] "foo" llbuilder
           | A.FuncCall ("getArr", el)   -> get_arr_handler llbuilder
           (* --- end built-ins --- *)
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
           | A.ArrayAccess(n, dl)        -> build_array_access n dl maps llbuilder false
-          | A.Noexpr            -> L.const_int i32_t 0
+          | A.Noexpr                    -> L.const_int i32_t 0
         
 
         (* codegen_vdecl: handle variable declarations *)
         and codegen_vdecl (vdecl: A.vardecl) (maps, llbuilder) =
-
-            (* let get_expr_type_then_add (vdecl: A.vardecl) locals =
-                let gen_e = codegen_expr(maps, llbuilder) vdecl.declInit in
-                let exp_typ = (L.type_of gen_e) in
-                let local_var = L.build_alloca exp_typ vdecl.declID llbuilder in
-                (StringMap.add vdecl.declID local_var locals), gen_e
-            in *)
 
             let local_vars = (fst maps) in
             match vdecl.declTyp with
@@ -380,7 +360,6 @@ let translate (globals, functions) =
                     let arr_dims = StringMap.add vdecl.declID true (snd maps) in
                     let maps = (local_vars, arr_dims) in maps, llbuilder
 
-
             | _         ->
                 let local_vars = add_local vdecl local_vars in
                 let maps = (local_vars, (snd maps)) in
@@ -401,8 +380,6 @@ let translate (globals, functions) =
        (* ----------------------------- *)
             
         and build_array_access name idx_list maps llbuilder isAssign =
-        (* off the bat, have a conditional to see if its returned from C or is regular. *)
-        (* if pointer, get dims, compute overall idx, build_gep to it or load it *)
 
             let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
             let arr_handle = (lookup name (fst maps)) in
@@ -423,10 +400,6 @@ let translate (globals, functions) =
                 let the_arr_ref = L.build_load arr_handle (name ^ "_thearr") llbuilder in
                 ignore(print_endline("; array_ref_type " ^ (L.string_of_lltype (L.type_of the_arr_ref))));
 
-                (* the_arr_head is the literal first memory value in the 1D case, where the_arr_ref is an i32*.
-                 * In the case of a 2D array, it will be an int32**.  *)
-
-            
                 let idx_arr = Array.of_list(idx_list) in
                 let fst_idx = Array.get idx_arr 0 in
                 let gep =
@@ -436,8 +409,6 @@ let translate (globals, functions) =
                     let snd = L.build_in_bounds_gep fst_idx_ptr [| (Array.get idx_arr 1) |] "snd_idx" llbuilder in
                     ignore(print_endline("; snd_idxptr " ^ L.string_of_lltype(L.type_of snd))); snd
                 else
-                    let sad = 4 in
-                    ignore(print_endline("; ok, so " ^ L.string_of_lltype(L.type_of the_arr_ref)));
                     let gep = L.build_in_bounds_gep the_arr_ref [| fst_idx |] "fst_idx" llbuilder in
                     ignore(print_endline("; geep " ^ (L.string_of_lltype (L.type_of gep)))); gep
                 in
@@ -512,7 +483,6 @@ let translate (globals, functions) =
         and codegen_return ret_e (maps, llbuilder) =
             match func_decl.A.typ with
               A.Datatype(A.Void)        -> L.build_ret_void llbuilder
-            (*| A.UnsizedArray(p, d)      -> L.build_ret (build_array_reference ret_e d (maps, llbuilder)) llbuilder *)
             | _                         -> L.build_ret (codegen_expr (maps, llbuilder) ret_e) llbuilder
            
         (* build instructions in the given builder for the statement,
