@@ -180,6 +180,12 @@ int* readDimensions(char *filename){
   dimensions[1] = height;
   return dimensions;
 }
+
+struct ImageStruct{
+  int *width;
+  int *height;
+  int *imageData;
+};
  
 int** readColorImage(char *filename){
 
@@ -213,24 +219,32 @@ int** readColorImage(char *filename){
   return pixel_array;
 }
 
-int** readGrayscaleImage(char* filename){
+struct ImageStruct *readGrayscaleImage(char* filename){
 
   int** colorImage = readColorImage(filename);
   int* dimensions = readDimensions(filename);
   int width = dimensions[0];
-  int height = dimensions[1];
-  int** grayImage = (int **) malloc(width * height * sizeof(int *));
-  for(int i=0; i<width*height; i++){ grayImage[i] = (int *) malloc(sizeof(int) * 1); } 
-  // 1 intensity value
+  int height = dimensions[1]; 
+  int *width_ptr = (int *) malloc(sizeof(int));  
+  int *height_ptr = (int *) malloc(sizeof(int));  
+  *width_ptr = dimensions[0];
+  *height_ptr = dimensions[1];
+  
+  int* grayImage = (int *) malloc(width * height * sizeof(int));
 
   for(int i = 0; i < height; i++){
     for(int j = 0; j < width; j++){
-      grayImage[(i*width)+j][0] = (colorImage[(i*width)+j][0] * .33) + 
-                                  (colorImage[(i*width)+j][1] * .33) + 
-                                  (colorImage[(i*width)+j][1] * .34);
+      grayImage[(i*width)+j] = (colorImage[(i*width)+j][0] * .33) + 
+                               (colorImage[(i*width)+j][1] * .33) + 
+                               (colorImage[(i*width)+j][1] * .34);
     }
   }
-  return grayImage;
+
+  struct ImageStruct *is = malloc( sizeof(struct ImageStruct) );
+  is->width = width_ptr;
+  is->height = height_ptr; 
+  is->imageData = grayImage;
+  return is;
 }
 
 int** canvas(char *filename, char* option){
@@ -255,7 +269,6 @@ int** canvas(char *filename, char* option){
   return canvas;
 }
 
-
 /*
 int main(int argc, char **argv) 
 {
@@ -267,7 +280,13 @@ int main(int argc, char **argv)
     int* dimensions = readDimensions(argv[1]);
     int width = dimensions[0];
     int height = dimensions[1];
-
+    struct ImageStruct *s = readGrayscaleImage(argv[1]);
+    printf("width: %d\n",*(s->width));
+    printf("height: %d\n",*(s->height));
+    for(int i=0; i<width*height; i++){
+        printf("%d\n", s->imageData[i]);
+    }
+ 
     int** canvass = canvas(argv[1],"grayscale");
 
     for(int i = 0; i < height; i++){
@@ -297,7 +316,6 @@ int main(int argc, char **argv)
         printf("Intensity: %d\n", gsimg[(width*i+j)][0] );
       }
     }
- 
      
     // OpenGL texture binding of the image loaded by DevIL
        glGenTextures(1, &texid); // Texture name generation 
