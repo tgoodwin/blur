@@ -190,6 +190,11 @@ let check_prog (globals, functions) =
 		| Decl vdecl -> (* Return new env*)
 			let (new_env, vdecl) = check_variable_declaration env vdecl
 			in (new_env, stmt)
+		| For (e1, e2, e3, s) -> 
+			let checked_e1 = check_expr env e1
+			and checked_e2 = check_expr env e2
+			and checked_e3 = check_expr env e3 in
+			(env, stmt)
 		| While (e, s) -> 
 			let checked_expr = check_expr env e 
 			and (_, checked_stmt) = check_stmt env s in
