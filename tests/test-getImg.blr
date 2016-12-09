@@ -1,0 +1,5 @@
+int main() {
+        int[] a = getImg();
+        int c = a[1];
+        print(c);
+}
