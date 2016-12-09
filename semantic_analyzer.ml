@@ -54,19 +54,23 @@ let check_prog (globals, functions) =
 	in
 	List.iter check_not_void globals;
 
-	let rec get_variable_decl (symtab : symbol_table) (id : string) :vardecl =
+	let rec get_variable_decl (symtab : symbol_table) (id : string) :datatype =
 		print_endline(";getting var decl");
+		print_endline(";" ^ string_of_int(List.length symtab.args));
 		print_endline(";" ^ string_of_int(List.length symtab.variables));
-		try List.find (fun vdecl -> vdecl.declID = id) symtab.variables
-	  with
-	  | Not_found -> 
-	  	(match symtab.parent with
-	  		| Some parent -> print_endline(";look at parent"); get_variable_decl parent id 
-	  		| _ -> raise Not_found) in
-	let get_variable_type (symtab : symbol_table) (id : string) :datatype =
+		try 
+			let decl = List.find (fun vdecl -> vdecl.declID = id) symtab.variables in decl.declTyp
+		  with
+		  | Not_found -> print_endline("try again"); try let decl = List.find (fun adecl -> adecl.argdeclID = id) symtab.args in decl.argdeclType
+		  			with
+		  			| Not_found -> (match symtab.parent with 
+		  				| Some parent -> print_endline(";look at parent"); get_variable_decl parent id 
+		  				| _ -> raise Not_found) in
+		  		
+	(*let get_variable_type (symtab : symbol_table) (id : string) :datatype =
 		print_endline(";getting var type");
 		let vdecl = get_variable_decl symtab id
-	  in vdecl.declTyp in
+	  in vdecl.declTyp in*)
 	let check_variable_declaration (env : env) (decl: vardecl) = 
 		print_endline(";checking var decls");
 
@@ -132,6 +136,8 @@ let check_prog (globals, functions) =
 					with 
 					args = adecl :: env.symtab.args;
 				} in
+			print_endline(";arg ct");
+			print_endline(";" ^ string_of_int(List.length new_symbol_table.args));
 			let new_env = { (env) with symtab = new_symbol_table; }
 			and arg = 
 				{
@@ -160,7 +166,7 @@ let check_prog (globals, functions) =
 		| BoolLit b -> print_endline(";bool"); Datatype(Bool)
 		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
 		| Id s -> print_endline(";id"); 
-				(try get_variable_type env.symtab s 
+				(try get_variable_decl env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
 				) 
 			(*Datatype(Int)*) (* Get type of var*)
@@ -226,6 +232,7 @@ let check_prog (globals, functions) =
 	(* Add function declaration to the environment. *)
 	let add_function_declaration (env : env) (fdecl : funcdecl) :(env * funcdecl) = 
 		print_endline(";adding function declaration to env");
+		print_endline(";" ^ fdecl.fname);
 		if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
 		raise (Failure ("Cannot overwrite print function!!")) else
 		(* Get the types of the function's arguments. *)
@@ -262,9 +269,17 @@ let check_prog (globals, functions) =
 			List.fold_left (fun acc argdecl ->
 				let (nenv, arg) = check_argdecl (fst acc) argdecl 
 				in (nenv, (arg :: (snd acc)))) (new_env, []) fdecl.args in
-		
+		let f = 
+		{
+			typ = fdecl.typ;
+			fname = fdecl.fname;
+			args = List.rev argdecl_list;
+			body = fdecl.body;
+		} in
+		print_endline(";env with args");
+		print_endline(";" ^ string_of_int(List.length env_with_args.symtab.args));
 		(* Return the environment with this added function. *)
-		({ (env) with funcs = new_funcs; }, fdecl) 
+		({ (env_with_args) with funcs = new_funcs; }, f) 
  	in
 
 
@@ -272,6 +287,8 @@ let check_prog (globals, functions) =
 	(* Check function declaration and return new environment. *)
 	let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
 		print_endline(";checking func decl");
+		ignore(print_endline(";func arg count:"));
+		ignore(print_endline(";" ^ string_of_int(List.length env.symtab.args)));
 		(* No need to keep track of environment outside the scope of the function. *)
 		let (_, func_body) = 
 			check_stmt_list env fdecl.body in 
@@ -283,6 +300,7 @@ let check_prog (globals, functions) =
 
 	(* Establish initial environment *)
 	let env = 
+		print_endline("; est init env");
 		{
 			symtab = { parent = None; variables = []; args = []; };
 			funcs = built_in_functions; 
@@ -318,6 +336,7 @@ let check_prog (globals, functions) =
 				in (new_env, vardecl))
 	in
 
+	(* Add globals to env. *)
 	let(new_env, vars) = 
 		print_endline(";globals loop");
 		List.fold_left (fun acc v ->
@@ -338,6 +357,8 @@ let check_prog (globals, functions) =
 			let(nenv, f) = add_function_declaration (fst acc) f
 			in (nenv, (f :: (snd acc)))) (env, []) functions 
 	in
+	ignore(print_endline(";after adding funcs"));
+	ignore(print_endline(";" ^ string_of_int(List.length env.symtab.args)));
 
 	let (_, fdecl_list) = 
 		print_endline(";another one");

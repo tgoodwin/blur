@@ -1,0 +1,11 @@
+int add(int a, int b) {
+	int z;
+	a = 7;
+	z = a + b;	
+	return z;
+}
+
+void main()
+{
+	int a = 6;
+}
