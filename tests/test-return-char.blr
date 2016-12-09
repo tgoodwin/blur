@@ -1,0 +1,8 @@
+char retChar() {
+    return 'c';
+}
+
+void main() {
+    char z = retChar();
+    print(z);
+}

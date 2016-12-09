@@ -1,0 +1,8 @@
+bool retBool() {
+    return true;
+}
+
+void main() {
+    bool b = retBool();
+    print(b);
+}
