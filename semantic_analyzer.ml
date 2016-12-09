@@ -153,9 +153,11 @@ let check_prog (globals, functions) =
 
 	(* Returns type of expression. *)
 	let rec check_expr (env : env) (expr : expr) = 
+		print_endline("checking expr");
 		match expr with 
 			IntLit i -> print_endline("int"); Datatype(Int)
 		| DoubleLit d -> print_endline("double"); Datatype(Double)
+		| BoolLit b -> print_endline("bool"); Datatype(Bool)
 		| Id s -> print_endline("id"); 
 				(try get_variable_type env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
@@ -181,15 +183,20 @@ let check_prog (globals, functions) =
 	let rec check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
 		print_endline("checking stmt");
 		match stmt with 
-			Expr e -> ignore(check_expr env e); (env, stmt) (* Expression cannot mutate the environment. *)
+			Expr e -> print_endline("stmt is expr"); ignore(check_expr env e); (env, stmt) (* Expression cannot mutate the environment. *)
 		(* Return current env since Blocks have their own scope. *)
-		| Block stmt_list -> 
+		| Block stmt_list -> print_endline("block");
 			let new_symbol_table = { parent = Some env.symtab; variables = []; args = []; } in
 			let (_, checked_stmts) = check_stmt_list { (env) with symtab = new_symbol_table; } stmt_list in
 			(env, stmt)
-		| Decl vdecl -> (* Return new env*)
+		| Decl vdecl -> print_endline("checking decl"); (* Return new env*)
 			let (new_env, vdecl) = check_variable_declaration env vdecl
 			in (new_env, stmt)
+		| If (e, s1, s2) -> print_endline("IF");
+			let checked_expr = check_expr env e
+			and (_, checked_s1) = check_stmt env s1
+			and (_, checked_s2) = check_stmt env s2 in
+			(env, stmt)
 		| For (e1, e2, e3, s) -> 
 			let checked_e1 = check_expr env e1
 			and checked_e2 = check_expr env e2
