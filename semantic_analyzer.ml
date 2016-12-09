@@ -158,6 +158,7 @@ let check_prog (globals, functions) =
 			IntLit i -> print_endline("int"); Datatype(Int)
 		| DoubleLit d -> print_endline("double"); Datatype(Double)
 		| BoolLit b -> print_endline("bool"); Datatype(Bool)
+		| Noexpr -> print_endline("noexpr"); Datatype(Void)
 		| Id s -> print_endline("id"); 
 				(try get_variable_type env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
