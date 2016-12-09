@@ -437,34 +437,28 @@ let translate (globals, functions) =
                 let thestruct = L.build_load arr_handle "thestruct" llbuilder in
                 ignore(print_endline("; arr " ^ (L.string_of_lltype (L.type_of thestruct))));
                 let height_ptr = L.build_gep arr_handle [| zero_t; L.const_int i32_t 1 |] "height" llbuilder in
-                let data_ptr = L.build_gep arr_handle [| zero_t; L.const_int i32_t 2 |] "data" llbuilder in
+                let data_ptr = L.build_gep arr_handle [| zero_t; L.const_int i32_t 3 |] "data" llbuilder in
                 let width = L.build_load width_ptr "widthval" llbuilder in      (* i32 *)
                 let height = L.build_load height_ptr "heightval" llbuilder in   (* i32 *)
                 let data = L.build_load data_ptr "dataval" llbuilder in         (* i32* *)
-                ignore(print_endline("; width typ: " ^ L.string_of_lltype (L.type_of data)));
+                ignore(print_endline("; data typ: " ^ L.string_of_lltype (L.type_of data)));
                 ignore(print_endline("; array_ref_type " ^ (L.string_of_lltype (L.type_of the_arr_ref))));
-                width;
 
-                (*let idx_arr = Array.of_list(idx_list) in
-                let fst_idx = Array.get idx_arr 0 in
-                let gep =
+                let gep = 
                 if List.length idx_list = 2 then
-                    let fst_idx_ptr = L.build_in_bounds_gep the_arr_ref [| fst_idx |] ("fst_idx") llbuilder in
-                    ignore(print_endline("; fst_idxptr " ^ L.string_of_lltype(L.type_of fst_idx_ptr)));
-                    let snd = L.build_in_bounds_gep fst_idx_ptr [| (Array.get idx_arr 1) |] "snd_idx" llbuilder in
-                    ignore(print_endline("; snd_idxptr " ^ L.string_of_lltype(L.type_of snd))); snd
+                    let offset = L.build_mul width (List.hd idx_list) "base" llbuilder in
+                    let offset = L.build_add offset (List.nth idx_list 1) "offset" llbuilder in
+                    let idx_ptr = L.build_gep data [| offset |] "idx_ptr" llbuilder in idx_ptr
                 else
-                    let gep = L.build_in_bounds_gep the_arr_ref [| fst_idx |] "fst_idx" llbuilder in
-                    ignore(print_endline("; geep " ^ (L.string_of_lltype (L.type_of gep)))); gep
+                    let idx_ptr = L.build_in_bounds_gep data [| (List.hd idx_list) |] "idx_ptr" llbuilder in
+                    ignore(print_endline("; idx_ptr type: " ^ (L.string_of_lltype (L.type_of idx_ptr)))); idx_ptr
                 in
                 if isAssign then
                     gep
                 else
-                    if List.length idx_list = 2 then
-                        L.build_load (L.build_load gep name llbuilder) name llbuilder
-                    else
-                        L.build_load gep name llbuilder *)
-
+                    let load =
+                        ignore(print_endline("; gep type: " ^ L.string_of_lltype(L.type_of gep)));
+                        L.build_load gep name llbuilder in load
 
         (* s is expected to be the ID expression of an already declared array *)
         and build_array_ptr the_arr prim_typ id dims (maps, llbuilder) =

@@ -43,6 +43,9 @@ struct canvasData {
 }; */
 
 struct imgData getImg() {
+    int *arr = malloc(4 * sizeof(int));
+    arr[0] = 5;
+    arr[1] = 10;
     struct imgData img;
     img.width = 640;
     img.height = 400;
