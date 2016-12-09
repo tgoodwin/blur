@@ -12,7 +12,15 @@
 
 int glutInitialized = 0;    // Ensure glutInit() is not called twice
                             // the only function that calls it is readDimensions()
- 
+
+
+struct imgData {
+    int width;
+    int height;
+    int depth;
+    int *data;
+};
+
 int foo(int x) {
     return x + 2;
 }
@@ -21,7 +29,26 @@ int *getArr() {
     int * arr = malloc(4 * sizeof(int));
     arr[0] = 7;
     arr[1] = 10;
+    arr[2] = 77;
+    arr[3] = 400;
     return arr;
+}
+
+
+/*
+struct canvasData {
+    int width;
+    int height;
+    char *data;
+}; */
+
+struct imgData getImg() {
+    struct imgData img;
+    img.width = 640;
+    img.height = 400;
+    img.depth = 23;
+    img.data = getArr();
+    return img;
 }
 
 /* Handler for window-repaint event. Called back when the window first appears and

@@ -5,9 +5,18 @@ void initGL(int w, int h);
 
 int LoadImage(char *filename);
 
+struct imgData {
+    int width;
+    int height;
+    int sad;
+    int *data;
+};
+
 int foo(int x);
 
 int *getArr();
+
+struct imgData getImg();
 
 ILubyte * getImageData(char *filename);
 
