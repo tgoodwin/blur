@@ -324,8 +324,22 @@ let translate (globals, functions) =
             (* from C, get length at ptr *)
             (* build load the struct where it was allocated then saved, access the fields *)
             else
-                L.const_int i32_t 0 (* dummy return, this will access struct soon *)
-
+                let arr_ref = lookup (id_to_str arr) (fst maps) in
+                match arr with
+                  A.Id s ->
+                (* exp = pointer to struct *)
+                    ignore(print_endline(";hi" ^ L.string_of_lltype(L.type_of arr_ref)));
+                    let width_ptr = L.build_gep arr_ref [| zero_t; zero_t |] "width" llbuilder in
+                    let width = L.build_load width_ptr "widthval" llbuilder in
+                    width
+                | A.ArrayAccess(n, dl) ->
+                        match (List.length dl) with
+                          1 ->
+                            let height_ptr = L.build_gep arr_ref [| zero_t; L.const_int i32_t 1 |] "height" llbuilder in
+                            let height = L.build_load height_ptr "heightval" llbuilder in
+                            height
+                        (* this case should never be allowed *)
+                        | _ -> raise (Exceptions.UnsupportedDimensions)
 
         and codegen_expr (maps, llbuilder) e =
             match e with 
@@ -339,7 +353,7 @@ let translate (globals, functions) =
           | A.Unop(op, e)               -> codegen_unop op e maps llbuilder
           (* --- built in functions --- *)
           | A.FuncCall ("print", [e])   -> codegen_print e maps llbuilder
-          | A.FuncCall ("len", [arr])   -> L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr)))
+          | A.FuncCall ("len", [arr])   -> arr_len_handler arr (maps, llbuilder)(*L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr))) *)
           | A.FuncCall ("foo", [e])     -> L.build_call foo_func [| (codegen_expr (maps, llbuilder) e) |] "foo" llbuilder
           | A.FuncCall ("getArr", el)   -> get_arr_handler llbuilder
           | A.FuncCall ("getImg", el)   -> get_img_handler llbuilder

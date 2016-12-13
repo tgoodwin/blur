@@ -1,5 +1,9 @@
 int main() {
-        int[] a = getImg();
+        int[][] a = getImg();
         int c = a[1];
+        int width = len(a);
+        int length = len(a[0]);
+        print(width);
+        print(length);
         print(c);
 }
