@@ -1,0 +1,17 @@
+void main() {
+    int a;
+    int b;
+    a = 1;
+    b = 9;
+
+    if(a<b) {
+	print("check 1");
+    }
+
+    if(a>b) {
+	print("should not print");
+    }
+    else {
+	print("check 2");
+    }
+}

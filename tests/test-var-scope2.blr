@@ -1,0 +1,16 @@
+int x;
+
+void globalOne() {
+    x = x + 10;
+}
+
+void globalTwo() {
+    x = x + 20;
+}
+
+void main() {
+    x = 5;
+    globalOne();
+    globalTwo();
+    print(x);
+}

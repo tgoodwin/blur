@@ -1,5 +1,6 @@
 open Prettyprint
 open Ast
+open Generator
 
 (* open Llvm *)
 (* open Llvm_analysis *)
