@@ -96,8 +96,8 @@ let translate (globals, functions) =
     let getarr_t = L.var_arg_function_type (L.pointer_type i32_t) [| |] in
     let getarr_func = L.declare_function "getArr" getarr_t the_module in
 
-    let getimg_t = L.var_arg_function_type img_t [| |] in
-    let getimg_func = L.declare_function "getImg" getimg_t the_module in
+    let getimg_t = L.var_arg_function_type img_t [| L.pointer_type i8_t |] in
+    let getimg_func = L.declare_function "readGrayscaleImage" getimg_t the_module in
 
     (* ---- end externals ------ *)
 
@@ -121,6 +121,7 @@ let translate (globals, functions) =
         and str_format_str = L.build_global_stringptr "%s\n" "str_fmt" llbuilder
         and chr_format_str = L.build_global_stringptr "%c\n" "chr_fmt" llbuilder
         and flt_format_str = L.build_global_stringptr "%f\n" "flt_fmt" llbuilder
+
         in
 
 
@@ -204,6 +205,7 @@ let translate (globals, functions) =
               | A.Geq   -> L.build_icmp Icmp.Sge lh rh "tmp" llbuilder
 
             in
+
             let float_ops lh op rh =
                 match op with
                 A.Add   -> L.build_fadd lh rh "flt_addtmp" llbuilder
@@ -227,6 +229,7 @@ let translate (globals, functions) =
                 (* peanut brittle! *)
                 let op_typ = L.string_of_lltype (L.type_of lh) in match op_typ with
                   "i32" -> int_ops lh op rh
+                | "i8"  -> char_ops lh op rh
                 | "double" -> float_ops lh op rh
             in
             let assign_binop e1 e2 =
@@ -311,7 +314,7 @@ let translate (globals, functions) =
 
         and get_img_handler llbuilder =
             let img_loc = L.build_alloca (img_t) "imgloc" llbuilder in
-            let res = L.build_call getimg_func [| |] "getImgfunccall" llbuilder in
+            let res = L.build_call getimg_func [| |] "grayScaleImgfunccall" llbuilder in
             ignore(print_endline("; response datatype: " ^ L.string_of_lltype (L.type_of res)));
             ignore(L.build_store res img_loc llbuilder); res
 
@@ -429,7 +432,7 @@ let translate (globals, functions) =
         and build_array_access name idx_list maps llbuilder isAssign =
 
             let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
-            let arr_handle = (lookup name (fst maps)) in (* this will be the struct addr *)
+            let arr_handle = (lookup name (fst maps)) in
             let arr_srcs = (snd maps) in
 
             (* normal, Blur initialized array *)
@@ -540,7 +543,6 @@ let translate (globals, functions) =
            
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
-        (* TODO: Continue, Break *)
         and codegen_stmt (maps, llbuilder) = function
             A.Block sl              -> List.fold_left codegen_stmt (maps, llbuilder) sl
           | A.Decl e                -> codegen_vdecl e (maps, llbuilder)
