@@ -1,0 +1,4 @@
+void main() {
+	char[3] c = ['a', 'b', 'c'];
+	print(c[1]);
+}

@@ -1,0 +1,8 @@
+int retFollow() {
+    return 5;
+    int x;
+}
+
+void main() {
+
+}

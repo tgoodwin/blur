@@ -12,5 +12,4 @@ void main() {
     e = "Hello World.";
     print(a);
     print(e);
-    /*print(d);*/
 }

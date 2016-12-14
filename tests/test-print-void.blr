@@ -1,0 +1,7 @@
+void retVoid() {
+
+}
+
+void main() {
+    print(retVoid());
+}

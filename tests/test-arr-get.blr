@@ -1,6 +1,6 @@
 int main()
 {
-    int[] a = int[8];
+    int[8] a;
     a[3] = 4;
     int z;
     z = a[3];

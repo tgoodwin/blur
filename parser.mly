@@ -5,8 +5,8 @@
 %token LPAREN RPAREN LBRACE RBRACE LBRACK RBRACK
 %token SEMI COMMA FUNC
 %token INT DOUBLE STRING CHAR BOOL
-%token IF ELSE FOR WHILE VOID RETURN TRUE FALSE BREAK CONTINUE
-%token PLUS MINUS TIMES DIVIDE ASSIGN MOD
+%token IF ELSE FOR WHILE VOID RETURN TRUE FALSE 
+%token PLUS MINUS TIMES DIVIDE ASSIGN
 %token EQUAL NEQUAL LT LEQ GT GEQ AND OR NOT
 %token BAR DARKEN LIGHTEN
 %token <string> ID
@@ -137,8 +137,6 @@ stmt:
   | condit_stmt         { $1 }
   | loop_stmt           { $1 }
   | RETURN expr SEMI    { Return($2) }
-  | CONTINUE SEMI       { Continue }
-  | BREAK SEMI          { Break }
   | LBRACE stmt_list RBRACE { Block(List.rev $2) }
 
 expr_stmt:

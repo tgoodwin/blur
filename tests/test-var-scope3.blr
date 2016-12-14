@@ -1,0 +1,11 @@
+int x;
+
+int argVar(int k) {
+    return k;
+}
+
+void main() {
+    x = 5;
+    int z = argVar(x);
+    print(z);
+}

@@ -1,6 +1,6 @@
-int main() {
+void main() {
         int b = 4;
-        int[] a = int[10];
+        int[10] a;
         a[b] = b; 
         int c = a[b];
         print(c);
