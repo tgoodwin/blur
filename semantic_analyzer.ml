@@ -180,6 +180,7 @@ let check_prog (globals, functions) =
 			ignore(print_endline(";" ^ string_of_datatype t1));
 			if t1 <> t2 then raise (Failure ("illegal operation")) 
 			else t1
+			| Eq | Neq | And | Or -> print_endline(";eq neq and or"); Datatype(Int)
 			(* TODO: fail if type is not int or double *)
 			| Asn -> print_endline(";asn");
 				if t1 = t2 then t1
