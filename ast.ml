@@ -4,6 +4,7 @@ type binopr =
   | Sub
   | Mult
   | Div
+  | Mod
   | Eq
   | Neq
   | Lt
@@ -14,7 +15,7 @@ type binopr =
   | Or
   | Asn
 
-type unopr = Not | Neg
+type unopr = Not | Neg | Mag | Darken | Lighten
 
 (* BLUR TYPES *)
 type primitive =

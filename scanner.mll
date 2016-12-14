@@ -1,7 +1,7 @@
 (* Ocammlex scanner for Blur lang *)
 { open Parser }
 
-let character = ['a'-'z' 'A'-'Z']
+let character = ['a'-'z' 'A'-'Z' '$' '@' '%' '&' '#' '*' '/' '|' '(' ')' '{' '}' '[' ']' '?' '-' '_' '+' '~' '<' '>' '!' ';' ':' '^' ',' '.' ' ' ]
 let number = ['0'-'9']
 let double = ((number+ '.' number*) | ('.' number+))
 
@@ -20,6 +20,7 @@ rule token = parse
 | '-'	{ MINUS }
 | '*'	{ TIMES }
 | '/'	{ DIVIDE }
+| '%'   { MOD }
 | '='	{ ASSIGN }
 | "=="  { EQUAL }
 | "!="  { NEQUAL }
@@ -31,6 +32,8 @@ rule token = parse
 | "||"  { OR }
 | '!'   { NOT }
 | '|'	{ BAR }
+| ">>" { DARKEN }
+| "<<" { LIGHTEN }
 | "int" 	{ INT }
 | "double"      { DOUBLE }
 | "string"      { STRING }

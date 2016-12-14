@@ -44,6 +44,12 @@ blur:
 	llc out.ll > out.s
 	gcc -I ${LIBDIR} -o out_final out.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
+.PHONY: %.ll
+%.ll:
+	llc $@ > $(F*).s
+	gcc -I ${LIBDIR} -o $(F*) $(F*).s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
+
+
 .PHONY : libs
 libs :
 	cd ${LIBDIR} && make clib
