@@ -61,7 +61,7 @@ let check_prog (globals, functions) =
 		try 
 			let decl = List.find (fun vdecl -> vdecl.declID = id) symtab.variables in decl.declTyp
 		  with
-		  | Not_found -> print_endline("try again"); try let decl = List.find (fun adecl -> adecl.argdeclID = id) symtab.args in decl.argdeclType
+		  | Not_found -> print_endline(";try again"); try let decl = List.find (fun adecl -> adecl.argdeclID = id) symtab.args in decl.argdeclType
 		  			with
 		  			| Not_found -> (match symtab.parent with 
 		  				| Some parent -> print_endline(";look at parent"); get_variable_decl parent id 
