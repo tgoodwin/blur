@@ -212,9 +212,17 @@ int* readDimensions(char *filename){
 }
 
 struct ImageStruct{
-  int *width;
-  int *height;
+  int width;
+  int height;
+  int depth;
   int *imageData;
+};
+
+struct CanvasStruct{
+  int width;
+  int height;
+  int depth;
+  char *asciiData;
 };
  
 int** readColorImage(char *filename){
@@ -249,19 +257,14 @@ int** readColorImage(char *filename){
   return pixel_array;
 }
 
-struct ImageStruct *readGrayscaleImage(char* filename){
+struct ImageStruct readGrayscaleImage(char* filename){
 
   int** colorImage = readColorImage(filename);
   int* dimensions = readDimensions(filename);
   int width = dimensions[0];
   int height = dimensions[1]; 
-  int *width_ptr = (int *) malloc(sizeof(int));  
-  int *height_ptr = (int *) malloc(sizeof(int));  
-  *width_ptr = dimensions[0];
-  *height_ptr = dimensions[1];
   
   int* grayImage = (int *) malloc(width * height * sizeof(int));
-
   for(int i = 0; i < height; i++){
     for(int j = 0; j < width; j++){
       grayImage[(i*width)+j] = (colorImage[(i*width)+j][0] * .33) + 
@@ -270,36 +273,28 @@ struct ImageStruct *readGrayscaleImage(char* filename){
     }
   }
 
-  struct ImageStruct *is = malloc( sizeof(struct ImageStruct) );
-  is->width = width_ptr;
-  is->height = height_ptr; 
-  is->imageData = grayImage;
+  struct ImageStruct is;
+  is.width = width;
+  is.height = height;
+  is.depth = 1;		// gray scale image. 1 intensity value
+  is.imageData = grayImage;
   return is;
 }
 
-int** canvas(char *filename, char* option){
+struct CanvasStruct canvas(char *filename){
 
-  int* dimensions = readDimensions(filename);
-  int width = dimensions[0];
-  int height = dimensions[1];
-  int **canvas = (int **) malloc(width * height * sizeof(int *));
+  struct ImageStruct image = readGrayscaleImage(filename); 
+  struct CanvasStruct canvas;
+  canvas.width = image.width;
+  canvas.height = image.height;
+  canvas.depth = 1;
   
-  if( strcmp( option, "color") == 0 ){
-    for(int i=0; i<width*height; i++){ canvas[i] = (int *) malloc(sizeof(int) * 3); } 
-    canvas = readColorImage(filename); 
-  }
-  else if( strcmp(option, "grayscale") == 0 ){
-    for(int i=0; i<width*height; i++){ canvas[i] = (int *) malloc(sizeof(int) * 1); } 
-    canvas = readColorImage(filename); 
-  }
-  else{
-	printf("invalid argument to command <canvas>");
-	exit(1);
-  } 
+  char *characters = (char *) malloc( sizeof(char) * canvas.width * canvas.height );
+  canvas.asciiData = characters;  
   return canvas;
 }
 
-/*
+
 int main(int argc, char **argv) 
 {
     GLuint texid;
@@ -310,42 +305,16 @@ int main(int argc, char **argv)
     int* dimensions = readDimensions(argv[1]);
     int width = dimensions[0];
     int height = dimensions[1];
-    struct ImageStruct *s = readGrayscaleImage(argv[1]);
-    printf("width: %d\n",*(s->width));
-    printf("height: %d\n",*(s->height));
+    struct ImageStruct s = readGrayscaleImage(argv[1]);
+    printf("width: %d\n",s.width);
+    printf("height: %d\n",s.height);
     for(int i=0; i<width*height; i++){
-        printf("%d\n", s->imageData[i]);
-    }
- 
-    int** canvass = canvas(argv[1],"grayscale");
-
-    for(int i = 0; i < height; i++){
-      for(int j = 0; j < width; j++){
-        printf(" Intensity: %d\n", canvass[(i*width) +j][0] );
-      }
+        printf("%d\n", s.imageData[i]);
     }
 
-    int** colorimg = readColorImage(argv[1]);
-    int* dimensions = readDimensions(argv[1]);
-    int width = dimensions[0];
-    int height = dimensions[1];
-    int** gsimg = readGrayscaleImage(argv[1]);
 
-    // Test color image
-    for(int i = 0; i < height; i++){
-      for(int j = 0; j < width; j++){
-        printf(" R: %d\n", colorimg[(i*width) +j][0] );
-        printf(" G: %d\n", colorimg[(i*width) +j][1] );
-        printf(" B: %d\n", colorimg[(i*width) +j][2] );
-      }
-    }
-  
-    // Test Gray scale image
-    for(int i=0; i<width; i++){
-      for(int j=0; j<height; j++){
-        printf("Intensity: %d\n", gsimg[(width*i+j)][0] );
-      }
-    }
+
+    /*
      
     // OpenGL texture binding of the image loaded by DevIL
        glGenTextures(1, &texid); // Texture name generation 
@@ -363,5 +332,7 @@ int main(int argc, char **argv)
      ilDeleteImages(1, &image); // Because we have already copied image data into texture data we can release memory used by image.
      glDeleteTextures(1, &texid);
      return 0;
+     */
+
 } 
-*/
+
