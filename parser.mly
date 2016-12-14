@@ -8,7 +8,7 @@
 %token IF ELSE FOR WHILE VOID RETURN TRUE FALSE 
 %token PLUS MINUS TIMES DIVIDE ASSIGN
 %token EQUAL NEQUAL LT LEQ GT GEQ AND OR NOT
-%token BAR
+%token BAR DARKEN LIGHTEN
 %token <string> ID
 %token <int> INT_LITERAL
 %token <float> DOUBLE_LITERAL
@@ -24,7 +24,7 @@
 %left EQUAL NEQUAL
 %left LT GT LEQ GEQ
 %left PLUS MINUS
-%left TIMES DIVIDE
+%left TIMES DIVIDE MOD
 %right NOT
 %nonassoc UNOP /* for unary op precedence */
 
@@ -158,6 +158,13 @@ expr_list:
     expr                 { [$1] }
   | expr COMMA expr_list { $1::$3 }
 
+mag:
+    BAR expr BAR        { Unop(Mag, $2) }
+
+saturate:
+    DARKEN mag  { Unop(Darken, $2) }
+  | LIGHTEN mag { Unop(Lighten, $2) }
+
 expr:
   /* literals */
     INT_LITERAL       { IntLit($1) }
@@ -172,6 +179,7 @@ expr:
   | expr MINUS expr   { Binop($1, Sub, $3) }
   | expr TIMES expr   { Binop($1, Mult, $3) }
   | expr DIVIDE expr  { Binop($1, Div, $3) }
+  | expr MOD expr     { Binop($1, Mod, $3) }
   | expr EQUAL expr   { Binop($1, Eq, $3) }
   | expr NEQUAL expr  { Binop($1, Neq, $3) }
   | expr LT expr      { Binop($1, Lt, $3) }
@@ -180,6 +188,8 @@ expr:
   | expr GEQ expr     { Binop($1, Geq, $3) }
   | expr AND expr     { Binop($1, And, $3) }
   | expr OR expr      { Binop($1, Or, $3) }
+  | mag { $1 }
+  | saturate { $1 }
 
   /* unary operators */
   | NOT expr %prec UNOP         { Unop(Not, $2) }
