@@ -352,6 +352,7 @@ let check_prog (globals, functions) =
 	(*ignore(List.iter (fun f -> print_endline("woot")) functions);*) (*This prints woot 4 times if there are 4 functions*)
 	(*ignore(List.iter (fun f -> ignore(check_function_declaration new_env f); ()) functions);*)
 
+	(* Adding func decl to env, which also adds args to env.*)
 	let (new_env, funcs) = 
 		List.fold_left (fun acc f -> 
 			let(nenv, f) = add_function_declaration (fst acc) f
