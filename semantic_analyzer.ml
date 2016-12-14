@@ -66,87 +66,6 @@ let check_prog (globals, functions) =
 		  			| Not_found -> (match symtab.parent with 
 		  				| Some parent -> print_endline(";look at parent"); get_variable_decl parent id 
 		  				| _ -> raise Not_found) in
-		  		
-	(*let get_variable_type (symtab : symbol_table) (id : string) :datatype =
-		print_endline(";getting var type");
-		let vdecl = get_variable_decl symtab id
-	  in vdecl.declTyp in*)
-	let check_variable_declaration (env : env) (decl: vardecl) = 
-		print_endline(";checking var decls");
-
-		(* A variable cannot have type void. *)
-		let check_not_void_var (decl : vardecl) = 
-			print_endline(";checking void vars");
-			let var_typ = (fun v -> decl.declTyp) decl in
-					if var_typ = Datatype(Void) then raise (Failure ("illegal void variable " ^ decl.declID))
-					else ()
-		in 
-		ignore(check_not_void_var (decl));
-
-		(* Ensure that declInit and declType match using check_expr *)
-		(try
-			let _ = 
-				(* Error out if local variable with same name already exists. *)
-				List.find 
-					(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
-			in raise (Failure ("Duplicate variable " ^ decl.declID))
-		with
-		| Not_found -> 
-			(* TODO: use same symbol table as symbol table from arg *)
-			let new_symbol_table = 
-				{
-					(env.symtab)
-					with 
-					variables = decl :: env.symtab.variables;
-				} in
-			let new_env = { (env) with symtab = new_symbol_table; }
-			and vdecl = 
-				{
-					declTyp = decl.declTyp;
-					declID = decl.declID;
-					declInit = decl.declInit;
-				}
-			in (new_env, vdecl))
-	in	
-
-	(* Check arguments *)
-	let check_argdecl (env : env) (adecl : argdecl) = 
-		print_endline(";checking arg decl");
-
-		(* An argument cannot have type void. *)
-		let check_not_void_arg (adecl : argdecl) = 
-			print_endline(";checking void args");
-			let arg_typ = (fun a -> a.argdeclType) adecl in
-					if arg_typ = Datatype(Void) then raise (Failure ("illegal void arg"))
-					else ()
-		in 
-		ignore(check_not_void_arg (adecl));
-
-		(try
-			let _ = 
-				(* Error out if local variable with same name already exists. *)
-				List.find 
-					(fun argdecl -> argdecl.argdeclID = adecl.argdeclID) env.symtab.args
-			in raise (Failure (";Duplicate variable " ^ adecl.argdeclID))
-		with
-		| Not_found -> 
-			let new_symbol_table = 
-				{
-					(env.symtab)
-					with 
-					args = adecl :: env.symtab.args;
-				} in
-			print_endline(";arg ct");
-			print_endline(";" ^ string_of_int(List.length new_symbol_table.args));
-			let new_env = { (env) with symtab = new_symbol_table; }
-			and arg = 
-				{
-					argdeclType = adecl.argdeclType;
-					argdeclID = adecl.argdeclID;
-				}
-			in (new_env, adecl))
-	in
-
 	(* Checking function call returns the type of the function. *)
 	let check_func_call (id : string) (args : expr list) (env : env) = 
 		print_endline(";checking function call");
@@ -155,8 +74,8 @@ let check_prog (globals, functions) =
 			let func_entry = List.find (fun f -> f.name = id) env.funcs in
 			Datatype(Int)
 		with | Not_found -> raise (Failure ("undeclared function " ^ id)) 
-	in
-
+	in	  		
+	
 	(* Returns type of expression. *)
 	let rec check_expr (env : env) (expr : expr) = 
 		print_endline(";checking expr");
@@ -186,6 +105,46 @@ let check_prog (globals, functions) =
 				if t1 = t2 then t1
 				else raise (Failure ("illegal assignment")) 
 	in
+
+	let check_variable_declaration (env : env) (decl: vardecl) = 
+		print_endline(";checking var decls");
+
+		(* A variable cannot have type void. *)
+		let check_not_void_var (decl : vardecl) = 
+			print_endline(";checking void vars");
+			let var_typ = (fun v -> decl.declTyp) decl in
+					if var_typ = Datatype(Void) then raise (Failure ("illegal void variable " ^ decl.declID))
+					else ()
+		in 
+		ignore(check_not_void_var (decl));
+
+		let etype = check_expr env decl.declInit in 
+
+		(* Ensure that declInit and declType match using check_expr *)
+		(try
+			let _ = 
+				(* Error out if local variable with same name already exists. *)
+				List.find 
+					(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
+			in raise (Failure ("Duplicate variable " ^ decl.declID))
+		with
+		| Not_found -> 
+			(* TODO: use same symbol table as symbol table from arg *)
+			let new_symbol_table = 
+				{
+					(env.symtab)
+					with 
+					variables = decl :: env.symtab.variables;
+				} in
+			let new_env = { (env) with symtab = new_symbol_table; }
+			and vdecl = 
+				{
+					declTyp = decl.declTyp;
+					declID = decl.declID;
+					declInit = decl.declInit;
+				}
+			in (new_env, vdecl))
+	in	
 
 	(* Return env and stmt tuple. *)
 	let rec check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
@@ -228,6 +187,44 @@ let check_prog (globals, functions) =
 				let (nenv, s) = check_stmt (fst acc) stmt
 			  in (nenv, (s :: (snd acc)))) (env, []) slist
 		in (new_env, List.rev stmts) 
+	in
+
+	(* Check arguments *)
+	let check_argdecl (env : env) (adecl : argdecl) = 
+		print_endline(";checking arg decl");
+
+		(* An argument cannot have type void. *)
+		let check_not_void_arg (adecl : argdecl) = 
+			print_endline(";checking void args");
+			let arg_typ = (fun a -> a.argdeclType) adecl in
+					if arg_typ = Datatype(Void) then raise (Failure ("illegal void arg"))
+					else ()
+		in 
+		ignore(check_not_void_arg (adecl));
+
+		(try
+			let _ = 
+				(* Error out if local variable with same name already exists. *)
+				List.find 
+					(fun argdecl -> argdecl.argdeclID = adecl.argdeclID) env.symtab.args
+			in raise (Failure (";Duplicate variable " ^ adecl.argdeclID))
+		with
+		| Not_found -> 
+			let new_symbol_table = 
+				{
+					(env.symtab)
+					with 
+					args = adecl :: env.symtab.args;
+				} in
+			print_endline(";arg ct");
+			print_endline(";" ^ string_of_int(List.length new_symbol_table.args));
+			let new_env = { (env) with symtab = new_symbol_table; }
+			and arg = 
+				{
+					argdeclType = adecl.argdeclType;
+					argdeclID = adecl.argdeclID;
+				}
+			in (new_env, adecl))
 	in
 
 	(* Add function declaration to the environment. *)
