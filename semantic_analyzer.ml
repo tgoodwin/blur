@@ -82,6 +82,8 @@ let check_prog (globals, functions) =
 		match expr with 
 			IntLit i -> print_endline(";int"); Datatype(Int)
 		| DoubleLit d -> print_endline(";double"); Datatype(Double)
+		| CharLit c -> print_endline(";char"); Datatype(Char)
+		| StrLit s -> print_endline(";str"); Datatype(String)
 		| BoolLit b -> print_endline(";bool"); Datatype(Bool)
 		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
 		| Id s -> print_endline(";id"); 
