@@ -13,47 +13,6 @@
 int glutInitialized = 0;    // Ensure glutInit() is not called twice
                             // the only function that calls it is readDimensions()
 
-
-struct imgData {
-    int width;
-    int height;
-    int depth;
-    int *data;
-};
-
-int foo(int x) {
-    return x + 2;
-}
-
-int *getArr() {
-    int * arr = malloc(4 * sizeof(int));
-    arr[0] = 7;
-    arr[1] = 10;
-    arr[2] = 77;
-    arr[3] = 400;
-    return arr;
-}
-
-
-/*
-struct canvasData {
-    int width;
-    int height;
-    char *data;
-}; */
-
-struct imgData getImg() {
-    int *arr = malloc(4 * sizeof(int));
-    arr[0] = 5;
-    arr[1] = 10;
-    struct imgData img;
-    img.width = 640;
-    img.height = 400;
-    img.depth = 23;
-    img.data = getArr();
-    return img;
-}
-
 /* Handler for window-repaint event. Called back when the window first appears and
    whenever the window needs to be re-painted. */
 void display() 
@@ -225,13 +184,15 @@ struct CanvasStruct{
   char *asciiData;
 };
  
-int** readColorImage(char *filename){
+struct ImageStruct readColorImage(char *filename){
 
     // Get the dimensions of the image
   int* dimensions = readDimensions(filename);   
-  int width = dimensions[0];
-  int height = dimensions[1];
-
+  struct ImageStruct is;
+  is.width = dimensions[0];
+  is.height = dimensions[1];
+  is.depth = 3; 	// three color values (R,G,B)
+  
   // Load the image into DevIL
   int image;
   image = LoadImage(filename);
@@ -242,34 +203,33 @@ int** readColorImage(char *filename){
   // Get a data pointer to the image 
   ILubyte * bytes = getImageData(filename);
 
-  int **pixel_array = (int**) malloc(width * height * sizeof(int *));
-  for(int i=0; i<width*height; i++){ pixel_array[i] = (int *) malloc(sizeof(int) * 3); } 
-  // 3 for rgb
+  int *colorImage = (int *) malloc(is.width * is.height * 3 * sizeof(int)); // 3 for rgb values
 
-  for(int i = 0; i < height; i++){
-    for(int j = 0; j < width; j++){
-      pixel_array[(i*width)+j][0] = bytes[(i*width +j)*4 + 0];
-      pixel_array[(i*width)+j][1] = bytes[(i*width +j)*4 + 1];
-      pixel_array[(i*width)+j][2] = bytes[(i*width +j)*4 + 2];
+  for(int i = 0; i < is.height; i++){
+    for(int j = 0; j < is.width; j++){
+      colorImage[(i*is.width+j)*3 + 0] = bytes[(i*is.width +j)*4 + 0];
+      colorImage[(i*is.width+j)*3 + 1] = bytes[(i*is.width +j)*4 + 1];
+      colorImage[(i*is.width+j)*3 + 2] = bytes[(i*is.width +j)*4 + 2];
     }
   }
-
-  return pixel_array;
+ 
+  is.imageData = colorImage;
+  return is;
 }
 
 struct ImageStruct readGrayscaleImage(char* filename){
 
-  int** colorImage = readColorImage(filename);
-  int* dimensions = readDimensions(filename);
-  int width = dimensions[0];
-  int height = dimensions[1]; 
-  
+  struct ImageStruct colorImageStruct = readColorImage(filename);
+  int width = colorImageStruct.width;
+  int height = colorImageStruct.height; 
+  int* colorImage = colorImageStruct.imageData; 
+ 
   int* grayImage = (int *) malloc(width * height * sizeof(int));
   for(int i = 0; i < height; i++){
     for(int j = 0; j < width; j++){
-      grayImage[(i*width)+j] = (colorImage[(i*width)+j][0] * .33) + 
-                               (colorImage[(i*width)+j][1] * .33) + 
-                               (colorImage[(i*width)+j][1] * .34);
+      grayImage[(i*width)+j] = (colorImage[(i*width +j)*3 + 0] * .33) + 
+                               (colorImage[(i*width +j)*3 + 1] * .33) + 
+                               (colorImage[(i*width +j)*3 + 2] * .34);
     }
   }
 
@@ -305,15 +265,23 @@ int main(int argc, char **argv)
     int* dimensions = readDimensions(argv[1]);
     int width = dimensions[0];
     int height = dimensions[1];
+   
+    /* 
     struct ImageStruct s = readGrayscaleImage(argv[1]);
     printf("width: %d\n",s.width);
     printf("height: %d\n",s.height);
     for(int i=0; i<width*height; i++){
         printf("%d\n", s.imageData[i]);
     }
+    */
 
-
-
+    struct ImageStruct a = readColorImage(argv[1]);
+    for(int i=0; i<width*100; i++){
+        printf("red %d\n", a.imageData[(i*3)+0]);
+        printf("green %d\n", a.imageData[(i*3)+1]);
+        printf("blue %d\n", a.imageData[(i*3)+2]);
+    }      
+ 
     /*
      
     // OpenGL texture binding of the image loaded by DevIL
