@@ -1,9 +1,29 @@
+char intensityToChar(int intensity){
+    
+    char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; 
+
+    int factor = intensity * len(map); /* scale factor to map intensity (0-255) to char (0-len(map) */
+    int index = factor / 255;
+    return map[len(map) - index];
+}
+
 int main() {
-        int[][] a = getImg();
-        int c = a[1];
+        int[][] a = readGrayscaleImage("leaf.jpg");
+        char[50][50] canvas;
         int width = len(a);
-        int length = len(a[0]);
-        print(width);
-        print(length);
-        print(c);
+        int height = len(a[0]);
+        char c = intensityToChar(255);
+        println(c);
+        println(width);
+        println(height);
+        int i;
+        int j;
+        char px;
+        for(i = 0; i < width; i = i + 1) {
+                for(j = 0; j < height; j = j + 1) {
+                        px = intensityToChar(a[i][j]);
+                        print(px);
+                }
+                println("");
+        }
 }

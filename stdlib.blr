@@ -3,9 +3,15 @@ char intensityToChar(int intensity){
     
     char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; 
 
-    int factor = 255 / len(map); /* scale factor to map intensity (0-255) to char (0-len(map) */
-    int index = intensity / factor;
-    return map[index-1];
+    int maplen = len(map);
+    int factor = intensity * len(map); /* scale factor to map intensity (0-255) to char (0-len(map) */
+    int index = factor / 255;
+    if (index > 0) {
+        return map[maplen - index];
+    }
+    else {
+        return map[0];
+    }
 }
 
 /*

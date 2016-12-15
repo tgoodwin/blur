@@ -46,8 +46,9 @@ blur:
 
 .PHONY: %.ll
 %.ll:
-	llc $@ > $(F*).s
-	gcc -I ${LIBDIR} -o $(F*) $(F*).s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
+	make libs
+	llc $@ > $(*F).s
+	gcc -I ${LIBDIR} -o $(*F) $(*F).s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
 
 .PHONY : libs
