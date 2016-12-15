@@ -116,7 +116,8 @@ let translate (globals, functions) =
 
         let llbuilder = L.builder_at_end context (L.entry_block f) in
 
-        (* format strings *)
+
+        (* format strings for println() *)
         let int_format_str = L.build_global_stringptr "%d\n" "int_fmt" llbuilder
         and str_format_str = L.build_global_stringptr "%s\n" "str_fmt" llbuilder
         and chr_format_str = L.build_global_stringptr "%c\n" "chr_fmt" llbuilder
@@ -229,7 +230,6 @@ let translate (globals, functions) =
                 (* peanut brittle! *)
                 let op_typ = L.string_of_lltype (L.type_of lh) in match op_typ with
                   "i32" -> int_ops lh op rh
-                | "i8"  -> char_ops lh op rh
                 | "double" -> float_ops lh op rh
             in
             let assign_binop e1 e2 =
@@ -284,17 +284,28 @@ let translate (globals, functions) =
             let locals = fst maps in
             ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
-        and codegen_print e maps llbuilder =
+        and codegen_print e maps llbuilder newLine =
             let param = (codegen_expr (maps, llbuilder) e) in
             let theType = L.string_of_lltype (L.type_of param) in
-            let fmt_str = match theType with
-              "i32"     -> int_format_str
-            | "double"  -> flt_format_str
-            | "i8"      -> chr_format_str
-            | "i8*"     -> str_format_str
-            | "i1"      -> int_format_str
-            in
-            L.build_call printf_func [| fmt_str; param |] "printf" llbuilder
+            if newLine then
+                let fmt_str = match theType with
+                  "i32"     -> int_format_str
+                | "double"  -> flt_format_str
+                | "i8"      -> chr_format_str
+                | "i8*"     -> str_format_str
+                | "i1"      -> int_format_str
+                in
+                L.build_call printf_func [| fmt_str; param |] "println" llbuilder
+            else
+                let fmt_str = match theType with
+                  "i32"    -> "%d"
+                | "double" -> "%f"
+                | "i8"     -> "%c"
+                | "i8*"    -> "%s"
+                | "i1"     -> "%d"
+                in
+                let str_ptr = L.build_global_stringptr fmt_str "print_fmt" llbuilder in
+                L.build_call printf_func [| str_ptr; param |] "print" llbuilder
 
         (* blur built-ins  *)
         and codegen_call f el (maps, llbuilder) =
@@ -312,9 +323,10 @@ let translate (globals, functions) =
             ignore(print_endline("; response datatype: " ^ L.string_of_lltype (L.type_of res)));
             ignore(L.build_store res arr_loc llbuilder); res (* this is needed, see codegen_asn for examople *)
 
-        and get_img_handler llbuilder =
+        and get_img_handler e (maps, llbuilder) =
+            let img_name = codegen_expr (maps, llbuilder) e in
             let img_loc = L.build_alloca (img_t) "imgloc" llbuilder in
-            let res = L.build_call getimg_func [| |] "grayScaleImgfunccall" llbuilder in
+            let res = L.build_call getimg_func [| img_name |] "grayScaleImgfunccall" llbuilder in
             ignore(print_endline("; response datatype: " ^ L.string_of_lltype (L.type_of res)));
             ignore(L.build_store res img_loc llbuilder); res
 
@@ -355,11 +367,12 @@ let translate (globals, functions) =
           | A.Binop(e1, op, e2)         -> codegen_binop e1 op e2 maps llbuilder
           | A.Unop(op, e)               -> codegen_unop op e maps llbuilder
           (* --- built in functions --- *)
-          | A.FuncCall ("print", [e])   -> codegen_print e maps llbuilder
+          | A.FuncCall ("print", [e])   -> codegen_print e maps llbuilder false
+          | A.FuncCall ("println", [e]) -> codegen_print e maps llbuilder true
           | A.FuncCall ("len", [arr])   -> arr_len_handler arr (maps, llbuilder)(*L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr))) *)
           | A.FuncCall ("foo", [e])     -> L.build_call foo_func [| (codegen_expr (maps, llbuilder) e) |] "foo" llbuilder
           | A.FuncCall ("getArr", el)   -> get_arr_handler llbuilder
-          | A.FuncCall ("getImg", el)   -> get_img_handler llbuilder
+          | A.FuncCall ("readGrayscaleImage", [e])   -> get_img_handler e (maps, llbuilder)
           (* --- end built-ins --- *)
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
