@@ -255,7 +255,7 @@ struct CanvasStruct canvas(char *filename){
 }
 
 
-int main(int argc, char **argv) 
+/*int main(int argc, char **argv) 
 {
     GLuint texid;
     int    image;
@@ -266,23 +266,13 @@ int main(int argc, char **argv)
     int width = dimensions[0];
     int height = dimensions[1];
    
-    /* 
     struct ImageStruct s = readGrayscaleImage(argv[1]);
     printf("width: %d\n",s.width);
     printf("height: %d\n",s.height);
     for(int i=0; i<width*height; i++){
         printf("%d\n", s.imageData[i]);
     }
-    */
 
-    struct ImageStruct a = readColorImage(argv[1]);
-    for(int i=0; i<width*100; i++){
-        printf("red %d\n", a.imageData[(i*3)+0]);
-        printf("green %d\n", a.imageData[(i*3)+1]);
-        printf("blue %d\n", a.imageData[(i*3)+2]);
-    }      
- 
-    /*
      
     // OpenGL texture binding of the image loaded by DevIL
        glGenTextures(1, &texid); // Texture name generation 
@@ -300,7 +290,6 @@ int main(int argc, char **argv)
      ilDeleteImages(1, &image); // Because we have already copied image data into texture data we can release memory used by image.
      glDeleteTextures(1, &texid);
      return 0;
-     */
 
-} 
+} */
 
