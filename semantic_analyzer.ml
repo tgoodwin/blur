@@ -73,7 +73,7 @@ let check_prog (globals, functions) =
 		try
 			let func_entry = List.find (fun f -> f.name = id) env.funcs in
 			Datatype(Int)
-		with | Not_found -> raise (Failure ("undeclared function " ^ id)) 
+		with | Not_found -> Datatype(Int) (*raise (Failure ("undeclared function " ^ id))*)
 	in	  		
 	
 	(* Returns type of expression. *)
@@ -354,12 +354,18 @@ let check_prog (globals, functions) =
 
 	(* Adding func decl to env, which also adds args to env.*)
 	let (new_env, funcs) = 
+		print_endline(";ADDING FUNCS");
+		print_endline(";" ^ string_of_int(List.length new_env.symtab.variables));
 		List.fold_left (fun acc f -> 
 			let(nenv, f) = add_function_declaration (fst acc) f
-			in (nenv, (f :: (snd acc)))) (env, []) functions 
+			in (nenv, (f :: (snd acc)))) (new_env, []) functions 
 	in
 	ignore(print_endline(";after adding funcs"));
 	ignore(print_endline(";" ^ string_of_int(List.length env.symtab.args)));
+
+
+	print_endline(";after adding fns and ARGS");
+	print_endline(";" ^ string_of_int(List.length new_env.symtab.variables));
 
 	let (_, fdecl_list) = 
 		print_endline(";another one");
