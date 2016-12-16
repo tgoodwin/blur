@@ -1,0 +1,8 @@
+string retString() {
+    return "str";
+}
+
+void main() {
+    string s = retString();
+    println(s);
+}

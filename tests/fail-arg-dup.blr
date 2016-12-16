@@ -1,0 +1,11 @@
+int argDup(int a, int a) {
+    int z = a;
+    return z;
+}
+
+void main() {
+    int k = 1;
+    int c = 2;
+    int x = argDup(k, c);
+    println(x);
+}

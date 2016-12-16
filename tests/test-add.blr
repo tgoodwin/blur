@@ -3,6 +3,6 @@ int main() {
 	int c;
 	b = 4;
 	c = 3;
-	print(b+c);
+	printlnln(b+c);
 	return 1;
 }

@@ -1,0 +1,8 @@
+void main() {
+    if (true) {
+        int x;
+        x = 6;
+    } else {
+    	int z;
+    }
+}

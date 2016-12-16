@@ -2,5 +2,5 @@ int main() {
 
        double a = 4.0;
        double b = 5.0;
-       print(a > b);
+       println(a > b);
 }

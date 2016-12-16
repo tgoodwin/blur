@@ -12,5 +12,5 @@ void main() {
     x = 5;
     globalOne();
     globalTwo();
-    print(x);
+    println(x);
 }

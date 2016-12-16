@@ -1,0 +1,1 @@
+Fatal error: exception Failure("Incorrect number of args for function call print. Expecting 1 args but got 2")

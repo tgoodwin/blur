@@ -1,0 +1,7 @@
+void println() {
+	int p;	
+}
+
+void main() {
+	int x = 7;	
+}

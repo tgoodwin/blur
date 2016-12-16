@@ -1,0 +1,9 @@
+int scope() {
+    int x = 5;
+    return x;
+}
+
+void main() {
+    scope();
+    println(x);
+}
