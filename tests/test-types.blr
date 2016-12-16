@@ -10,6 +10,6 @@ void main() {
     f = 'c';
     d = false;
     e = "Hello World.";
-    print(a);
-    print(e);
+    println(a);
+    println(e);
 }

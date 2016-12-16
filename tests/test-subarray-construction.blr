@@ -4,6 +4,6 @@ int main() {
         int[2][2] c;
         c[0] = a;
         c[1] = b;
-        print(c[0][0]); /* should print 1 */
+        println(c[0][0]); /* should println 1 */
 
 }

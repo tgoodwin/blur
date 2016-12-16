@@ -2,6 +2,6 @@ void main() {
     int[][] a = readColorImage("file.jpg");
 	int width = len(a);
 	int height = len(a[0]);
-	println(width);
-	println(height);
+	printlnln(width);
+	printlnln(height);
 }

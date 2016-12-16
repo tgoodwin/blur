@@ -3,7 +3,7 @@ int main() {
         int c = a[1];
         int width = len(a);
         int length = len(a[0]);
-        print(width);
-        print(length);
-        print(c);
+        println(width);
+        println(length);
+        println(c);
 }

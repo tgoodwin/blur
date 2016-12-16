@@ -1,5 +1,5 @@
 void main() {
     if(1 < 5) {
-	print("if without brack");
+	println("if without brack");
     }
 }

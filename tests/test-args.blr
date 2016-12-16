@@ -6,5 +6,5 @@ int args(int a, int b) {
 void main() {
     int k = 1;
     int x = args(k, k);
-    print(x);
+    println(x);
 }

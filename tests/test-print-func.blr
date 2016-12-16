@@ -3,5 +3,5 @@ int retInt() {
 }
 
 void main() {
-    print(retInt());
+    println(retInt());
 }

@@ -4,5 +4,5 @@ bool retBool() {
 
 void main() {
     bool b = retBool();
-    print(b);
+    println(b);
 }

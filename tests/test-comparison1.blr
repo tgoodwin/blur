@@ -1,5 +1,5 @@
 void main() {
     if(5 != 8) {
-	print(8);
+	println(8);
     }
 }

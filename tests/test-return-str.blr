@@ -4,5 +4,5 @@ string retString() {
 
 void main() {
     string s = retString();
-    print(s);
+    println(s);
 }

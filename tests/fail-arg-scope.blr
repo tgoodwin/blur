@@ -5,5 +5,5 @@ int scope() {
 
 void main() {
     scope();
-    print(x);
+    println(x);
 }

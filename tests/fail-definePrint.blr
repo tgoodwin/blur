@@ -1,4 +1,4 @@
-void print() {
+void println() {
 	int p;	
 }
 

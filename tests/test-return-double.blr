@@ -4,5 +4,5 @@ double retDouble() {
 
 void main() {
     double d = retDouble();
-    print(d);
+    println(d);
 }

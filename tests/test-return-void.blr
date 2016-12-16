@@ -3,5 +3,5 @@ void retVoid() {
 }
 
 void main() {
-    print(retVoid());
+    println(retVoid());
 }

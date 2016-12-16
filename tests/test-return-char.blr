@@ -4,5 +4,5 @@ char retChar() {
 
 void main() {
     char z = retChar();
-    print(z);
+    println(z);
 }

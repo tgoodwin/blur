@@ -3,5 +3,5 @@ void main() {
         int[10] a;
         a[b] = b; 
         int c = a[b];
-        print(c);
+        println(c);
 }

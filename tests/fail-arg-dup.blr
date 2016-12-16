@@ -7,5 +7,5 @@ void main() {
     int k = 1;
     int c = 2;
     int x = argDup(k, c);
-    print(x);
+    println(x);
 }

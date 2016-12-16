@@ -1,4 +1,4 @@
 void main() {
 	char[2][2] c = [['a','b'],['c','d']];
-	print(c[2][2]);
+	println(c[2][2]);
 }

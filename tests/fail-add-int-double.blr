@@ -2,5 +2,5 @@ void main() {
     int a = 5;
     double b = 1.5;
     int z = a + b;
-    print(z);
+    println(z);
 }

@@ -7,5 +7,5 @@ int argVar(int k) {
 void main() {
     x = 5;
     int z = argVar(x);
-    print(z);
+    println(z);
 }

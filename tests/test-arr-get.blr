@@ -4,5 +4,5 @@ int main()
     a[3] = 4;
     int z;
     z = a[3];
-    print(z);
+    println(z);
 }
