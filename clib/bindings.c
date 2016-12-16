@@ -254,7 +254,6 @@ struct CanvasStruct canvas(char *filename){
   return canvas;
 }
 
-
 /*int main(int argc, char **argv) 
 {
     GLuint texid;
@@ -291,5 +290,6 @@ struct CanvasStruct canvas(char *filename){
      glDeleteTextures(1, &texid);
      return 0;
 
-} */
+} 
+*/
 

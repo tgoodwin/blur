@@ -22,7 +22,7 @@ int charToIntensity(char c){
     int index = -1;
     int i;
     for(i=0; i<len(map); i=i+1){
-        if(map[i] == c){   //char comparison must be implemented
+        if(map[i] == c){  
 		index = i; 
 	    }
     }
@@ -32,18 +32,67 @@ int charToIntensity(char c){
     return intensity;
 }
 
-
-int[][] canvas(string
 */
+
+int edgeDetect(string x, int edgeDist){
+    int[][] image = readGrayscaleImage(x);
+    int width = len(image);
+    int height = len(image[0]);
+
+    int leftPixel = -1;
+    int rightPixel = -1;
+    int bottomPixel = -1;
+
+    int distance = -1;    
+    int black = 0;
+
+    int row;
+    int col;
+    for(row=0; row<width; row=row+1){
+	for(col=0; col<height; col=col+1){
+	    black = 0;
+	    leftPixel = image[row][col];
+
+	    if (col < height-1){
+		rightPixel = image[row][(col+1)];	
+	        distance = pixelDistance( leftPixel, rightPixel );	
+		if(distance > edgeDist){
+		    black = 1;
+		}
+	    }
+
+	    if(row < width-1){
+		bottomPixel = image[(row+1)][col];
+	        distance = pixelDistance( leftPixel, bottomPixel );	
+		if (distance > edgeDist){
+		    black = 1;
+		}
+	    }
+
+	    if( black == 1 ){
+		image[row][col] = 1;
+	    }else{
+	        image[row][col] = 0;
+	    }
+	
+	}
+    }
+   return 1;
+}
+
+int pixelDistance( int x, int y ){
+    int distance; 
+    if( x > y ){
+	distance = x - y;
+    }else{
+	distance = y - x;	
+    }
+    return distance;
+}
 
 int main(){
 
-    char a;
-    a = intensityToChar(90);
-    print(a);
-    /*
-    int x;
-    x = charToIntensity('o');
-    print(x); 
-    */
+    int a = edgeDetect("GoldenMushie.jpg", 30);
+    return 0;
+
 }
