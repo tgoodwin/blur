@@ -222,6 +222,22 @@ let translate (globals, functions) =
               | A.Geq   -> L.build_fcmp Fcmp.Oge lh rh  "flt_sgetmp" llbuilder
               | _       -> raise (Exceptions.FloatOpNotSupported)
             in
+            
+            let char_ops lh op rh =
+                let lh = L.string_of_llvalue(lh) in
+                let rh = L.string_of_llvalue(rh) in
+                ignore(print_endline("; char vals:" ^ lh ^ " and " ^ rh));
+                let rh = rh.[0] and lh = lh.[0] in
+                let llresult =
+                    match op with
+                    A.Eq    -> if (Char.compare lh rh) == 0 then 1 else 0
+                  | A.Neq   -> if (Char.compare lh rh) == 0 then 0 else 1
+                  | A.Lt    -> if (Char.compare lh rh) < 0 then 1 else 0
+                  | A.Leq   -> if (Char.compare lh rh) <= 0 then 1 else 0
+                  | A.Gt    -> if (Char.compare lh rh) > 0 then 1 else 0
+                  | A.Geq   -> if (Char.compare lh rh) >= 0 then 1 else 0
+                in L.const_int i32_t llresult
+            in
 
             let arith_binop e1 op e2 =
                 let lh = codegen_expr (maps, llbuilder) e1
@@ -231,6 +247,7 @@ let translate (globals, functions) =
                 let op_typ = L.string_of_lltype (L.type_of lh) in match op_typ with
                   "i32" -> int_ops lh op rh
                 | "double" -> float_ops lh op rh
+                | "i8"     -> char_ops lh op rh
             in
             let assign_binop e1 e2 =
                 let arr_dims = (snd maps) in
