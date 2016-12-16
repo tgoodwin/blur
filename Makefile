@@ -45,14 +45,12 @@ parser.cmi: ast.cmo
 #	gcc -I ${LIBDIR} -o out_final out.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
 .PHONY: %.ll
-%:
+%-ll:
 	./blur -l < $(*F).blr > $(*F).ll
-	./blur -l < stdlib.blr > stdlib.ll
 	make libs
 	llc $(*F).ll > $(*F).s
-	llc stdlib.ll > stdlib.s
 
-	gcc -I ${LIBDIR} -o $(*F).blx $(*F).s stdlib.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
+	gcc -I ${LIBDIR} -o $(*F).blx $(*F).s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
 
 .PHONY : libs

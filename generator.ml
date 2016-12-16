@@ -331,7 +331,7 @@ let translate (globals, functions) =
         (* blur built-ins  *)
         and codegen_call f el (maps, llbuilder) =
             let args = List.rev (List.map (codegen_expr (maps, llbuilder)) (List.rev el)) in
-            if (*StringMap.mem f builtin_decls*) 0 = 2 then
+            if StringMap.mem f builtin_decls then
                 let func = StringMap.find f builtin_decls in
                 L.build_call func (Array.of_list args) (f ^ "_result") llbuilder
             else
