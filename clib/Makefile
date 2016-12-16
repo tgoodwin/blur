@@ -1,6 +1,6 @@
 clib:
 	gcc -c bindings.c -lGL -lglut -lGLU -lIL
-	ar -cvq libclib.a bindings.o
+	ar -cvq libclib.a bindings.o builtin.o
 
 exec:
 	gcc bindings.c -lGL -lglut -lGLU -lIL -o test
