@@ -41,8 +41,16 @@ let check_prog (globals, functions) =
 
 	let built_in_functions = 
 		(* TODO: print takes an expr, not an string. See if we need to change this later. *)
+		(* TODO: fix types in general. *)
 		[ {name = "print"; arg_types = [Datatype(String)]; return_type = Datatype(Void);};
-			{name = "println"; arg_types = [Datatype(String)]; return_type = Datatype(Void);} ]
+			{name = "println"; arg_types = [Datatype(String)]; return_type = Datatype(Void);};
+			{name = "len"; arg_types = [Datatype(String)]; return_type = Datatype(Int);};
+			{name = "readGrayscaleImage"; arg_types = [Datatype(String)]; return_type = Datatype(Int);};
+			{name = "readColorImage"; arg_types = [Datatype(String)]; return_type = Datatype(Int);};
+			{name = "charToIntensity"; arg_types = [Datatype(Char)]; return_type = Datatype(Int);};
+			{name = "intensityToChar"; arg_types = [Datatype(Int)]; return_type = Datatype(Char);};
+			{name = "intcast"; arg_types = [Datatype(Double)]; return_type = Datatype(Int);};
+			{name = "doublecast"; arg_types = [Datatype(Int)]; return_type = Datatype(Double);}; ]
 	in
 
 	(* A global variable cannot have type void. *)
