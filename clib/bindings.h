@@ -22,11 +22,11 @@ ILubyte * getImageData(char *filename);
 
 void initializeGlDevIL(char *filename);
 
-int** readColorImage(char *filename);
+struct ImageStruct readColorImage(char *filename);
 
 int* readDimensions(char *filename);
 
-int readGrayscaleImage(char *filename);
+struct ImageStruct readGrayscaleImage(char *filename);
 
 struct CanvasStruct canvas(char *filename, char* option);
 

@@ -1,9 +1,21 @@
+
+
 int main() {
-        int[][] a = getImg();
-        int c = a[1];
+        int[][] a = readGrayscaleImage("images/leaf.jpg");
         int width = len(a);
-        int length = len(a[0]);
-        print(width);
-        print(length);
-        print(c);
+        int height = len(a[0]);
+        char c = intensityToChar(255);
+        println(c);
+        println(width);
+        println(height);
+        int i;
+        int j;
+        char px;
+        for(i = 0; i < width; i = i + 1) {
+                for(j = 0; j < height; j = j + 1) {
+                        px = intensityToChar(a[i][j]);
+                        print(px);
+                }
+                println("");
+        }
 }

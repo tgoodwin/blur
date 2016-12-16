@@ -86,9 +86,12 @@ let translate (globals, functions) =
             in StringMap.add name (L.define_global name init the_module) map in
         List.fold_left global_var StringMap.empty globals in
 
+    let builtin_decls = StringMap.empty in
+
     (* DECLARE EXTERNAL LIBRARY FUNCTIONS *)
     let printf_t = L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
     let printf_func = L.declare_function "printf" printf_t the_module in
+    let builtin_decls = StringMap.add "printf" printf_func builtin_decls in
 
     let foo_t = L.var_arg_function_type i32_t [| i32_t |] in
     let foo_func = L.declare_function "foo" foo_t the_module in
@@ -96,10 +99,22 @@ let translate (globals, functions) =
     let getarr_t = L.var_arg_function_type (L.pointer_type i32_t) [| |] in
     let getarr_func = L.declare_function "getArr" getarr_t the_module in
 
-    let getimg_t = L.var_arg_function_type img_t [| |] in
-    let getimg_func = L.declare_function "getImg" getimg_t the_module in
+    let getimg_t = L.var_arg_function_type img_t [| L.pointer_type i8_t |] in
+    let getimg_func = L.declare_function "readGrayscaleImage" getimg_t the_module in
+    let builtin_decls = StringMap.add "readGrayscaleImage" getimg_func builtin_decls in
 
     (* ---- end externals ------ *)
+
+    (* DECLARE BLUR BUILT-INS *)
+    let charToInt_t = L.var_arg_function_type i32_t [| i8_t |] in
+    let charToInt_f = L.declare_function "charToIntensity" charToInt_t the_module in
+    let builtin_decls = StringMap.add "charToIntensity" charToInt_f builtin_decls in
+
+    let intensityToChar_t = L.var_arg_function_type i8_t [| i32_t |] in
+    let intensityToChar_f = L.declare_function "intensityToChar" intensityToChar_t the_module in
+    let builtin_decls = StringMap.add "intensityToChar" intensityToChar_f builtin_decls in
+
+    (* end built-ins *)
 
     (* define each function w/ args and return type so we can call it *)
     let function_decls =
@@ -111,16 +126,23 @@ let translate (globals, functions) =
 
         List.fold_left function_decl StringMap.empty functions in
 
+    (* add built ins to func_decls map *)
+   (* let charToIntensityType = L.function_type i32_t [| i8_t |] in
+    let function_decls = StringMap.add "charToIntensity" (L.define_function "charToIntensity" charToIntensityType the_module,  function_decls in
+    let function_decls = StringMap.add "intensityToChar" function_decls in *)
+
     let codegen_func func_decl =
         let (f, _) = StringMap.find func_decl.A.fname function_decls in
 
         let llbuilder = L.builder_at_end context (L.entry_block f) in
 
-        (* format strings *)
+
+        (* format strings for println() *)
         let int_format_str = L.build_global_stringptr "%d\n" "int_fmt" llbuilder
         and str_format_str = L.build_global_stringptr "%s\n" "str_fmt" llbuilder
         and chr_format_str = L.build_global_stringptr "%c\n" "chr_fmt" llbuilder
         and flt_format_str = L.build_global_stringptr "%f\n" "flt_fmt" llbuilder
+
         in
 
 
@@ -204,6 +226,7 @@ let translate (globals, functions) =
               | A.Geq   -> L.build_icmp Icmp.Sge lh rh "tmp" llbuilder
 
             in
+
             let float_ops lh op rh =
                 match op with
                 A.Add   -> L.build_fadd lh rh "flt_addtmp" llbuilder
@@ -219,7 +242,7 @@ let translate (globals, functions) =
               | A.Geq   -> L.build_fcmp Fcmp.Oge lh rh  "flt_sgetmp" llbuilder
               | _       -> raise (Exceptions.FloatOpNotSupported)
             in
-
+            
             let arith_binop e1 op e2 =
                 let lh = codegen_expr (maps, llbuilder) e1
                 and rh = codegen_expr (maps, llbuilder) e2
@@ -228,6 +251,7 @@ let translate (globals, functions) =
                 let op_typ = L.string_of_lltype (L.type_of lh) in match op_typ with
                   "i32" -> int_ops lh op rh
                 | "double" -> float_ops lh op rh
+                | "i8"     -> int_ops lh op rh (* chars are treated as ints *)
             in
             let assign_binop e1 e2 =
                 let arr_dims = (snd maps) in
@@ -281,26 +305,41 @@ let translate (globals, functions) =
             let locals = fst maps in
             ignore(L.build_store gen_e (lookup n locals) llbuilder); gen_e
 
-        and codegen_print e maps llbuilder =
+        and codegen_print e maps llbuilder newLine =
             let param = (codegen_expr (maps, llbuilder) e) in
             let theType = L.string_of_lltype (L.type_of param) in
-            let fmt_str = match theType with
-              "i32"     -> int_format_str
-            | "double"  -> flt_format_str
-            | "i8"      -> chr_format_str
-            | "i8*"     -> str_format_str
-            | "i1"      -> int_format_str
-            in
-            L.build_call printf_func [| fmt_str; param |] "printf" llbuilder
+            if newLine then
+                let fmt_str = match theType with
+                  "i32"     -> int_format_str
+                | "double"  -> flt_format_str
+                | "i8"      -> chr_format_str
+                | "i8*"     -> str_format_str
+                | "i1"      -> int_format_str
+                in
+                L.build_call printf_func [| fmt_str; param |] "println" llbuilder
+            else
+                let fmt_str = match theType with
+                  "i32"    -> "%d"
+                | "double" -> "%f"
+                | "i8"     -> "%c"
+                | "i8*"    -> "%s"
+                | "i1"     -> "%d"
+                in
+                let str_ptr = L.build_global_stringptr fmt_str "print_fmt" llbuilder in
+                L.build_call printf_func [| str_ptr; param |] "print" llbuilder
 
         (* blur built-ins  *)
         and codegen_call f el (maps, llbuilder) =
-            let (fdef, fdecl) = StringMap.find f function_decls in
             let args = List.rev (List.map (codegen_expr (maps, llbuilder)) (List.rev el)) in
-            let result = (match func_decl.A.typ with
-                A.Datatype(A.Void)  -> ""
-              | _       -> f ^ "_result" )
-            in L.build_call fdef (Array.of_list args) result llbuilder
+            if (*StringMap.mem f builtin_decls*) 0 = 2 then
+                let func = StringMap.find f builtin_decls in
+                L.build_call func (Array.of_list args) (f ^ "_result") llbuilder
+            else
+                let (fdef, fdecl) = StringMap.find f function_decls in
+                let result = (match func_decl.A.typ with
+                    A.Datatype(A.Void)  -> ""
+                  | _       -> f ^ "_result" )
+                in L.build_call fdef (Array.of_list args) result llbuilder
 
         and get_arr_handler llbuilder =
             let arr_loc = L.build_alloca (L.pointer_type i32_t) "arrloc" llbuilder in
@@ -309,9 +348,10 @@ let translate (globals, functions) =
             ignore(print_endline("; response datatype: " ^ L.string_of_lltype (L.type_of res)));
             ignore(L.build_store res arr_loc llbuilder); res (* this is needed, see codegen_asn for examople *)
 
-        and get_img_handler llbuilder =
+        and get_img_handler e (maps, llbuilder) =
+            let img_name = codegen_expr (maps, llbuilder) e in
             let img_loc = L.build_alloca (img_t) "imgloc" llbuilder in
-            let res = L.build_call getimg_func [| |] "getImgfunccall" llbuilder in
+            let res = L.build_call getimg_func [| img_name |] "grayScaleImgfunccall" llbuilder in
             ignore(print_endline("; response datatype: " ^ L.string_of_lltype (L.type_of res)));
             ignore(L.build_store res img_loc llbuilder); res
 
@@ -352,11 +392,14 @@ let translate (globals, functions) =
           | A.Binop(e1, op, e2)         -> codegen_binop e1 op e2 maps llbuilder
           | A.Unop(op, e)               -> codegen_unop op e maps llbuilder
           (* --- built in functions --- *)
-          | A.FuncCall ("print", [e])   -> codegen_print e maps llbuilder
-          | A.FuncCall ("len", [arr])   -> arr_len_handler arr (maps, llbuilder)(*L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr))) *)
+          | A.FuncCall ("print", [e])   -> codegen_print e maps llbuilder false
+          | A.FuncCall ("println", [e]) -> codegen_print e maps llbuilder true
+          | A.FuncCall ("len", [arr])   -> arr_len_handler arr (maps, llbuilder)
           | A.FuncCall ("foo", [e])     -> L.build_call foo_func [| (codegen_expr (maps, llbuilder) e) |] "foo" llbuilder
           | A.FuncCall ("getArr", el)   -> get_arr_handler llbuilder
-          | A.FuncCall ("getImg", el)   -> get_img_handler llbuilder
+          | A.FuncCall ("readGrayscaleImage", [e])   -> get_img_handler e (maps, llbuilder)
+          | A.FuncCall ("intcast", [e])              -> L.build_fptosi (codegen_expr (maps, llbuilder) e) i32_t "intcast" llbuilder
+          | A.FuncCall ("doublecast", [e])           -> L.build_sitofp (codegen_expr (maps, llbuilder) e) iFl_t "doublecast" llbuilder
           (* --- end built-ins --- *)
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)
@@ -429,7 +472,7 @@ let translate (globals, functions) =
         and build_array_access name idx_list maps llbuilder isAssign =
 
             let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
-            let arr_handle = (lookup name (fst maps)) in (* this will be the struct addr *)
+            let arr_handle = (lookup name (fst maps)) in
             let arr_srcs = (snd maps) in
 
             (* normal, Blur initialized array *)
@@ -540,7 +583,6 @@ let translate (globals, functions) =
            
         (* build instructions in the given builder for the statement,
          * return the builder for where the next instruction should be placed *)
-        (* TODO: Continue, Break *)
         and codegen_stmt (maps, llbuilder) = function
             A.Block sl              -> List.fold_left codegen_stmt (maps, llbuilder) sl
           | A.Decl e                -> codegen_vdecl e (maps, llbuilder)

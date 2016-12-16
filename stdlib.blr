@@ -1,0 +1,91 @@
+
+int edgeDetect(string x, int edgeDist){
+    int[][] image = readGrayscaleImage(x);
+    int width = len(image);
+    int height = len(image[0]);
+
+    int leftPixel = -1;
+    int rightPixel = -1;
+    int bottomPixel = -1;
+
+    int distance = -1;    
+    int black = 0;
+
+    int row;
+    int col;
+    for(row=0; row<width; row=row+1){
+	for(col=0; col<height; col=col+1){
+	    black = 0;
+	    leftPixel = image[row][col];
+
+	    if (col < height-1){
+		rightPixel = image[row][(col+1)];	
+	        distance = pixelDistance( leftPixel, rightPixel );	
+		if(distance > edgeDist){
+		    black = 1;
+		}
+	    }
+
+	    if(row < width-1){
+		bottomPixel = image[(row+1)][col];
+	        distance = pixelDistance( leftPixel, bottomPixel );	
+		if (distance > edgeDist){
+		    black = 1;
+		}
+	    }
+
+	    if( black == 1 ){
+		image[row][col] = 1;
+	    }else{
+	        image[row][col] = 0;
+	    }
+	
+	}
+    }
+
+    for(row=0; row<width; row=row+1){
+	for(col=0; col<height; col=col+1){
+            print( image[row][col]  );
+	}
+	println("");
+    }
+
+    return 1;
+}
+
+int pixelDistance( int x, int y ){
+    int distance; 
+    if( x > y ){
+	distance = x - y;
+    }else{
+	distance = y - x;	
+    }
+    return distance;
+}
+
+int main(){
+
+    int a = edgeDetect("images/leaf.jpg", 30);
+    int b = charToIntensity('%');
+    println(b);
+}
+
+int dither() {
+        int[][] a = readGrayscaleImage("images/leaf.jpg");
+        int width = len(a);
+        int height = len(a[0]);
+        char c = intensityToChar(255);
+        println(c);
+        println(width);
+        println(height);
+        int i;
+        int j;
+        char px;
+        for(i = 0; i < width; i = i + 1) {
+                for(j = 0; j < height; j = j + 1) {
+                        px = intensityToChar(a[i][j]);
+                        print(px);
+                }
+                println("");
+        }
+}

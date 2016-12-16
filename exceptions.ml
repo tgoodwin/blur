@@ -9,3 +9,4 @@ exception NotADatatype
 exception NotAssignable
 exception UnsizedArrayWithoutAssignment
 exception UnsupportedDimensions
+exception CharOpNotSupported
