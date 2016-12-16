@@ -41,7 +41,8 @@ let check_prog (globals, functions) =
 
 	let built_in_functions = 
 		(* TODO: print takes an expr, not an string. See if we need to change this later. *)
-		[ {name = "print"; arg_types = [Datatype(String)]; return_type = Datatype(Void);} ]
+		[ {name = "print"; arg_types = [Datatype(String)]; return_type = Datatype(Void);};
+			{name = "println"; arg_types = [Datatype(String)]; return_type = Datatype(Void);} ]
 	in
 
 	(* A global variable cannot have type void. *)
@@ -234,7 +235,7 @@ let check_prog (globals, functions) =
 		print_endline(";adding function declaration to env");
 		print_endline(";" ^ fdecl.fname);
 		if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
-		raise (Failure ("Cannot overwrite print function!!")) else
+		raise (Failure ("Cannot overwrite built-in function!!")) else
 		(* Get the types of the function's arguments. *)
 		let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
 		(* Make a function entry for the function. *)
@@ -372,8 +373,6 @@ let check_prog (globals, functions) =
 			print_endline(";" ^ fdecl.fname);
 			let (new_env, f) = check_function_declaration (fst acc) fdecl
 			in (new_env, (f :: (snd acc)))) (new_env, []) functions
-			(*ignore(List.iter (fun f -> print_endline(f.fname); check_function_declaration env f; ()) functions);
-			(new_env, [])*)
 	in fdecl_list;
 
 	let check_function functions =  
