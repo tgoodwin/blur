@@ -22,13 +22,13 @@ int charToIntensity(char c){
     int index = -1;
     int i;
     for(i=0; i<len(map); i=i+1){
-        if(map[i] == c){   char comparison must be implemented
+        if(map[i] == c){   //char comparison must be implemented
 		index = i; 
-	}
+	    }
     }
 
-    int factor = 255 / len(map);
-    intensity = index * factor;
+    int factor = 255 * index;
+    intensity = factor / len(map);
     return intensity;
 }
 
