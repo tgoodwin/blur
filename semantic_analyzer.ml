@@ -40,8 +40,8 @@ let check_prog (globals, functions) =
 	print_endline("; checking prog");
 
 	let built_in_functions = 
-		(* TODO: print takes an expr, not an string. See if we need to change this later. *)
 		(* TODO: fix types in general. *)
+		(* print and println actually take expr, not a Datatype. We deal with this in check_func_call*)
 		[ {name = "print"; arg_types = [Datatype(String)]; return_type = Datatype(Void);};
 			{name = "println"; arg_types = [Datatype(String)]; return_type = Datatype(Void);};
 			{name = "len"; arg_types = [Datatype(String)]; return_type = Datatype(Int);};
@@ -121,7 +121,7 @@ let check_prog (globals, functions) =
 			raise (Failure ("Incorrect number of args for function call " ^ id ^ 
 				". Expecting " ^ (string_of_int (List.length func_entry.arg_types)) ^ " args but got "
 				^ (string_of_int (List.length args)))) else 
-			if arg_types <> func_entry.arg_types then
+			if id <> "print" && id <> "println" && arg_types <> func_entry.arg_types then
 			raise (Failure("unexpected arg types")) else
 			Datatype(Int)
 		with | Not_found -> (*Datatype(Int)*) raise (Failure ("undeclared function " ^ id))
