@@ -1,7 +1,11 @@
 /* Add fail case */
 
-int main(int x, int y) {
+int add(string x, int y) {
     int z;
     z = x + y;
-    print(z);
+    println(z);
+}
+
+void main() {
+	add("hi", 7);
 }

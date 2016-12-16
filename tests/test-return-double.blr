@@ -1,0 +1,8 @@
+double retDouble() {
+    return 1.12345;
+}
+
+void main() {
+    double d = retDouble();
+    println(d);
+}

@@ -1,6 +1,6 @@
 void main() {
     if(false) {
-	print("this should print");
-	print("this should not print");
+	println("this should println");
+	println("this should not println");
     }
 }
