@@ -1,0 +1,7 @@
+void main() {
+/* first line of comment
+second line, still comment
+third line?
+*/
+println("comment check");
+}
