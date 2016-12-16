@@ -73,8 +73,13 @@ let check_prog (globals, functions) =
 		print_endline(";" ^ string_of_int(List.length env.funcs));
 		try
 			let func_entry = List.find (fun f -> f.name = id) env.funcs in
+			(* Ensure that arguments match. *)
+			if List.length func_entry.arg_types <> List.length args then
+			raise (Failure ("Incorrect number of args for function call " ^ id ^ 
+				". Expecting " ^ (string_of_int (List.length func_entry.arg_types)) ^ " args but got "
+				^ (string_of_int (List.length args)))) else 
 			Datatype(Int)
-		with | Not_found -> Datatype(Int) (*raise (Failure ("undeclared function " ^ id))*)
+		with | Not_found -> (*Datatype(Int)*) raise (Failure ("undeclared function " ^ id))
 	in	  		
 	
 	(* Returns type of expression. *)
