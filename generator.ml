@@ -233,7 +233,7 @@ let translate (globals, functions) =
                 | A.Leq -> L.build_icmp Icmp.Sle lh rh "tmp" llbuilder
                 | A.Gt  -> L.build_icmp Icmp.Sgt lh rh "tmp" llbuilder
                 | A.Geq -> L.build_icmp Icmp.Sge lh rh "tmp" llbuilder
-                _       -> raise(Exceptions.CharOpNotSupported)
+                | _       -> raise (Exceptions.CharOpNotSupported)
             in
                 
             let arith_binop e1 op e2 =
@@ -383,10 +383,12 @@ let translate (globals, functions) =
           (* --- built in functions --- *)
           | A.FuncCall ("print", [e])   -> codegen_print e maps llbuilder false
           | A.FuncCall ("println", [e]) -> codegen_print e maps llbuilder true
-          | A.FuncCall ("len", [arr])   -> arr_len_handler arr (maps, llbuilder)(*L.const_int i32_t (L.array_length (L.type_of(codegen_expr (maps, llbuilder) arr))) *)
+          | A.FuncCall ("len", [arr])   -> arr_len_handler arr (maps, llbuilder)
           | A.FuncCall ("foo", [e])     -> L.build_call foo_func [| (codegen_expr (maps, llbuilder) e) |] "foo" llbuilder
           | A.FuncCall ("getArr", el)   -> get_arr_handler llbuilder
           | A.FuncCall ("readGrayscaleImage", [e])   -> get_img_handler e (maps, llbuilder)
+          | A.FuncCall ("intcast", [e])      -> L.build_fptosi (codegen_expr (maps, llbuilder) e) i32_t "intcast" llbuilder
+          | A.FuncCall ("doublecast", [e])      -> L.build_sitofp (codegen_expr (maps, llbuilder) e) iFl_t "doublecast" llbuilder
           (* --- end built-ins --- *)
           | A.FuncCall (n, el)          -> codegen_call n el (maps, llbuilder)
           | A.ArrayListInit el          -> build_array_of_list el (maps, llbuilder)

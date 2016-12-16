@@ -8,7 +8,7 @@ char intensityToChar(int intensity){
 }
 
 int main() {
-        int[][] a = readGrayscaleImage("leaf.jpg");
+        int[][] a = readGrayscaleImage("images/crying.jpg");
         char[50][50] canvas;
         int width = len(a);
         int height = len(a[0]);
