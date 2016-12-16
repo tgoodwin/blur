@@ -15,19 +15,15 @@ int charToIntensity(char c){
     int maplen = len(map);
     int idx = 0;
     int i;
-    char curr;
-    int factor;
     int intensity;
 
-    println(map[0]);
     for(i = 0; i < maplen; i = i + 1) {
         if(map[i] == c) {
             idx = i;
         }
     }
 
-    factor = idx * 255;
-    intensity = factor / maplen;
+    intensity = (255 * idx) / maplen;
     return 255 - intensity;
 }
 

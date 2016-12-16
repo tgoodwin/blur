@@ -282,7 +282,7 @@ let translate (globals, functions) =
             match op with
             A.Neg       -> L.build_neg exp "int_unoptmp" llbuilder
           | A.Not       -> L.build_not exp "bool_unoptmp" llbuilder
-          (* A.Mag      -> L.build_funccall [| exp |] "charToIntensity" llbuilder *)
+          | A.Mag      -> L.build_call charToInt_f [| exp |] "mag_call" llbuilder
           (* A.Lighten -> L.build_funccall [| exp |] "lightenChar" llbuilder *)
           (* A.Darken -> L.build_funccall [| exp |] "darkenChar" llbuilder *)
 
