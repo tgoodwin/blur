@@ -54,6 +54,12 @@ let check_prog (globals, functions) =
 			{name = "doublecast"; arg_types = [Datatype(Int)]; return_type = Datatype(Double);}; ]
 	in
 
+	let is_logical (t : datatype) :bool =
+		match t with
+		| Datatype(Int) | Datatype(Double) | Datatype(Char) | Datatype(String) | Datatype(Bool) -> true
+		| _ -> false
+	in
+
 	(* A global variable cannot have type void. *)
 	let check_not_void (vdecl : vardecl) = 
 		(* Get the types of the globals *)
@@ -102,7 +108,9 @@ let check_prog (globals, functions) =
 			ignore(print_endline(";" ^ string_of_datatype t1));
 			if t1 <> t2 then raise (Failure ("illegal operation")) 
 			else t1
-			| Eq | Neq | And | Or -> print_endline(";eq neq and or"); Datatype(Int)
+			| Eq | Neq | And | Or ->
+			if is_logical t1 && is_logical t2 then Datatype(Bool)
+			else raise (Failure("invalid operands"))
 			(* TODO: fail if type is not int or double *)
 			| Asn -> print_endline(";asn");
 				if t1 = t2 then t1
