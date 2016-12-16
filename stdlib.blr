@@ -77,7 +77,15 @@ int edgeDetect(string x, int edgeDist){
 	
 	}
     }
-   return 1;
+
+    for(row=0; row<width; row=row+1){
+	for(col=0; col<height; col=col+1){
+            print( image[row][col]  );
+	}
+	println("");
+    }
+
+    return 1;
 }
 
 int pixelDistance( int x, int y ){
@@ -92,7 +100,7 @@ int pixelDistance( int x, int y ){
 
 int main(){
 
-    int a = edgeDetect("GoldenMushie.jpg", 30);
+    int a = edgeDetect("images/leaf.jpg", 30);
     return 0;
 
 }
