@@ -40,9 +40,17 @@ let check_prog (globals, functions) =
 	print_endline("; checking prog");
 
 	let built_in_functions = 
-		(* TODO: print takes an expr, not an string. See if we need to change this later. *)
+		(* TODO: fix types in general. *)
+		(* print and println actually take expr, not a Datatype. We deal with this in check_func_call*)
 		[ {name = "print"; arg_types = [Datatype(String)]; return_type = Datatype(Void);};
-			{name = "println"; arg_types = [Datatype(String)]; return_type = Datatype(Void);} ]
+			{name = "println"; arg_types = [Datatype(String)]; return_type = Datatype(Void);};
+			{name = "len"; arg_types = [Datatype(String)]; return_type = Datatype(Int);};
+			{name = "readGrayscaleImage"; arg_types = [Datatype(String)]; return_type = Datatype(Int);};
+			{name = "readColorImage"; arg_types = [Datatype(String)]; return_type = Datatype(Int);};
+			{name = "charToIntensity"; arg_types = [Datatype(Char)]; return_type = Datatype(Int);};
+			{name = "intensityToChar"; arg_types = [Datatype(Int)]; return_type = Datatype(Char);};
+			{name = "intcast"; arg_types = [Datatype(Double)]; return_type = Datatype(Int);};
+			{name = "doublecast"; arg_types = [Datatype(Int)]; return_type = Datatype(Double);}; ]
 	in
 
 	(* A global variable cannot have type void. *)
@@ -67,21 +75,7 @@ let check_prog (globals, functions) =
 		  			| Not_found -> (match symtab.parent with 
 		  				| Some parent -> print_endline(";look at parent"); get_variable_decl parent id 
 		  				| _ -> raise Not_found) in
-	(* Checking function call returns the type of the function. *)
-	let check_func_call (id : string) (args : expr list) (env : env) = 
-		print_endline(";checking function call");
-		print_endline(";" ^ string_of_int(List.length env.funcs));
-		try
-			let func_entry = List.find (fun f -> f.name = id) env.funcs in
-			(* Ensure that arguments match. *)
-			if List.length func_entry.arg_types <> List.length args then
-			raise (Failure ("Incorrect number of args for function call " ^ id ^ 
-				". Expecting " ^ (string_of_int (List.length func_entry.arg_types)) ^ " args but got "
-				^ (string_of_int (List.length args)))) else 
-			Datatype(Int)
-		with | Not_found -> (*Datatype(Int)*) raise (Failure ("undeclared function " ^ id))
-	in	  		
-	
+
 	(* Returns type of expression. *)
 	let rec check_expr (env : env) (expr : expr) = 
 		print_endline(";checking expr");
@@ -112,7 +106,26 @@ let check_prog (globals, functions) =
 			| Asn -> print_endline(";asn");
 				if t1 = t2 then t1
 				else raise (Failure ("illegal assignment")) 
-	in
+	
+
+	(* Checking function call returns the type of the function. *)
+	and check_func_call (id : string) (args : expr list) (env : env) = 
+		print_endline(";checking function call");
+		print_endline(";" ^ string_of_int(List.length env.funcs));
+		try
+			let func_entry = List.find (fun f -> f.name = id) env.funcs in
+			(* Get the types of the arg expressions. *)
+			let arg_types = List.map(fun arg -> check_expr env arg) args in
+			(* Ensure that arguments match. *)
+			if List.length func_entry.arg_types <> List.length args then
+			raise (Failure ("Incorrect number of args for function call " ^ id ^ 
+				". Expecting " ^ (string_of_int (List.length func_entry.arg_types)) ^ " args but got "
+				^ (string_of_int (List.length args)))) else 
+			if id <> "print" && id <> "println" && arg_types <> func_entry.arg_types then
+			raise (Failure("unexpected arg types")) else
+			Datatype(Int)
+		with | Not_found -> (*Datatype(Int)*) raise (Failure ("undeclared function " ^ id))
+	in	  		
 
 	let check_variable_declaration (env : env) (decl: vardecl) = 
 		print_endline(";checking var decls");
