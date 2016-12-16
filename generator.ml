@@ -224,21 +224,18 @@ let translate (globals, functions) =
             in
             
             let char_ops lh op rh =
-                let lh = L.string_of_llvalue(lh) in
-                let rh = L.string_of_llvalue(rh) in
-                ignore(print_endline("; char vals:" ^ lh ^ " and " ^ rh));
-                let rh = rh.[0] and lh = lh.[0] in
-                let llresult =
-                    match op with
-                    A.Eq    -> if (Char.compare lh rh) == 0 then 1 else 0
-                  | A.Neq   -> if (Char.compare lh rh) == 0 then 0 else 1
-                  | A.Lt    -> if (Char.compare lh rh) < 0 then 1 else 0
-                  | A.Leq   -> if (Char.compare lh rh) <= 0 then 1 else 0
-                  | A.Gt    -> if (Char.compare lh rh) > 0 then 1 else 0
-                  | A.Geq   -> if (Char.compare lh rh) >= 0 then 1 else 0
-                in L.const_int i32_t llresult
+                let lh = L.const_zext_or_bitcast lh i32_t in
+                let rh = L.const_zext_or_bitcast rh i32_t in
+                match op with
+                  A.Eq  -> L.build_icmp Icmp.Eq lh rh "tmp" llbuilder
+                | A.Neq -> L.build_icmp Icmp.Ne lh rh "tmp" llbuilder
+                | A.Lt  -> L.build_icmp Icmp.Slt lh rh "tmp" llbuilder
+                | A.Leq -> L.build_icmp Icmp.Sle lh rh "tmp" llbuilder
+                | A.Gt  -> L.build_icmp Icmp.Sgt lh rh "tmp" llbuilder
+                | A.Geq -> L.build_icmp Icmp.Sge lh rh "tmp" llbuilder
+                _       -> raise(Exceptions.CharOpNotSupported)
             in
-
+                
             let arith_binop e1 op e2 =
                 let lh = codegen_expr (maps, llbuilder) e1
                 and rh = codegen_expr (maps, llbuilder) e2
