@@ -1,15 +1,7 @@
-char intensityToChar(int intensity){
-    
-    char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; 
 
-    int factor = intensity * len(map); /* scale factor to map intensity (0-255) to char (0-len(map) */
-    int index = factor / 255;
-    return map[len(map) - index];
-}
 
 int main() {
-        int[][] a = readGrayscaleImage("images/crying.jpg");
-        char[50][50] canvas;
+        int[][] a = readGrayscaleImage("images/leaf.jpg");
         int width = len(a);
         int height = len(a[0]);
         char c = intensityToChar(255);

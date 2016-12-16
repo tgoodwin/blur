@@ -2,8 +2,8 @@ LIBDIR = clib
 
 OBJS = ast.cmx parser.cmx scanner.cmx semantic_analyzer.cmx exceptions.cmx configuration.cmx generator.cmx prettyprint.cmx blur.cmx
 
-prog : $(OBJS)
-	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis -package llvm.bitwriter -package llvm.bitreader -package llvm.linker $(OBJS) -o prog
+blur: $(OBJS)
+	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis -package llvm.bitwriter -package llvm.bitreader -package llvm.linker $(OBJS) -o blur
 		
 scanner.ml : scanner.mll
 	ocamllex scanner.mll
@@ -36,19 +36,23 @@ semantic_analyzer.cmo : ast.cmo sast.cmo
 semantic_analyzer.cmx : ast.cmx sast.cmx
 parser.cmi: ast.cmo
 
-.PHONY : blur
-blur:
-	make prog
-	./prog -l < $(file) > "out.ll"
-	make libs		
-	llc out.ll > out.s
-	gcc -I ${LIBDIR} -o out_final out.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
+#.PHONY : blur
+#blur:
+#	make prog
+#	./prog -l < $(file) > "out.ll"
+#	make libs		
+#	llc out.ll > out.s
+#	gcc -I ${LIBDIR} -o out_final out.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
 .PHONY: %.ll
-%.ll:
+%:
+	./blur -l < $(*F).blr > $(*F).ll
+	./blur -l < stdlib.blr > stdlib.ll
 	make libs
-	llc $@ > $(*F).s
-	gcc -I ${LIBDIR} -o $(*F) $(*F).s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
+	llc $(*F).ll > $(*F).s
+	llc stdlib.ll > stdlib.s
+
+	gcc -I ${LIBDIR} -o $(*F).blx $(*F).s stdlib.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
 
 .PHONY : libs
@@ -57,7 +61,7 @@ libs :
 
 .PHONY : clean
 clean :
-	rm -rf prog scanner.ml parser.ml parser.mli a.out out_final
-	rm -rf *.cmo *.cmi *.cmx *.o *.bc *.ll *.s *.out
+	rm -f prog scanner.ml parser.ml parser.mli
+	rm -f *.cmo *.cmi *.cmx *.o *.bc *.ll *.s *.out *.blx
 	rm -f *~
 	cd clib && make clean
