@@ -1,6 +1,0 @@
-void main() {
-    int a = 5;
-    float b = 1.5;
-    float z = a + b;
-    print(z);
-}
