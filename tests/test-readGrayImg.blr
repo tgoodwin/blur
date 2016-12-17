@@ -1,7 +1,7 @@
 void main() {
-    int[][] a = readGrayscaleImage("file.jpg");
+    int[][] a = readGrayscaleImage("../Golden_Mushroom.jpg");
 	int width = len(a);
 	int height = len(a[0]);
-	printlnln(width);
-	printlnln(height);
+	println(width);
+	println(height);
 }
