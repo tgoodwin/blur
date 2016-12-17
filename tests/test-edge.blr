@@ -1,0 +1,4 @@
+void main() {
+	int[][] edges = edgeDetect("images/leaf.jpg");
+	println(edges[0][0]);
+}
