@@ -1,1 +1,3 @@
-Fatal error: exception Exceptions.UnknownVariable("a")
+void main() {
+    int a = "hi";
+}

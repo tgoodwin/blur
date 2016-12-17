@@ -93,6 +93,7 @@ let check_prog (globals, functions) =
 		| StrLit s -> print_endline(";str"); Datatype(String)
 		| BoolLit b -> print_endline(";bool"); Datatype(Bool)
 		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
+		(*| ArrayListInit a -> print_endline(";arr init"); Datatype(Int)*)
 		| Id s -> print_endline(";id"); 
 				(try get_variable_decl env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
@@ -149,31 +150,33 @@ let check_prog (globals, functions) =
 		ignore(check_not_void_var (decl));
 
 		let etype = check_expr env decl.declInit in 
+		if etype = decl.declTyp then
 
-		(* Ensure that declInit and declType match using check_expr *)
-		(try
-			let _ = 
-				(* Error out if local variable with same name already exists. *)
-				List.find 
-					(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
-			in raise (Failure ("Duplicate variable " ^ decl.declID))
-		with
-		| Not_found -> 
-			(* TODO: use same symbol table as symbol table from arg *)
-			let new_symbol_table = 
-				{
-					(env.symtab)
-					with 
-					variables = decl :: env.symtab.variables;
-				} in
-			let new_env = { (env) with symtab = new_symbol_table; }
-			and vdecl = 
-				{
-					declTyp = decl.declTyp;
-					declID = decl.declID;
-					declInit = decl.declInit;
-				}
-			in (new_env, vdecl))
+			(* Ensure that declInit and declType match using check_expr *)
+			(try
+				let _ = 
+					(* Error out if local variable with same name already exists. *)
+					List.find 
+						(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
+				in raise (Failure ("Duplicate variable " ^ decl.declID))
+			with
+			| Not_found -> 
+				(* TODO: use same symbol table as symbol table from arg *)
+				let new_symbol_table = 
+					{
+						(env.symtab)
+						with 
+						variables = decl :: env.symtab.variables;
+					} in
+				let new_env = { (env) with symtab = new_symbol_table; }
+				and vdecl = 
+					{
+						declTyp = decl.declTyp;
+						declID = decl.declID;
+						declInit = decl.declInit;
+					}
+				in (new_env, vdecl))
+			else raise (Failure("variable declaration type mismatch")) 
 	in	
 
 	(* Return env and stmt tuple. *)
