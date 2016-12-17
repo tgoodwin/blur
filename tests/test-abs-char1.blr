@@ -1,5 +1,5 @@
 void main() {
-	char c = 'g'
+	char c = 'g';
 	int a = |c|;
 	print(a);
 }
