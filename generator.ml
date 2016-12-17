@@ -12,8 +12,7 @@ module A = Ast
 
 module StringMap = Map.Make(String)
 
-
-let translate (globals, functions) =
+let translate (globals, functions) use_stdLib =
     let context = L.global_context() in
     let the_module = L.create_module context "Blur" in
     
@@ -118,6 +117,29 @@ let translate (globals, functions) =
     let intensityToChar_t = L.var_arg_function_type i8_t [| i32_t |] in
     let intensityToChar_f = L.declare_function "intensityToChar" intensityToChar_t the_module in
     let builtin_decls = StringMap.add "intensityToChar" intensityToChar_f builtin_decls in
+
+    let builtin_decls =
+
+        if use_stdLib then
+            let edgeDetect_t = L.var_arg_function_type img_t [| string_t; i32_t |] in
+            let edgeDetect_f = L.declare_function "edgeDetect" edgeDetect_t the_module in
+            let builtin_decls = StringMap.add "edgeDetect" edgeDetect_f builtin_decls in
+
+            let pixelDistance_t = L.var_arg_function_type i32_t [| i32_t; i32_t |] in
+            let pixelDistance_f = L.declare_function "pixelDistance" pixelDistance_t the_module in
+            let builtin_decls = StringMap.add "pixelDistance" pixelDistance_f builtin_decls in
+
+            let dither_t = L.var_arg_function_type char_struct [| string_t |] in
+            let dither_f = L.declare_function "dither" dither_t the_module in
+            let builtin_decls = StringMap.add "dither" dither_f builtin_decls in
+
+            let impose_t = L.var_arg_function_type char_struct [| char_struct; img_t; i8_t |] in
+            let impose_f = L.declare_function "impose" impose_t the_module in
+            StringMap.add "impose" impose_f builtin_decls
+        else builtin_decls
+    in
+
+
 
     (* end built-ins *)
 
