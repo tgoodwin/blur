@@ -110,7 +110,7 @@ let check_prog (globals, functions) =
 			if t1 <> t2 then raise (Failure ("illegal operation")) 
 			else t1
 			| Eq | Neq | And | Or ->
-			if is_logical t1 && is_logical t2 then Datatype(Bool)
+			if is_logical t1 && t1 = t2 then Datatype(Bool)
 			else raise (Failure("invalid operands"))
 			(* TODO: fail if type is not int or double *)
 			| Asn -> print_endline(";asn");
