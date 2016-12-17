@@ -156,7 +156,7 @@ let check_prog (globals, functions) =
 		ignore(check_not_void_var (decl));
 
 		let etype = check_expr env decl.declInit in 
-		if etype = decl.declTyp then (* declInit must be same type as declTyp. *)
+		if etype = decl.declTyp || decl.declInit = Noexpr then (* declInit must be same type as declTyp. *)
 			(try
 				let _ = 
 					(* Error out if local variable with same name already exists. *)
