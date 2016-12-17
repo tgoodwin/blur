@@ -224,7 +224,7 @@ struct ImageStruct readGrayscaleImage(char* filename){
   int height = colorImageStruct.height; 
   int* colorImage = colorImageStruct.imageData; 
  
-  int* grayImage = (int *) malloc(width * height * sizeof(int));
+  int* grayImage = malloc(width * height * sizeof(int));
   for(int i = 0; i < height; i++){
     for(int j = 0; j < width; j++){
       grayImage[(i*width)+j] = (colorImage[(i*width +j)*3 + 0] * .33) + 
