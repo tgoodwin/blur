@@ -1,5 +1,8 @@
 int[][] reader(string s) {
         int[][] as = readGrayscaleImage(s);
+        char[][] cv = canvas(s);
+        println(len(cv));
+        println(len(cv[0]));
         return as;
 }
 
