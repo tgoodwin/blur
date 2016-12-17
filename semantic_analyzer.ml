@@ -89,17 +89,27 @@ let check_prog (globals, functions) =
 		  				| Some parent -> print_endline(";look at parent"); get_variable_decl parent id 
 		  				| _ -> raise Not_found) in
 
+	(*let check_arr_literal (elist : expr list) =
+		let _ = 
+			(* Error out if there is a var in arr literal. *)
+			List.find (fun e -> Id e) elist
+			in raise (Failure ("Duplicate variable " ^ decl.declID))
+			UnsizedArray(Int, List.length elist)
+	in*)
+
 	(* Returns type of expression. *)
 	let rec check_expr (env : env) (expr : expr) = 
 		print_endline(";checking expr");
 		match expr with 
-			IntLit i -> print_endline(";int"); Datatype(Int)
+		  IntLit i -> print_endline(";int"); Datatype(Int)
 		| DoubleLit d -> print_endline(";double"); Datatype(Double)
 		| CharLit c -> print_endline(";char"); Datatype(Char)
 		| StrLit s -> print_endline(";str"); Datatype(String)
 		| BoolLit b -> print_endline(";bool"); Datatype(Bool)
 		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
-		| ArrayListInit a -> print_endline(";arr init"); UnsizedArray(Int, 8)
+		| ArrayListInit elist -> print_endline(";arr init"); 
+			(*check_arr_literal elist*)
+			UnsizedArray(Int, List.length elist)
 		(*| ArrayAccess*)
 		| Id s -> print_endline(";id"); 
 				(try get_variable_decl env.symtab s 
@@ -171,7 +181,39 @@ let check_prog (globals, functions) =
 					}
 				in (new_env, vdecl))
 			else raise (Failure("variable declaration type mismatch")) 
-	in  		
+	in 
+
+	let var_add_arr (env : env) (decl : vardecl) (p : primitive) =
+		match decl.declInit with
+		| ArrayListInit(elist) -> print_endline("arr list init"); (env, decl)
+		| _ -> (env, decl)
+		(*let etype = check_expr env decl.declInit in 
+		if etype = ArrayListInit(Datatype(p) list) || decl.declInit = Noexpr then (* declInit must be same type as declTyp. *)
+			(try
+				let _ = 
+					(* Error out if local variable with same name already exists. *)
+					List.find 
+						(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
+				in raise (Failure ("Duplicate variable " ^ decl.declID))
+			with
+			| Not_found -> 
+				(* TODO: use same symbol table as symbol table from arg *)
+				let new_symbol_table = 
+					{
+						(env.symtab)
+						with 
+						variables = decl :: env.symtab.variables;
+					} in
+				let new_env = { (env) with symtab = new_symbol_table; }
+				and vdecl = 
+					{
+						declTyp = decl.declTyp;
+						declID = decl.declID;
+						declInit = decl.declInit;
+					}
+				in (new_env, vdecl))
+		else raise (Failure("variable declaration type mismatch")) *)
+	in 		
 
 	let check_variable_declaration (env : env) (decl: vardecl) = 
 		print_endline(";checking var decls");
@@ -192,6 +234,7 @@ let check_prog (globals, functions) =
 		| UnsizedArray(p,d) -> 
 			if decl.declInit = Noexpr then raise(Failure("unsized array must be initialized"))
 			else var_add env decl 
+		| SizedArray(p, intlist) -> var_add_arr env decl p
 		| _ -> var_add env decl
 
 	in	
