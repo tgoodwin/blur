@@ -70,8 +70,8 @@ int main(){
     println(b);
 }
 
-int dither() {
-        int[][] a = readGrayscaleImage("images/leaf.jpg");
+int dither(string imageFile) {
+        int[][] a = readGrayscaleImage(imageFile);
         int width = len(a);
         int height = len(a[0]);
         char c = intensityToChar(255);
