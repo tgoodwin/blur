@@ -99,7 +99,7 @@ let check_prog (globals, functions) =
 		| StrLit s -> print_endline(";str"); Datatype(String)
 		| BoolLit b -> print_endline(";bool"); Datatype(Bool)
 		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
-		(*| ArrayListInit a -> print_endline(";arr init"); Datatype(Int)*)
+		| ArrayListInit a -> print_endline(";arr init"); UnsizedArray(Int, 8)
 		| Id s -> print_endline(";id"); 
 				(try get_variable_decl env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
