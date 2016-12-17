@@ -2,7 +2,7 @@ int main(){
 
     /* Dither */
 
-    int[][] asciiArt = dither("images/leaf.jpg");
+    char[][] asciiArt = dither("images/leaf.jpg");
 
     /* Edge Detection */
 
