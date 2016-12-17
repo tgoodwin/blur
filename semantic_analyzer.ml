@@ -100,6 +100,7 @@ let check_prog (globals, functions) =
 		| BoolLit b -> print_endline(";bool"); Datatype(Bool)
 		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
 		| ArrayListInit a -> print_endline(";arr init"); UnsizedArray(Int, 8)
+		(*| ArrayAccess*)
 		| Id s -> print_endline(";id"); 
 				(try get_variable_decl env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
@@ -154,6 +155,12 @@ let check_prog (globals, functions) =
 					else ()
 		in 
 		ignore(check_not_void_var (decl));
+
+		(*match decl.declTyp with
+		| UnsizedArray(p,d) -> print_endline(";unsized");*)
+
+		match decl.declTyp with
+		| UnsizedArray(p,d) -> if decl.declInit = Noexpr then raise(Failure("unsized array must be initialized"));
 
 		let etype = check_expr env decl.declInit in 
 		if etype = decl.declTyp || decl.declInit = Noexpr then (* declInit must be same type as declTyp. *)
