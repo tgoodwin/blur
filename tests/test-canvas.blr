@@ -1,0 +1,4 @@
+void main() {
+	char[][] canv = canvas("../Golden_Mushroom.jpg");
+	println(len(a));
+}

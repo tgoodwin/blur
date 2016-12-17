@@ -5,10 +5,6 @@ int main(){
     string helloWorld = "helloWorld";
     print( helloWorld ); 
 
-    /* Insertion Sort */
-
-
-
     /* Recursion */
 
     int recurse(int a){
@@ -18,7 +14,6 @@ int main(){
 	}
 	return 0;
     }
-
     recurse(4);
     
     /* Builtins and Canvas Manipulation */
@@ -49,12 +44,17 @@ int main(){
 
     /* Dither */
 
-    dither("images/leaf.jpg");
+    char[][] asciiArt = dither("images/leaf.jpg");
+    println(" ");
 
     /* Edge Detection */
 
-    edgeDetect("images/leaf.jpg");
+    int[] edges = edgeDetect("images/leaf.jpg");
+    println(" ");
+
+    /* Dithering + Edge Detection */
+
+    /* impose( asciiArt, edges ); */
 
     return 0;
-
 }
