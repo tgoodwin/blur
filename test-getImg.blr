@@ -1,16 +1,11 @@
-int cool(int[][] arr) {
-        println(len(arr));
-        /*int[][] as = readGrayscaleImage("images/leaf.jpg"); */
-        return 5;
+int[][] reader(string s) {
+        int[][] as = readGrayscaleImage(s);
+        return as;
 }
 
-int main() {
-        int[][] a = readGrayscaleImage("images/leaf.jpg");
+int cool_dither(int[][] a) {
         int width = len(a);
         int height = len(a[0]);
-        char c = intensityToChar(255);
-        int d = cool(a);
-        println(c);
         println(width);
         println(height);
         println(a[0][0]);
@@ -24,4 +19,13 @@ int main() {
                 }
                 println("");
         }
+        return len(a);
+}
+
+int main() {
+        char c = intensityToChar(255);
+        int[][] a = reader("images/leaf.jpg");
+        int d = cool_dither(a);
+        println(d);
+        println(c);
 }
