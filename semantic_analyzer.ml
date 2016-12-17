@@ -150,7 +150,8 @@ let check_prog (globals, functions) =
 				^ (string_of_int (List.length args)))) else 
 			if id <> "print" && id <> "println" && arg_types <> func_entry.arg_types then
 			raise (Failure("unexpected arg types")) else
-			Datatype(Int)
+			func_entry.return_type
+			(*Datatype(Int)*)
 		with | Not_found -> (*Datatype(Int)*) raise (Failure ("undeclared function " ^ id))
 	in	
 
