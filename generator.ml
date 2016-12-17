@@ -365,6 +365,7 @@ let translate (globals, functions) =
                 let arr_ref_ref = lookup (id_to_str arr) (fst maps) in
                 let arr_ref = L.build_load arr_ref_ref "arr_ref_ref" llbuilder in
                 ignore(print_endline(";lenboy: " ^ L.string_of_lltype(L.type_of arr_ref)));
+                let arr_ref = L.build_pointercast arr_ref (L.pointer_type img_t) "tmp" llbuilder in
                 match arr with
                   A.Id s ->
                 (* exp = pointer to struct *)
@@ -432,6 +433,7 @@ let translate (globals, functions) =
 
                     let local_img_var = L.build_alloca the_img_typ vdecl.declID llbuilder in
                     let arr_ptr = L.build_gep local_img_var [| zero_t |] "arr_ptr" llbuilder in
+                    let arr_ptr = L.build_pointercast arr_ptr (L.pointer_type i32_t) "arr_ptrcast" llbuilder in
                     let arr_ptr_a = L.build_alloca (L.type_of arr_ptr) vdecl.declID llbuilder in
 
                     ignore(L.build_store gen_exp local_img_var llbuilder);
@@ -497,9 +499,10 @@ let translate (globals, functions) =
             else
 
                 let the_arr_pointer = L.build_load arr_handle (name ^ "_thearrptr") llbuilder in (* this is the pointer *)
+                let the_arr_pointer = L.build_pointercast the_arr_pointer (L.pointer_type img_t) "cast" llbuilder in
                 ignore(print_endline("; thearrptr type: " ^ L.string_of_lltype(L.type_of the_arr_pointer)));
-                let the_arr_ref = L.build_load the_arr_pointer (name ^ "_thearr") llbuilder in
-                ignore(print_endline("; thearr type: " ^ L.string_of_lltype(L.type_of the_arr_ref)));
+                (*let the_arr_ref = L.build_load the_arr_pointer (name ^ "_thearr") llbuilder in
+                ignore(print_endline("; thearr type: " ^ L.string_of_lltype(L.type_of the_arr_ref))); *)
                 (* this will be the struct *)
                 let width_ptr = L.build_gep the_arr_pointer [| zero_t; zero_t |] "width" llbuilder in (* this works *)
                 (*let thestruct = L.build_load the_arr_pointer "thestruct" llbuilder in
@@ -510,7 +513,6 @@ let translate (globals, functions) =
                 let height = L.build_load height_ptr "heightval" llbuilder in   (* i32 *)
                 let data = L.build_load data_ptr "dataval" llbuilder in         (* i32* *)
                 ignore(print_endline("; data typ: " ^ L.string_of_lltype (L.type_of data)));
-                ignore(print_endline("; array_ref_type " ^ (L.string_of_lltype (L.type_of the_arr_ref))));
 
                 let gep = 
                 if List.length idx_list = 2 then
