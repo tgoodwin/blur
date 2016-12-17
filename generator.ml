@@ -525,7 +525,7 @@ let translate (globals, functions) =
 
             (* normal, Blur initialized array *)
             (*let arr_info = StringMap.find name arr_srcs in *)
-            if StringMap.mem name arr_srcs then
+            if false then
 
                 (*let arr_handle = L.build_pointercast arr_handle (L.pointer_type (snd arr_info)) "normcast" llbuilder in *)
                 let data_ptr = L.build_gep arr_handle [| zero_t; L.const_int i32_t 3 |] "data" llbuilder in
