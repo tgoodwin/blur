@@ -1,0 +1,27 @@
+int cool(int[][] arr) {
+        println(len(arr));
+        /*int[][] as = readGrayscaleImage("images/leaf.jpg"); */
+        return 5;
+}
+
+int main() {
+        int[][] a = readGrayscaleImage("images/leaf.jpg");
+        int width = len(a);
+        int height = len(a[0]);
+        char c = intensityToChar(255);
+        int d = cool(a);
+        println(c);
+        println(width);
+        println(height);
+        println(a[0][0]);
+        int i;
+        int j;
+        char px;
+        for(i = 0; i < width; i = i + 1) {
+                for(j = 0; j < height; j = j + 1) {
+                        px = intensityToChar(a[i][j]);
+                        print(px);
+                }
+                println("");
+        }
+}
