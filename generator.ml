@@ -47,7 +47,7 @@ let translate (globals, functions) =
       | Datatype(A.String) -> string_t
       | Datatype(A.Bool) -> i1_t
       | Datatype(A.Void) -> void_t
-      | UnsizedArray(t, d) -> get_array_pointer (Datatype(t)) d
+      | UnsizedArray(t, d) -> L.pointer_type i32_t (* wow can u believe it lol *)
       | SizedArray(t, el)  -> ltype_of_sized_array t el
       | _            -> raise (Exceptions.NotADatatype)
 
@@ -356,7 +356,7 @@ let translate (globals, functions) =
         and arr_len_handler arr (maps, llbuilder) =
             (* blur-initialized array *)
             let arr_info = (StringMap.find (id_to_str arr) (snd maps)) in
-            if (fst arr_info) then
+            if (fst arr_info) = false then
                 let exp = codegen_expr (maps, llbuilder) arr in (* int pointer at the moment *)
                 ignore(print_endline("; sad type of exp:" ^ L.string_of_lltype(L.type_of(exp))));
                 match arr with
@@ -454,9 +454,19 @@ let translate (globals, functions) =
                     let arr_src = StringMap.add vdecl.declID (false, img_t) (snd maps) in
                     ignore(codegen_asn vdecl.declID arr_ptr (local_vars, arr_src) llbuilder); local_vars, arr_src
 
+                (* array-as-int-pointer returned from a local function *)
+                else if ((L.type_of gen_exp) = (L.pointer_type i32_t)) then
+                    let arr_ptr_a = L.build_alloca (L.type_of gen_exp) vdecl.declID llbuilder in
+                    ignore(print_endline("; array: INT PTR "));
+                    ignore(L.build_store gen_exp arr_ptr_a llbuilder);
+                    let local_vars = StringMap.add vdecl.declID arr_ptr_a local_vars in
+                    let arr_src = StringMap.add vdecl.declID (false, img_t) (snd maps) in
+                    ignore(codegen_asn vdecl.declID gen_exp (local_vars, arr_src) llbuilder); local_vars, arr_src
+
                 (* normal case, i.e. int[] a = [1,2]; *)
                 else
                     let exp_typ = (L.type_of gen_exp) in
+                    ignore(print_endline("; array: NORMAL: "));
                     let local_var = L.build_malloc exp_typ vdecl.declID llbuilder in
                     ignore(print_endline("; malloc type: " ^ L.string_of_lltype(L.type_of local_var)));
 
@@ -524,10 +534,12 @@ let translate (globals, functions) =
 
             else
 
-                let the_arr_pointer = L.build_load arr_handle (name ^ "_thearrptr") llbuilder in (* this is the pointer *)
-                ignore(print_endline("; thearrptr type before: " ^ L.string_of_lltype(L.type_of the_arr_pointer)));
-                let the_arr_pointer = L.build_pointercast the_arr_pointer (L.pointer_type img_t) "cast" llbuilder in
+                (*let the_arr_pointer = L.build_load arr_handle (name ^ "_thearrptr") llbuilder in (* this is the pointer *)
+                ignore(print_endline("; thearrptr type before: " ^ L.string_of_lltype(L.type_of the_arr_pointer))); *)
+
+                let the_arr_pointer = L.build_pointercast arr_handle (L.pointer_type img_t) "cast" llbuilder in
                 ignore(print_endline("; thearrptr type after: " ^ L.string_of_lltype(L.type_of the_arr_pointer)));
+
                 let width_ptr = L.build_gep the_arr_pointer [| zero_t; zero_t |] "width" llbuilder in (* this works *)
                 (*let thestruct = L.build_load the_arr_pointer "thestruct" llbuilder in
                 ignore(print_endline("; arr " ^ (L.string_of_lltype (L.type_of thestruct)))); *)
@@ -535,6 +547,7 @@ let translate (globals, functions) =
                 let data_ptr = L.build_gep the_arr_pointer [| zero_t; L.const_int i32_t 3 |] "data" llbuilder in
                 let width = L.build_load width_ptr "widthval" llbuilder in      (* i32 *)
                 let height = L.build_load height_ptr "heightval" llbuilder in   (* i32 *)
+
                 let data = L.build_load data_ptr "dataval" llbuilder in         (* i32* *)
                 ignore(print_endline("; data typ: " ^ L.string_of_lltype (L.type_of data)));
 
@@ -542,7 +555,9 @@ let translate (globals, functions) =
                 if List.length idx_list = 2 then
                     let offset = L.build_mul width (List.hd idx_list) "base" llbuilder in
                     let offset = L.build_add offset (List.nth idx_list 1) "offset" llbuilder in
-                    let idx_ptr = L.build_gep data [| offset |] "idx_ptr" llbuilder in idx_ptr
+                    let idx_ptr = L.build_gep data [| offset |] "idx_ptr" llbuilder in
+                    ignore(print_endline("; idx_ptr type: " ^ (L.string_of_lltype (L.type_of idx_ptr)))); idx_ptr
+
                 else
                     let idx_ptr = L.build_in_bounds_gep data [| (List.hd idx_list) |] "idx_ptr" llbuilder in
                     ignore(print_endline("; idx_ptr type: " ^ (L.string_of_lltype (L.type_of idx_ptr)))); idx_ptr
@@ -550,9 +565,8 @@ let translate (globals, functions) =
                 if isAssign then
                     gep
                 else
-                    let load =
-                        ignore(print_endline("; gep type: " ^ L.string_of_lltype(L.type_of gep)));
-                        L.build_load gep name llbuilder in load
+                    let load = L.build_load gep name llbuilder in
+                    ignore(print_endline("; load type babe: " ^ (L.string_of_lltype (L.type_of load)))); load
 
         (* s is expected to be the ID expression of an already declared array *)
         and build_array_ptr the_arr prim_typ id dims (maps, llbuilder) =
