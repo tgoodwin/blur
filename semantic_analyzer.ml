@@ -142,26 +142,9 @@ let check_prog (globals, functions) =
 			raise (Failure("unexpected arg types")) else
 			Datatype(Int)
 		with | Not_found -> (*Datatype(Int)*) raise (Failure ("undeclared function " ^ id))
-	in	  		
+	in	
 
-	let check_variable_declaration (env : env) (decl: vardecl) = 
-		print_endline(";checking var decls");
-
-		(* A variable cannot have type void. *)
-		let check_not_void_var (decl : vardecl) = 
-			print_endline(";checking void vars");
-			let var_typ = (fun v -> decl.declTyp) decl in
-					if var_typ = Datatype(Void) then raise (Failure ("illegal void variable " ^ decl.declID))
-					else ()
-		in 
-		ignore(check_not_void_var (decl));
-
-		(*match decl.declTyp with
-		| UnsizedArray(p,d) -> print_endline(";unsized");*)
-
-		match decl.declTyp with
-		| UnsizedArray(p,d) -> if decl.declInit = Noexpr then raise(Failure("unsized array must be initialized"));
-
+	let var_add (env : env) (decl : vardecl) =
 		let etype = check_expr env decl.declInit in 
 		if etype = decl.declTyp || decl.declInit = Noexpr then (* declInit must be same type as declTyp. *)
 			(try
@@ -188,6 +171,29 @@ let check_prog (globals, functions) =
 					}
 				in (new_env, vdecl))
 			else raise (Failure("variable declaration type mismatch")) 
+	in  		
+
+	let check_variable_declaration (env : env) (decl: vardecl) = 
+		print_endline(";checking var decls");
+
+		(* A variable cannot have type void. *)
+		let check_not_void_var (decl : vardecl) = 
+			print_endline(";checking void vars");
+			let var_typ = (fun v -> decl.declTyp) decl in
+					if var_typ = Datatype(Void) then raise (Failure ("illegal void variable " ^ decl.declID))
+					else ()
+		in 
+		ignore(check_not_void_var (decl));
+
+		(*match decl.declTyp with
+		| UnsizedArray(p,d) -> print_endline(";unsized");*)
+
+		match decl.declTyp with
+		| UnsizedArray(p,d) -> 
+			if decl.declInit = Noexpr then raise(Failure("unsized array must be initialized"))
+			else var_add env decl 
+		| _ -> var_add env decl
+
 	in	
 
 	(* Return env and stmt tuple. *)
