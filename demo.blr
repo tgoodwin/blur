@@ -28,7 +28,7 @@ int main(){
 
     /* Blank Canvas */
 
-    char[][] canvas = canvas("leaf.jpg");
+    char[][] canvas = canvas("images/leaf.jpg");
     
     /* Canvas Manipulation */
 
@@ -49,7 +49,7 @@ int main(){
 
     /* Edge Detection */
 
-    int[] edges = edgeDetect("images/leaf.jpg");
+    int[][] edges = edgeDetect("images/leaf.jpg");
     println(" ");
 
     /* Dithering + Edge Detection */
