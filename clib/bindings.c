@@ -248,11 +248,12 @@ struct CanvasStruct canvas(char *filename){
   canvas.width = image.width;
   canvas.height = image.height;
   canvas.depth = 1;
-  
   char *characters = (char *) malloc( sizeof(char) * canvas.width * canvas.height );
   canvas.asciiData = characters;  
   return canvas;
+
 }
+
 
 /*int main(int argc, char **argv) 
 {

@@ -1,0 +1,44 @@
+int main(){
+
+    /* Basic Operations */
+
+    string helloWorld = "helloWorld";
+    print( helloWorld ); 
+    
+    /* Builtins and Canvas Manipulation */
+
+    int intensity;
+    intensity = intensityToChar( 140 );
+    print( intensity ); 
+
+    char c;
+    c = charToIntensity( 'x' );
+    print( c );
+
+    /* Blank Canvas */
+
+    char[][] canvas = canvas("leaf.jpg");
+    
+    /* Canvas Manipulation */
+
+    int width = len(canvas);
+    int height = len(canvas[0]);
+    int i;
+    int j;
+    for( i = 0; i < width; i++ ){
+	for( j = 0; j < height; j++ ){
+	    canvas[i][j] = charToInsensity( (i + j) % 255 );
+        }
+    }
+
+    /* Dither */
+
+    dither("images/leaf.jpg");
+
+    /* Edge Detection */
+
+    edgeDetect("images/leaf.jpg");
+
+    return 0;
+
+}
