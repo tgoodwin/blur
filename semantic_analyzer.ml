@@ -54,6 +54,18 @@ let check_prog (globals, functions) =
 			{name = "doublecast"; arg_types = [Datatype(Int)]; return_type = Datatype(Double);}; ]
 	in
 
+	let is_arith (t : datatype) :bool =
+		match t with
+			| Datatype(Int) | Datatype(Double) -> true
+			| _ -> false
+	in 
+
+	let is_logical (t : datatype) :bool =
+		match t with
+		| Datatype(Int) | Datatype(Double) | Datatype(Char) | Datatype(String) | Datatype(Bool) -> true
+		| _ -> false
+	in
+
 	(* A global variable cannot have type void. *)
 	let check_not_void (vdecl : vardecl) = 
 		(* Get the types of the globals *)
@@ -87,6 +99,8 @@ let check_prog (globals, functions) =
 		| StrLit s -> print_endline(";str"); Datatype(String)
 		| BoolLit b -> print_endline(";bool"); Datatype(Bool)
 		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
+		| ArrayListInit a -> print_endline(";arr init"); UnsizedArray(Int, 8)
+		(*| ArrayAccess*)
 		| Id s -> print_endline(";id"); 
 				(try get_variable_decl env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
@@ -98,11 +112,13 @@ let check_prog (globals, functions) =
 			and t2 = check_expr env e2 in
 			match op with 
 			| Add | Sub | Mult | Div | Lt | Leq | Gt | Geq -> print_endline(";arith");
-			ignore(print_endline(";" ^ string_of_datatype t1));
-			ignore(print_endline(";" ^ string_of_datatype t1));
-			if t1 <> t2 then raise (Failure ("illegal operation")) 
-			else t1
-			| Eq | Neq | And | Or -> print_endline(";eq neq and or"); Datatype(Int)
+				ignore(print_endline(";" ^ string_of_datatype t1));
+				ignore(print_endline(";" ^ string_of_datatype t1));
+				if is_arith t1 && t1 = t2 then t1
+				else raise (Failure ("illegal operation")) 
+			| Eq | Neq | And | Or ->
+				if is_logical t1 && t1 = t2 then Datatype(Bool)
+				else raise (Failure("invalid operands"))
 			(* TODO: fail if type is not int or double *)
 			| Asn -> print_endline(";asn");
 				if t1 = t2 then t1
@@ -126,7 +142,36 @@ let check_prog (globals, functions) =
 			raise (Failure("unexpected arg types")) else
 			Datatype(Int)
 		with | Not_found -> (*Datatype(Int)*) raise (Failure ("undeclared function " ^ id))
-	in	  		
+	in	
+
+	let var_add (env : env) (decl : vardecl) =
+		let etype = check_expr env decl.declInit in 
+		if etype = decl.declTyp || decl.declInit = Noexpr then (* declInit must be same type as declTyp. *)
+			(try
+				let _ = 
+					(* Error out if local variable with same name already exists. *)
+					List.find 
+						(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
+				in raise (Failure ("Duplicate variable " ^ decl.declID))
+			with
+			| Not_found -> 
+				(* TODO: use same symbol table as symbol table from arg *)
+				let new_symbol_table = 
+					{
+						(env.symtab)
+						with 
+						variables = decl :: env.symtab.variables;
+					} in
+				let new_env = { (env) with symtab = new_symbol_table; }
+				and vdecl = 
+					{
+						declTyp = decl.declTyp;
+						declID = decl.declID;
+						declInit = decl.declInit;
+					}
+				in (new_env, vdecl))
+			else raise (Failure("variable declaration type mismatch")) 
+	in  		
 
 	let check_variable_declaration (env : env) (decl: vardecl) = 
 		print_endline(";checking var decls");
@@ -140,32 +185,15 @@ let check_prog (globals, functions) =
 		in 
 		ignore(check_not_void_var (decl));
 
-		let etype = check_expr env decl.declInit in 
+		(*match decl.declTyp with
+		| UnsizedArray(p,d) -> print_endline(";unsized");*)
 
-		(* Ensure that declInit and declType match using check_expr *)
-		(try
-			let _ = 
-				(* Error out if local variable with same name already exists. *)
-				List.find 
-					(fun vdecl -> vdecl.declID = decl.declID) env.symtab.variables
-			in raise (Failure ("Duplicate variable " ^ decl.declID))
-		with
-		| Not_found -> 
-			(* TODO: use same symbol table as symbol table from arg *)
-			let new_symbol_table = 
-				{
-					(env.symtab)
-					with 
-					variables = decl :: env.symtab.variables;
-				} in
-			let new_env = { (env) with symtab = new_symbol_table; }
-			and vdecl = 
-				{
-					declTyp = decl.declTyp;
-					declID = decl.declID;
-					declInit = decl.declInit;
-				}
-			in (new_env, vdecl))
+		match decl.declTyp with
+		| UnsizedArray(p,d) -> 
+			if decl.declInit = Noexpr then raise(Failure("unsized array must be initialized"))
+			else var_add env decl 
+		| _ -> var_add env decl
+
 	in	
 
 	(* Return env and stmt tuple. *)

@@ -1,0 +1,7 @@
+void main() {
+	int a = 1;
+	char c = 'c';
+	if(a==c && a < 4) {
+		println(a);
+	}
+}

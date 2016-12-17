@@ -1,0 +1,7 @@
+void main() {
+	int a = 5;
+	char c = 'c';
+	if(a != c) {
+		println(a);
+	}
+}

@@ -1,1 +1,1 @@
-Fatal error: exception Failure("ncorrect number of args for function call add. Expecting 2 args but got 1")
+Fatal error: exception Failure("Incorrect number of args for function call add. Expecting 2 args but got 1")

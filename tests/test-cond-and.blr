@@ -1,0 +1,5 @@
+void main() {
+	if(true && true) {
+		println("cond and");
+	}
+}

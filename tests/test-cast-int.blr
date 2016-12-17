@@ -1,5 +1,5 @@
 void main() {
     double a = 5.123;
     int b = intcast(a);
-    printlnln(b);
+    println(b);
 }
