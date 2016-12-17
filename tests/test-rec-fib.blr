@@ -3,11 +3,14 @@ int fib(int n) {
 		return 1;
 	}
 	else {
-		return (fib(n-1) + fib(n-2));
+		int a = fib(n-1);
+		int b = fib(n-2);
+		return a+b;
 	}
+	return 0;
 }
 
 void main() {
-	int k = fib(3);
-	print(k);
+	int k = fib(5);
+	println(k);
 }
