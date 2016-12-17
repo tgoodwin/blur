@@ -54,6 +54,12 @@ let check_prog (globals, functions) =
 			{name = "doublecast"; arg_types = [Datatype(Int)]; return_type = Datatype(Double);}; ]
 	in
 
+	let is_arith (t : datatype) :bool =
+		match t with
+			| Datatype(Int) | Datatype(Double) -> true
+			| _ -> false
+	in 
+
 	let is_logical (t : datatype) :bool =
 		match t with
 		| Datatype(Int) | Datatype(Double) | Datatype(Char) | Datatype(String) | Datatype(Bool) -> true
@@ -105,13 +111,13 @@ let check_prog (globals, functions) =
 			and t2 = check_expr env e2 in
 			match op with 
 			| Add | Sub | Mult | Div | Lt | Leq | Gt | Geq -> print_endline(";arith");
-			ignore(print_endline(";" ^ string_of_datatype t1));
-			ignore(print_endline(";" ^ string_of_datatype t1));
-			if t1 <> t2 then raise (Failure ("illegal operation")) 
-			else t1
+				ignore(print_endline(";" ^ string_of_datatype t1));
+				ignore(print_endline(";" ^ string_of_datatype t1));
+				if is_arith t1 && t1 = t2 then t1
+				else raise (Failure ("illegal operation")) 
 			| Eq | Neq | And | Or ->
-			if is_logical t1 && t1 = t2 then Datatype(Bool)
-			else raise (Failure("invalid operands"))
+				if is_logical t1 && t1 = t2 then Datatype(Bool)
+				else raise (Failure("invalid operands"))
 			(* TODO: fail if type is not int or double *)
 			| Asn -> print_endline(";asn");
 				if t1 = t2 then t1
