@@ -52,7 +52,7 @@ let translate (globals, functions) =
       | Datatype(A.String) -> string_t
       | Datatype(A.Bool) -> i1_t
       | Datatype(A.Void) -> void_t
-      | UnsizedArray(t, d) -> img_t (* wow can u believe it lol *)
+      | UnsizedArray(t, d) -> ltype_of_primitive t (* wow can u believe it lol *)
       | SizedArray(t, el)  -> ltype_of_sized_array t el
       | _            -> raise (Exceptions.NotADatatype)
 
