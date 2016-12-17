@@ -1,5 +1,5 @@
 
-int edgeDetect(string x, int edgeDist){
+int[][] edgeDetect(string x, int edgeDist){
     int[][] image = readGrayscaleImage(x);
     int width = len(image);
     int height = len(image[0]);
@@ -50,7 +50,7 @@ int edgeDetect(string x, int edgeDist){
 	println("");
     }
 
-    return 1;
+    return image;
 }
 
 int pixelDistance( int x, int y ){
@@ -63,15 +63,9 @@ int pixelDistance( int x, int y ){
     return distance;
 }
 
-int main(){
-
-    int a = edgeDetect("images/leaf.jpg", 30);
-    int b = charToIntensity('%');
-    println(b);
-}
-
-int dither(string imageFile) {
+char[][] dither(string imageFile) {
         int[][] a = readGrayscaleImage(imageFile);
+        int[][] b = canvas(imageFile);
         int width = len(a);
         int height = len(a[0]);
         char c = intensityToChar(255);
@@ -83,9 +77,35 @@ int dither(string imageFile) {
         char px;
         for(i = 0; i < width; i = i + 1) {
                 for(j = 0; j < height; j = j + 1) {
+			b[i][j] = intensityToChar(a[i][j]);
                         px = intensityToChar(a[i][j]);
                         print(px);
                 }
                 println("");
         }
+	return b;
 }
+
+char[][] impose(char[][] asciiArt, int[][] edges, char edgeChar){
+    int width = len(asciiArt);
+    int height = len(asciiArt[0]);
+    int i;
+    int j;
+    for(i = 0; i < width; i = i + 1){
+	for( j = 0; j < height; j = j + 1){
+	    if( edges[i][j] == 1 ){
+		asciiArt[i][j] = edgeChar;		
+		print( edgeChar );
+	    }
+	    else{
+		print( asciiArt[i][j] );
+	    }
+	}
+    }    
+    return asciiArt;
+}
+
+int main(){
+    return 0;
+}
+
