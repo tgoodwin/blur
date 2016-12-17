@@ -355,10 +355,20 @@ let translate (globals, functions) =
 
         and arr_len_handler arr (maps, llbuilder) =
             (* blur-initialized array *)
-            if (StringMap.find (id_to_str arr) (snd maps)) = true then
-                let exp = codegen_expr (maps, llbuilder) arr in
-                ignore(print_endline("; sad"));
-                L.const_int i32_t (L.array_length (L.type_of(exp)))
+            let arr_info = (StringMap.find (id_to_str arr) (snd maps)) in
+            if (fst arr_info) then
+                let exp = codegen_expr (maps, llbuilder) arr in (* int pointer at the moment *)
+                ignore(print_endline("; sad type of exp:" ^ L.string_of_lltype(L.type_of(exp))));
+                match arr with
+                  A.Id s ->
+                      let int_ptr = codegen_expr (maps, llbuilder) arr in
+                      let arr_ptr = L.build_pointercast int_ptr (L.pointer_type (snd arr_info)) "normptr" llbuilder in
+                      let arr = L.build_load arr_ptr "arrforlen" llbuilder in
+                      L.const_int i32_t (L.array_length (L.type_of(arr)))
+                | A.ArrayAccess(n, dl) ->
+                      let res = codegen_expr (maps, llbuilder) arr in
+                      L.const_int i32_t (L.array_length (L.type_of(exp)))
+                        
             (* from C, get length at ptr *)
             (* build load the struct where it was allocated then saved, access the fields *)
             else
@@ -418,6 +428,7 @@ let translate (globals, functions) =
               (* also do case checking here to see if gen_exp is a pointer.
                * UnsizedArrays will be the only case where we could be getting a pointer back from C. *)
                 let gen_exp = codegen_expr (maps, llbuilder) vdecl.declInit in
+                ignore(print_endline("; arr_val: " ^ L.string_of_llvalue(gen_exp)));
 
                 let local_vars, arr_src  =
 
@@ -440,23 +451,34 @@ let translate (globals, functions) =
                     ignore(L.build_store arr_ptr arr_ptr_a llbuilder);
                     let local_vars = StringMap.add vdecl.declID arr_ptr_a local_vars in
                     ignore(print_endline("; arr_ptr type: " ^ L.string_of_lltype(L.type_of arr_ptr)));
-                    let arr_src = StringMap.add vdecl.declID false (snd maps) in
+                    let arr_src = StringMap.add vdecl.declID (false, img_t) (snd maps) in
                     ignore(codegen_asn vdecl.declID arr_ptr (local_vars, arr_src) llbuilder); local_vars, arr_src
 
                 (* normal case, i.e. int[] a = [1,2]; *)
                 else
                     let exp_typ = (L.type_of gen_exp) in
-                    let local_var = L.build_alloca exp_typ vdecl.declID llbuilder in
-                    let local_vars = StringMap.add vdecl.declID local_var local_vars in
-                    let arr_src = StringMap.add vdecl.declID true (snd maps) in
-                    ignore(codegen_asn vdecl.declID gen_exp maps llbuilder); local_vars, arr_src
+                    let local_var = L.build_malloc exp_typ vdecl.declID llbuilder in
+                    ignore(print_endline("; malloc type: " ^ L.string_of_lltype(L.type_of local_var)));
+
+                    let arr_ptr = L.build_gep local_var [| zero_t |] "arr_ptr2" llbuilder in
+                    ignore(print_endline("; arr_ptr type: " ^ L.string_of_lltype(L.type_of arr_ptr)));
+
+                    let arr_ptr = L.build_pointercast arr_ptr (L.pointer_type i32_t) "arr2_ptrcast" llbuilder in
+                    ignore(print_endline("; arr_ptrcast type: " ^ L.string_of_lltype(L.type_of arr_ptr)));
+
+                    let arr_ptr_a = L.build_alloca (L.type_of arr_ptr) vdecl.declID llbuilder in
+                    ignore(L.build_store gen_exp local_var llbuilder);
+                    ignore(L.build_store arr_ptr arr_ptr_a llbuilder);
+                    let local_vars = StringMap.add vdecl.declID arr_ptr_a local_vars in
+                    let arr_src = StringMap.add vdecl.declID (true, exp_typ) (snd maps) in
+                    ignore(codegen_asn vdecl.declID arr_ptr (local_vars, arr_src) llbuilder); local_vars, arr_src
                 in
                 let maps = (local_vars, arr_src) in maps, llbuilder
 
             (* cannot be initialized, only declared *)
             | A.SizedArray(p, d) ->
                     let local_vars = add_local vdecl local_vars in
-                    let arr_dims = StringMap.add vdecl.declID true (snd maps) in
+                    let arr_dims = StringMap.add vdecl.declID (true, i32_t) (snd maps) in
                     let maps = (local_vars, arr_dims) in maps, llbuilder
 
             | _         ->
@@ -481,16 +503,20 @@ let translate (globals, functions) =
         and build_array_access name idx_list maps llbuilder isAssign =
 
             let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
-            let arr_handle = (lookup name (fst maps)) in
+            let arr_handle = L.build_load (lookup name (fst maps)) "sup" llbuilder in
             ignore(print_endline("; thearrhandle type: " ^ L.string_of_lltype(L.type_of arr_handle)));
             let arr_srcs = (snd maps) in
 
             (* normal, Blur initialized array *)
-            if StringMap.find name arr_srcs then
+            let arr_info = StringMap.find name arr_srcs in
+            if fst arr_info then
+
+                let arr_handle = L.build_pointercast arr_handle (L.pointer_type (snd arr_info)) "normcast" llbuilder in
+                ignore(print_endline("; access cast type: " ^ L.string_of_lltype(snd arr_info)));
 
                 let idx_list = (L.const_int i32_t 0)::[]@idx_list in
                 let idx_arr = Array.of_list idx_list in
-                let gep = L.build_gep (lookup name (fst maps)) idx_arr name llbuilder in
+                let gep = L.build_gep arr_handle idx_arr name llbuilder in
                 if isAssign then
                     gep
                 else
@@ -499,11 +525,9 @@ let translate (globals, functions) =
             else
 
                 let the_arr_pointer = L.build_load arr_handle (name ^ "_thearrptr") llbuilder in (* this is the pointer *)
+                ignore(print_endline("; thearrptr type before: " ^ L.string_of_lltype(L.type_of the_arr_pointer)));
                 let the_arr_pointer = L.build_pointercast the_arr_pointer (L.pointer_type img_t) "cast" llbuilder in
-                ignore(print_endline("; thearrptr type: " ^ L.string_of_lltype(L.type_of the_arr_pointer)));
-                (*let the_arr_ref = L.build_load the_arr_pointer (name ^ "_thearr") llbuilder in
-                ignore(print_endline("; thearr type: " ^ L.string_of_lltype(L.type_of the_arr_ref))); *)
-                (* this will be the struct *)
+                ignore(print_endline("; thearrptr type after: " ^ L.string_of_lltype(L.type_of the_arr_pointer)));
                 let width_ptr = L.build_gep the_arr_pointer [| zero_t; zero_t |] "width" llbuilder in (* this works *)
                 (*let thestruct = L.build_load the_arr_pointer "thestruct" llbuilder in
                 ignore(print_endline("; arr " ^ (L.string_of_lltype (L.type_of thestruct)))); *)
