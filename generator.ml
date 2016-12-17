@@ -345,14 +345,12 @@ let translate (globals, functions) =
             let arr_loc = L.build_alloca (L.pointer_type i32_t) "arrloc" llbuilder in
             let img_loc = L.build_alloca (img_t) "imgloc" llbuilder in
             let res = L.build_call getarr_func [| |] "arrfunccall" llbuilder in
-            ignore(print_endline("; response datatype: " ^ L.string_of_lltype (L.type_of res)));
             ignore(L.build_store res arr_loc llbuilder); res (* this is needed, see codegen_asn for examople *)
 
         and get_img_handler e (maps, llbuilder) =
             let img_name = codegen_expr (maps, llbuilder) e in
             let img_loc = L.build_alloca (img_t) "imgloc" llbuilder in
             let res = L.build_call getimg_func [| img_name |] "grayScaleImgfunccall" llbuilder in
-            ignore(print_endline("; response datatype: " ^ L.string_of_lltype (L.type_of res)));
             ignore(L.build_store res img_loc llbuilder); res
 
         and arr_len_handler arr (maps, llbuilder) =
@@ -364,7 +362,9 @@ let translate (globals, functions) =
             (* from C, get length at ptr *)
             (* build load the struct where it was allocated then saved, access the fields *)
             else
-                let arr_ref = lookup (id_to_str arr) (fst maps) in
+                let arr_ref_ref = lookup (id_to_str arr) (fst maps) in
+                let arr_ref = L.build_load arr_ref_ref "arr_ref_ref" llbuilder in
+                ignore(print_endline(";lenboy: " ^ L.string_of_lltype(L.type_of arr_ref)));
                 match arr with
                   A.Id s ->
                 (* exp = pointer to struct *)
@@ -429,20 +429,27 @@ let translate (globals, functions) =
 
                 if ((L.type_of gen_exp) = (img_t)) then
                     let the_img_typ = img_t in
+
                     let local_img_var = L.build_alloca the_img_typ vdecl.declID llbuilder in
-                    let local_vars = StringMap.add vdecl.declID local_img_var local_vars in
-                    ignore(print_endline("; we in it "));
-                    let arr_src = StringMap.add vdecl.declID false (snd maps) in local_vars, arr_src
+                    let arr_ptr = L.build_gep local_img_var [| zero_t |] "arr_ptr" llbuilder in
+                    let arr_ptr_a = L.build_alloca (L.type_of arr_ptr) vdecl.declID llbuilder in
+
+                    ignore(L.build_store gen_exp local_img_var llbuilder);
+                    ignore(L.build_store arr_ptr arr_ptr_a llbuilder);
+                    let local_vars = StringMap.add vdecl.declID arr_ptr_a local_vars in
+                    ignore(print_endline("; arr_ptr type: " ^ L.string_of_lltype(L.type_of arr_ptr)));
+                    let arr_src = StringMap.add vdecl.declID false (snd maps) in
+                    ignore(codegen_asn vdecl.declID arr_ptr (local_vars, arr_src) llbuilder); local_vars, arr_src
 
                 (* normal case, i.e. int[] a = [1,2]; *)
                 else
                     let exp_typ = (L.type_of gen_exp) in
                     let local_var = L.build_alloca exp_typ vdecl.declID llbuilder in
                     let local_vars = StringMap.add vdecl.declID local_var local_vars in
-                    let arr_src = StringMap.add vdecl.declID true (snd maps) in local_vars, arr_src
+                    let arr_src = StringMap.add vdecl.declID true (snd maps) in
+                    ignore(codegen_asn vdecl.declID gen_exp maps llbuilder); local_vars, arr_src
                 in
-                let maps = (local_vars, arr_src) in
-                ignore(codegen_asn vdecl.declID gen_exp maps llbuilder); maps, llbuilder
+                let maps = (local_vars, arr_src) in maps, llbuilder
 
             (* cannot be initialized, only declared *)
             | A.SizedArray(p, d) ->
@@ -473,6 +480,7 @@ let translate (globals, functions) =
 
             let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
             let arr_handle = (lookup name (fst maps)) in
+            ignore(print_endline("; thearrhandle type: " ^ L.string_of_lltype(L.type_of arr_handle)));
             let arr_srcs = (snd maps) in
 
             (* normal, Blur initialized array *)
@@ -488,13 +496,16 @@ let translate (globals, functions) =
 
             else
 
-                let the_arr_ref = L.build_load arr_handle (name ^ "_thearr") llbuilder in (* this is the pointer *)
+                let the_arr_pointer = L.build_load arr_handle (name ^ "_thearrptr") llbuilder in (* this is the pointer *)
+                ignore(print_endline("; thearrptr type: " ^ L.string_of_lltype(L.type_of the_arr_pointer)));
+                let the_arr_ref = L.build_load the_arr_pointer (name ^ "_thearr") llbuilder in
+                ignore(print_endline("; thearr type: " ^ L.string_of_lltype(L.type_of the_arr_ref)));
                 (* this will be the struct *)
-                let width_ptr = L.build_gep arr_handle [| zero_t; zero_t |] "width" llbuilder in (* this works *)
-                let thestruct = L.build_load arr_handle "thestruct" llbuilder in
-                ignore(print_endline("; arr " ^ (L.string_of_lltype (L.type_of thestruct))));
-                let height_ptr = L.build_gep arr_handle [| zero_t; L.const_int i32_t 1 |] "height" llbuilder in
-                let data_ptr = L.build_gep arr_handle [| zero_t; L.const_int i32_t 3 |] "data" llbuilder in
+                let width_ptr = L.build_gep the_arr_pointer [| zero_t; zero_t |] "width" llbuilder in (* this works *)
+                (*let thestruct = L.build_load the_arr_pointer "thestruct" llbuilder in
+                ignore(print_endline("; arr " ^ (L.string_of_lltype (L.type_of thestruct)))); *)
+                let height_ptr = L.build_gep the_arr_pointer [| zero_t; L.const_int i32_t 1 |] "height" llbuilder in
+                let data_ptr = L.build_gep the_arr_pointer [| zero_t; L.const_int i32_t 3 |] "data" llbuilder in
                 let width = L.build_load width_ptr "widthval" llbuilder in      (* i32 *)
                 let height = L.build_load height_ptr "heightval" llbuilder in   (* i32 *)
                 let data = L.build_load data_ptr "dataval" llbuilder in         (* i32* *)
