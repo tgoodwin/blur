@@ -240,6 +240,7 @@ let translate (globals, functions) use_stdLib =
                   "i32" -> int_ops lh op rh
                 | "double" -> float_ops lh op rh
                 | "i8"     -> int_ops lh op rh (* chars are treated as ints *)
+                | "i1"     -> int_ops lh op rh
             in
             let assign_binop e1 e2 =
                 (* if the assignment involves array dimensions, update the arr_dims map *)
