@@ -148,6 +148,7 @@ let check_prog (globals, functions) =
 		print_endline(";" ^id);
 		print_endline(";" ^ string_of_int(List.length env.funcs));
 		try
+			print_endline("trying");
 			let func_entry = List.find (fun f -> f.name = id) env.funcs in
 			(* Get the types of the arg expressions. *)
 			let arg_types = List.map(fun arg -> check_expr env arg) args in
@@ -156,9 +157,8 @@ let check_prog (globals, functions) =
 			raise (Failure ("Incorrect number of args for function call " ^ id ^ 
 				". Expecting " ^ (string_of_int (List.length func_entry.arg_types)) ^ " args but got "
 				^ (string_of_int (List.length args)))) else 
-			if id = "println" || id = "print" 
-				&& List.hd arg_types=Datatype(Void) then raise(Failure("Cannot print void."));
-			if id <> "print" && id <> "println" && id <> "len" && arg_types <> func_entry.arg_types then
+			(*if (id = "println" || id = "print") && (List.length arg_types)<1 then raise(Failure("Cannot print void."));*)
+			if id <> "print" && id == "println" && id <> "len" && arg_types <> func_entry.arg_types then
 			raise (Failure("unexpected arg types")) else
 			func_entry.return_type
 			(*Datatype(Int)*)
