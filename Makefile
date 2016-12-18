@@ -38,10 +38,10 @@ parser.cmi: ast.cmo
 
 .PHONY: %.ll
 %-ll:
-	./blur -l < $(*D)/$(*F).blr > $(*D)/$(*F).ll
+	./blur -l < $(*F).blr > $(*F).ll
 	make libs
-	llc $(*D)/$(*F).ll > $(*D)/$(*F).s
-	gcc -I ${LIBDIR} -o $(*D)$(*F).blx $(*D)/$(*F).s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
+	llc $(*F).ll > $(*F).s
+	gcc -I ${LIBDIR} -o $(*F).blx $(*F).s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
 # for including the Blur standard library.
 .PHONY: %.ll
