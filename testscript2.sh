@@ -2,7 +2,7 @@
 
 code(){
     filebase=$(echo ${1} | cut -f 1 -d '.')
-    { ./blur -l < "${filebase}.blr" > "${filebase}.ll"; } &> output.txt
+    { ./blur -ls < "${filebase}.blr" > "${filebase}.ll"; } &> output.txt
 	if [ -s output.txt ]; then
 		:
 	else
