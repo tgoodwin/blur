@@ -1,7 +1,0 @@
-void retVoid() {
-	return;
-}
-
-void main() {
-    println(retVoid());
-}
