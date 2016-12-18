@@ -1,5 +1,5 @@
 void main() {
-	if(true && true) {
+	if(true and true) {
 		println("cond and");
 	}
 }
