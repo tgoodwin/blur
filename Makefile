@@ -53,9 +53,10 @@ parser.cmi: ast.cmo
 
 .PHONY: %.ll
 %-ls:
-	./blur -l < $(*F).blr > $(*F).ll
-	cd ${LIBDIR} && make stdlib
+	./blur -ls < $(*F).blr > $(*F).ll
+	cd ${LIBDIR} && make stdlib && cd ../
 	llc $(*F).ll > $(*F).s
+
 	gcc -I ${LIBDIR} -o $(*F).blx $(*F).s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
 .PHONY : libs
