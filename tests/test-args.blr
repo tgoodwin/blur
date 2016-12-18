@@ -3,7 +3,7 @@ int args(int a, int b) {
     return z;
 }
 
-void main() {
+int main() {
     int k = 1;
     int x = args(k, k);
     println(x);

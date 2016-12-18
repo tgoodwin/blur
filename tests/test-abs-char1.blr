@@ -1,4 +1,4 @@
-void main() {
+int main() {
 	char c = 'g';
 	int a = |c|;
 	println(a);

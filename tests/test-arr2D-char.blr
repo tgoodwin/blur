@@ -1,4 +1,4 @@
-void main() {
+int main() {
 	char[][] c = [['a','b'],['c','d']];
 	println(c[2][2]);
 }

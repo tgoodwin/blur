@@ -5,7 +5,7 @@ int add(int a, int b) {
 	return z;
 }
 
-void main()
+int main()
 {
 	int a = 6;
 }

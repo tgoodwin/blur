@@ -3,7 +3,7 @@ int scope() {
     return x;
 }
 
-void main() {
+int main() {
     scope();
     println(x);
 }

@@ -8,7 +8,7 @@ void globalTwo() {
     x = x + 20;
 }
 
-void main() {
+int main() {
     x = 5;
     globalOne();
     globalTwo();

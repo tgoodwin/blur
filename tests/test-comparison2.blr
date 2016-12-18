@@ -1,4 +1,4 @@
-void main() {
+int main() {
     if(5 == 5) {
 	println(5);
     }

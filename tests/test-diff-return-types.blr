@@ -2,7 +2,7 @@ int reader(string s) {
         return 7;
 }
 
-char reader(string s) {
+char readerC(string s) {
         return 'c';
 }
 
@@ -12,6 +12,6 @@ int getcanvas(string s) {
         return 7;
 }
 
-void main() {
+int main() {
         println("hi");
 }

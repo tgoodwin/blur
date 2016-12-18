@@ -1,4 +1,4 @@
-void main() {
+int main() {
     int[5] a;
     int z = a[2];
 }

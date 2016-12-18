@@ -1,4 +1,4 @@
-void main() {
+int main() {
     int a = 5;
 	int b = 10;
 	while((a == 5) and (b == 10)) {

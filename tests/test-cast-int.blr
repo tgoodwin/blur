@@ -1,4 +1,4 @@
-void main() {
+int main() {
     double a = 5.123;
     int b = intcast(a);
     println(b);

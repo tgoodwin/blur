@@ -1,4 +1,4 @@
-void main() {
+int main() {
     int x = 5;
     string y = "hello";
     int z;
