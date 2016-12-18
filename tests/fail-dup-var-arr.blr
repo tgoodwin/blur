@@ -1,0 +1,4 @@
+void main() {
+    int a = 7;
+    int[] a = [5, 341, 4];
+}
