@@ -52,7 +52,8 @@ let check_prog (globals, functions) =
 			{name = "intensityToChar"; arg_types = [Datatype(Int)]; return_type = Datatype(Char);};
 			{name = "intcast"; arg_types = [Datatype(Double)]; return_type = Datatype(Int);};
 			{name = "doublecast"; arg_types = [Datatype(Int)]; return_type = Datatype(Double);};
-			{name = "canvas"; arg_types = [Datatype(String)]; return_type = UnsizedArray(Char, 2);}; ]
+			{name = "canvas"; arg_types = [Datatype(String)]; return_type = UnsizedArray(Char, 2);};
+			{name = "dither"; arg_types = [Datatype(String)]; return_type = UnsizedArray(Char, 2);}; ]
 	in
 
 	let is_arith (t : datatype) :bool =
@@ -254,8 +255,8 @@ let check_prog (globals, functions) =
 	an ArrayListInit, or a function that returns ArrayListInit. *)
 	let var_add_arr (env : env) (decl : vardecl) (p : primitive) =
 		match decl.declInit with
-		| ArrayListInit(elist) -> print_endline("arr list init"); adding_arr env decl p
-		| FuncCall(s, elist) -> print_endline("arr func call"); adding_arr_func_call env decl p
+		| ArrayListInit(elist) -> print_endline(";arr list init"); adding_arr env decl p
+		| FuncCall(s, elist) -> print_endline(";arr func call"); adding_arr_func_call env decl p
 		| _ -> raise (Failure("illegal array initialization"))
 	in 		
 
