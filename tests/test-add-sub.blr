@@ -1,0 +1,4 @@
+void main() {
+	println(1+5);
+	println(25-3);
+}

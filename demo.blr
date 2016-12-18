@@ -28,7 +28,7 @@ int main(){
 
     /* Blank Canvas */
 
-    char[][] canvas = canvas("leaf.jpg");
+    char[][] canvas = canvas("images/leaf.jpg");
     
     /* Canvas Manipulation */
 
@@ -42,19 +42,24 @@ int main(){
         }
     }
 
-    /* Dither */
 
+<<<<<<< Updated upstream
     char[][] asciiArt = dither("images/leaf.jpg");
     println(" ");
 
     /* Edge Detection */
 
-    int[] edges = edgeDetect("images/leaf.jpg");
+    int[][] edges = edgeDetect("images/leaf.jpg");
     println(" ");
 
     /* Dithering + Edge Detection */
 
     /* impose( asciiArt, edges ); */
+=======
+    char[][] asciiArt = dither("images/leaf.jpg"); 
+    int[][] edges = edgeDetect("images/leaf.jpg", 30);
+    char[][] final = impose( asciiArt, edges, 'X' );
+>>>>>>> Stashed changes
 
     return 0;
 }

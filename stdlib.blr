@@ -53,6 +53,7 @@ int[][] edgeDetect(string x, int edgeDist){
     return image;
 }
 
+
 int pixelDistance( int x, int y ){
     int distance; 
     if( x > y ){
@@ -65,7 +66,7 @@ int pixelDistance( int x, int y ){
 
 char[][] dither(string imageFile) {
         int[][] a = readGrayscaleImage(imageFile);
-        int[][] b = canvas(imageFile);
+        char[][] b = canvas(imageFile);
         int width = len(a);
         int height = len(a[0]);
         char c = intensityToChar(255);
@@ -77,8 +78,8 @@ char[][] dither(string imageFile) {
         char px;
         for(i = 0; i < width; i = i + 1) {
                 for(j = 0; j < height; j = j + 1) {
-			b[i][j] = intensityToChar(a[i][j]);
                         px = intensityToChar(a[i][j]);
+			b[i][j] = px;
                         print(px);
                 }
                 println("");
@@ -101,11 +102,9 @@ char[][] impose(char[][] asciiArt, int[][] edges, char edgeChar){
 		print( asciiArt[i][j] );
 	    }
 	}
+	println(" ");
     }    
     return asciiArt;
 }
 
-int main(){
-    return 0;
-}
 

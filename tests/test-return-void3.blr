@@ -1,0 +1,8 @@
+void retVoid() {
+	/* nothing */
+	return;
+}
+
+void main() {
+    retVoid();
+}

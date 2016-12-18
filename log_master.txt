@@ -1,0 +1,2809 @@
+commit 86afcf1a500c8575a04f37a9c0f1a0f1976c4c18
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 17:46:51 2016 -0500
+
+    sample single code fail output
+
+commit a07bf8cb2407e22ae4ed444c52fa41f4907f37c2
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 17:45:47 2016 -0500
+
+    sample single code check output
+
+commit db9b1784fce5a5bc688ace850ac3ae03bf2fb086
+Merge: 2db77b0 ab75782
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 17:37:17 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 2db77b0b77b6ec2c815723c0ba036dc130916257
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 17:37:06 2016 -0500
+
+    not operator
+
+commit ab7578218f508eabc555568f1daed74e00532a1b
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sat Dec 17 17:31:50 2016 -0500
+
+    ldkajf
+
+commit d70c7e0812d3a1dc3e48fc639be5a39ec2b8e6ac
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 17 17:25:34 2016 -0500
+
+    demo
+
+commit e0de6ac972650258ac1bf13332762cea62731b2c
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 17 17:03:02 2016 -0500
+
+    handling canvas
+
+commit 54c02c5404ebcfe56ed1aa309a1b45a5b7648d06
+Merge: 52126b0 6cdcf43
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 16:46:26 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 52126b0ebfbd5d250eea8b62cbe4d69c2900ffbe
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 16:46:14 2016 -0500
+
+    arr 1D 2D init fix
+
+commit 6cdcf439ecbdd726b1f3f51099847d8d9cba77e6
+Merge: 5dd893e fd552d1
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 16:31:37 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 5dd893e9c0f3661bceaacf3cb50ca9707d50b006
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 16:31:23 2016 -0500
+
+    Fixing return types. Only int used to work before lol but now all function return types should work.
+
+commit fd552d1a74af3027617fecb62140571931dc6dc3
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sat Dec 17 16:22:45 2016 -0500
+
+    impose function implemented. impose-test.blr created. demo.blr almost done
+
+commit fdbff48c74d569c279ce3f57a7d195952d939b72
+Merge: 75ff93f 7b8e1c2
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 15:56:46 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 75ff93f7e4dd0a7031fb8978ac85267f7eed2d56
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 15:56:29 2016 -0500
+
+    negation test
+
+commit 7b8e1c21ebf3dbd9797d59ccd003e2b287cb4247
+Merge: 15ebb22 abace7f
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 15:42:47 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 15ebb22bff2502c325b0facd64024395c948b668
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 15:42:13 2016 -0500
+
+    Checking and assiging return types.
+
+commit abace7f3cb21c02a5ea53c5bea896cf3b299d824
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sat Dec 17 15:19:37 2016 -0500
+
+    added more to demo.blr
+
+commit 073f71948fc57ee68db4376e5cb2660592e9ecdb
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 15:17:57 2016 -0500
+
+    Pattern matching is the answer to checking the type of arr lit. Pattern matching is the answer to most things.
+
+commit 22a5973c72861cfa1955fa62d50b23cdf3facd97
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 14:34:41 2016 -0500
+
+    test-rec-fib
+
+commit 1e17d8c3e78efd77cc14c8485a1df3b6183d7cc7
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 17 14:27:48 2016 -0500
+
+    nice, fun example for demo test-getImg.blr
+
+commit a78128a00f06b155130610517865356f6feba904
+Merge: 4e0279b 41ddae7
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sat Dec 17 14:00:10 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 41ddae76418f8c104fa0db0463985531b546c123
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 17 13:58:57 2016 -0500
+
+    passing structs all over
+
+commit 5f7b9c96b14229c076c6b515ce7a40b6718a8643
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 17 01:05:48 2016 -0500
+
+    runtime segfault aka impossible bug
+
+commit fe0ff6f8a97770de38c08d57cf730dceaf677acb
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 16 23:28:14 2016 -0500
+
+    blur literal arrays casting to int pointers, working for 1D
+
+commit 9303f50fbd55004111f3e3aba8d6be1333ba69d9
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 16 22:30:10 2016 -0500
+
+    casting C struct pointer to int pointer
+
+commit 02c9d93e9e79a37855ed469cbfb43b7150224b48
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 16 22:16:36 2016 -0500
+
+    c struct stored in map as pointers, works
+
+commit 18e2c0f94fdbd59e9f6fce87c5e47be653875610
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 16 17:08:38 2016 -0500
+
+    mag operator working
+
+commit 4e0279b45cfd1b24164702b821792cb907e357de
+Merge: d37551c 451e45d
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sat Dec 17 13:57:42 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit d37551ca0071ae123d4695ae93c97fc5f9296487
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sat Dec 17 13:57:38 2016 -0500
+
+    started demo.blr
+
+commit 54b91d6a5f16ddec29f8caba425811fa0b75aefd
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 13:39:44 2016 -0500
+
+    canvas test
+
+commit 451e45d74223cda02b8a1629d1d82131af50dbbb
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 13:21:50 2016 -0500
+
+    blur.ml semantic
+
+commit 339f96bde5060e0b78b05e417dfd209f51000d72
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 13:21:09 2016 -0500
+
+    tests
+
+commit 99d82a131b8f8a4b3d178ee9bad051f39ff3a34e
+Merge: 08e728d c52c3c2
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 13:12:36 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 08e728db454c7d193e6ad573f942bf8d937908c4
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 13:10:22 2016 -0500
+
+    Adding pattern matching when checking vardecl for arrays.
+
+commit c52c3c24712711c2a9350887a01c2257ed9b443f
+Merge: 7086ee3 2e915aa
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 13:00:37 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 2e915aa555a0f5ae45814a1c6119e046800a1db4
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 12:07:01 2016 -0500
+
+    Ensuring that unsized arr is immediately initialized.
+
+commit 7086ee3e3714cdd78feb0b47ebadb83fbd738d38
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Dec 17 12:03:57 2016 -0500
+
+    conditionals, abs-op tests
+
+commit d7efc07fe545bc4618f96701d4a0163b0d5102f4
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 11:14:18 2016 -0500
+
+    Unsized arr decl type mismatch works.
+
+commit dbd95f9643936aee93b6154f8b12116c99656146
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 11:11:12 2016 -0500
+
+    Array type mismatch works.
+
+commit b148e273fe29222444e439478a6a3a70206e7b3c
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 10:34:22 2016 -0500
+
+    Fixing expected output for comp tests.
+
+commit c3d811cecac1bc9bdf100a599f7f728322d8f936
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 10:30:02 2016 -0500
+
+    Fixing funcCall-args test expected output.
+
+commit d75b90172cb58ca7d3d815e195e9f53e6d945dda
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 10:21:29 2016 -0500
+
+    Type mismatch is not thrown if variable is declared but not initialized.
+
+commit c8342bcfd6750b87ee2d7b4d97f86462188efbe5
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 00:47:15 2016 -0500
+
+    Can only do arithmetic on ints and doubles.
+
+commit e4961609a1bda574910d1fa91153750cf4a657bd
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 00:33:10 2016 -0500
+
+    Fixing conditional checks.
+
+commit 3e18cb67e079f58316ed78a6217fc2b6a1cfa932
+Merge: 851c7c5 c42fdfd
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 00:28:50 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 851c7c557cdb084d2ba7d7f8ac12c49649ac1ef6
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 00:28:35 2016 -0500
+
+    Commenting code.
+
+commit 9870a39fe63113e7e8d0deba7a8864d65bffecf6
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Dec 17 00:27:01 2016 -0500
+
+    Checking that decl init matches decl type.
+
+commit c42fdfdee4a756faba802c4b0b31b783bf70c46b
+Author: restocle <sh3266@columbia.edu>
+Date:   Fri Dec 16 19:19:19 2016 -0500
+
+    op fails - eq neq and or
+
+commit 8b5ae074f365835b96cd3689019d49bd481d7742
+Merge: 231e86b a9a2092
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Dec 16 18:27:12 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 231e86b309fc9688161fecd0d154ffd86762e09a
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Dec 16 18:25:37 2016 -0500
+
+    checking eq neq and or.
+
+commit a9a209261422ba6b05f1bdb4880deeb654d6e469
+Merge: 2240558 8c69190
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Fri Dec 16 17:04:52 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 22405580c5712aedf1904f8f024e4f030b5bb6f3
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Fri Dec 16 17:04:28 2016 -0500
+
+    modified clib makefile
+
+commit 8c69190264c7a449407bc721b610bf60641d91af
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Dec 16 16:58:16 2016 -0500
+
+    Remove add-int-float. We're not doing casts.
+
+commit a4bd6ba99cd8f73eff064746c5522084c07e1b39
+Merge: d4dc2e1 db5c437
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Dec 16 16:42:37 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit db5c4372b75b4c4e4f47db6049d6d350dae603c1
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 16 16:42:24 2016 -0500
+
+    builtin.o backup
+
+commit d4dc2e107982cb746cc19c0f8e9da684ebb12982
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Dec 16 16:42:15 2016 -0500
+
+    Updating semantic analysis.
+
+commit 4da9fdf1799001471f69e6d117902a8dff3fd3e3
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 16 16:27:01 2016 -0500
+
+    new linking builtin lib
+
+commit 5d4f7f88a006a58610f5dbef312be0f8576115e5
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 16 15:45:13 2016 -0500
+
+    ok
+
+commit 296cb6e6b3c67af84a39f6950d14de2f6bf1fa8a
+Merge: 6f4722f ba5ed8c
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Dec 16 16:18:45 2016 -0500
+
+    mergin.
+
+commit 6f4722feb2ffe917a58b6ce5f9fa65c0fe700130
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Dec 16 16:17:06 2016 -0500
+
+    updating semantic analyzer in master.
+
+commit ba5ed8c79cebba2d93d68d1cd6d57fe15f3e2c5f
+Author: restocle <sh3266@columbia.edu>
+Date:   Fri Dec 16 16:06:19 2016 -0500
+
+    semantic & test update
+
+commit 08058c1f29268f3766b3e686155b0a8e644822a7
+Merge: 8be670f 5956687
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Dec 16 16:05:41 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 595668795cf4e6e7dbc083f4e9a7069aa185800e
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Fri Dec 16 14:41:38 2016 -0500
+
+    builtin.blr
+
+commit 1f29762cdeba9b53cb4de0ebf5a6c2eace7229cd
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 16 14:28:00 2016 -0500
+
+    stdlib updates with repaired char operations
+
+commit 835ddf3ffb64f207bdcf48cb14c391b67961f0f9
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Fri Dec 16 13:55:48 2016 -0500
+
+    edge detection complete
+
+commit cd3a58db673a1f850ad8da284099b37042eababe
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Fri Dec 16 12:44:38 2016 -0500
+
+    initial edge detection function complete
+
+commit 842d14e1b832638a6797180901b1693459866dad
+Author: Timothy Goodwin <timg.goodwin@gmail.com>
+Date:   Fri Dec 16 10:51:32 2016 -0500
+
+    Update README.md
+
+commit 63194bf1a788c42899cf3b667ea40b24b1571533
+Author: Tim Goodwin <tgoodwin@graphiq.com>
+Date:   Fri Dec 16 00:06:48 2016 -0500
+
+    updated charToIntensity arith
+
+commit 9ffe8b87be9164454b65d8995d0479608c6230a4
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Dec 15 23:21:06 2016 -0500
+
+    implemented int cast and double cast
+
+commit 061327b4314fbff1dab44f9624041207150539dc
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Dec 15 23:07:49 2016 -0500
+
+    char boolean operators
+
+commit 17f4857192ac65a4e10fbce687fd358092b0187b
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Dec 15 19:52:54 2016 -0500
+
+    maybe
+
+commit 3d702866c2e2f9ae3643b45c42116256b247f601
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Dec 15 18:53:56 2016 -0500
+
+    test text output
+
+commit e9c587d2d362104bebb5d1dc8b620420aa3b8431
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Dec 15 18:53:12 2016 -0500
+
+    commented out main in bindings.c
+
+commit 6df51d16a45eeb51d92d6927eac6a9382e3fe881
+Author: Timothy Goodwin <timg.goodwin@gmail.com>
+Date:   Thu Dec 15 18:50:06 2016 -0500
+
+    emojis
+
+commit c79709528974d3ad5d69347eb46c683409070752
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Dec 15 18:47:45 2016 -0500
+
+    images folder
+
+commit da12a44e96e6b5af4e8f52acf0fd372edd6e1fb8
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Dec 15 18:39:17 2016 -0500
+
+    leaf
+
+commit 7cbba172e7979778c9d48154fe3ea26d07addb9e
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Dec 15 18:35:48 2016 -0500
+
+    differentiated print() and println()
+
+commit 11d8f6995d66e45d4b35c1feff8d8b89a058e1a5
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Dec 15 18:35:23 2016 -0500
+
+    initial ascii example
+
+commit c60c7155a1749956adbec25552c4df475caa9a57
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Dec 14 11:45:44 2016 -0500
+
+    grayScaleImg
+
+commit 8be670fb2ee4e2475749d3611d0bbcde25524a2e
+Merge: 6208abc 7afd1ba
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Dec 14 12:38:19 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit ef306f87e99608825d1b708823f64f3c4ab1958b
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Wed Dec 14 12:20:56 2016 -0500
+
+    canvas(), readgrayscale, and readcolor() all return structures
+
+commit 7afd1ba8316b461035c8d07a032cd8694ea51af8
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Wed Dec 14 11:44:43 2016 -0500
+
+    readGrayscaleImage() and canvas() function modified
+
+commit 5f11c0d1d5d064de7036d602fa8351efe3d2698b
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Dec 13 18:16:30 2016 -0500
+
+    array length compatability with C backend arrays
+
+commit 5f442fb45bcf11af4d480a15d22de6566ea56f10
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 9 17:37:23 2016 -0500
+
+    getImg test example
+
+commit ecc77444bd177af4feab447c034a29ad9552b5ab
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 9 17:35:38 2016 -0500
+
+    struct pointer access working for returned data from C lib
+
+commit 7b8eb408869aff208a27638ba060bef1232481ed
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 9 15:54:01 2016 -0500
+
+    width height struct
+
+commit 8a0133215e23be6fb8d5d62ec4c75af3924feb7a
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Wed Dec 7 22:35:58 2016 -0500
+
+    modified readGrayscaleImage() to return struct
+
+commit f4d11e3072a9c209047c75617b6f4345a0544665
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Dec 7 20:57:54 2016 -0500
+
+    add backend connection test
+
+commit 04669df80b3d677dc0eb5a13531bdbc40af5e169
+Merge: 211564b 05b25ca
+Author: Timothy Goodwin <timg.goodwin@gmail.com>
+Date:   Wed Dec 7 20:51:06 2016 -0500
+
+    On the quiet night of Dec 7th the holy c_backend2 was merged into master
+    
+    C backend2
+
+commit 05b25ca684012ab1cc94c39b38893f92ca825404
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Dec 7 20:46:55 2016 -0500
+
+    dynamic arr len function handler
+
+commit 553bd0c4009210f7d969333910012e95fe7e1d8c
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Dec 7 20:28:53 2016 -0500
+
+    supporting two different array types based on initialization enviornment
+
+commit 0ff51710557b536fd5e73e091f8618f2944c1348
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Dec 7 19:50:14 2016 -0500
+
+    updated unsized array vdecl to new approach
+
+commit af627435bcd781c6e43de2f3ac2b51190ca8810e
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Dec 7 15:12:03 2016 -0500
+
+    handling 2 kinds of arrays
+
+commit d59f0e21456ac53331a49155deb6a03793b0bfd6
+Author: Tim Goodwin <tgoodwin@graphiq.com>
+Date:   Wed Dec 7 15:03:33 2016 -0500
+
+    generator comments
+
+commit fd757d1fd29842f716376ec14621c980e500c98b
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Dec 7 11:49:51 2016 -0500
+
+    genesis
+
+commit 211564b57fde684ac5f259e2f5b5f3c95f1e3f0c
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Dec 7 00:39:48 2016 -0500
+
+    added mod arith
+
+commit b6d0fb7709009ca150faa7b4e65a81a4729aa97e
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Dec 6 20:47:14 2016 -0500
+
+    added darken and lighten
+
+commit 3caaec0ba16b1c7f6dd9f39d6d77801c308dd2b9
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Dec 6 20:16:14 2016 -0500
+
+    implemented framework for |x| calling charToIntensity on x
+
+commit 29b44d3e105328099571a603271bb2fdc1d6bffc
+Merge: 45fca89 e6dbb5a
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Dec 6 19:55:31 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 45fca891b149e0580c5576a3b877ff462d1bf641
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Dec 6 19:55:06 2016 -0500
+
+    added charToIntensity() function
+
+commit b2251126572e907adc9968fb2e895a78c33bc82e
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Dec 6 19:37:04 2016 -0500
+
+    dont freak out dont freak out
+
+commit b6646f84d6cb3bef90b2f503e482f71de43d7e48
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Dec 6 17:20:11 2016 -0500
+
+    1D access works
+
+commit e6dbb5a5177d2f615c0e184b45a19853c24dc2b8
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Dec 6 15:27:36 2016 -0500
+
+    nesting pointers for array access
+
+commit 4aa224f10d6aa14045a244d1058b7525616f2a50
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Dec 6 15:43:31 2016 -0500
+
+    function to map intensity to character complete
+
+commit bdfe25b95fb583637ff7f4a39fd4f2aa937267a0
+Merge: 0fc34f3 db77733
+Author: dexter_callender_iii <dec2148@columbia.edu>
+Date:   Sun Dec 4 12:12:12 2016 -0500
+
+    Merge pull request #11 from dextercallender/c_backend
+    
+    C backend
+
+commit 0fc34f3e312df1e451ad797671c2187d580e30e4
+Author: restocle <sh3266@columbia.edu>
+Date:   Sun Dec 4 12:04:59 2016 -0500
+
+    testscript
+
+commit db77733e889827d21a33fa398253ea2aaa4c2c1e
+Merge: c732cd5 0b7d419
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sun Dec 4 12:04:19 2016 -0500
+
+    Merge branch 'c_backend' of https://github.com/dextercallender/blur into c_backend
+
+commit c732cd58493a7459076833c213717189654c723b
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sun Dec 4 12:03:57 2016 -0500
+
+    canvas function in c backend complete
+
+commit 17e7b0050f2e5cdcc1419b8a7d97510904c57372
+Merge: b8581ca a36fae8
+Author: restocle <sh3266@columbia.edu>
+Date:   Sun Dec 4 11:44:27 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit b8581ca7f5def159bfbec3e143e2d3f2eed2565a
+Author: restocle <sh3266@columbia.edu>
+Date:   Sun Dec 4 11:44:21 2016 -0500
+
+    working on intensity bar
+
+commit a36fae84f70274a5ffcbe708e23f4904a7a5c135
+Merge: a832ca8 0b7d419
+Author: dexter_callender_iii <dec2148@columbia.edu>
+Date:   Sun Dec 4 11:40:35 2016 -0500
+
+    Merge pull request #10 from dextercallender/c_backend
+    
+    merged C backend
+
+commit 0b7d4192025d02883dc7adb991c2101c6e7f6e2f
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 3 19:27:47 2016 -0500
+
+    building pointer to array type when array is returned from func
+
+commit 6426433190748303a9116fe6b44a2c0c04c40783
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 3 17:37:45 2016 -0500
+
+    foo test, try it out
+
+commit b66385f9e3f5572af85b303a726c1e8033d17a1c
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 3 17:29:31 2016 -0500
+
+    bindings
+
+commit e4dbc5e5ebcb3046881ede97b34530e6cc474661
+Merge: b94ce46 0b52ee8
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 3 12:17:18 2016 -0500
+
+    Merge branch 'master' into dex_makefile
+
+commit 0b52ee86abc3e502e2598fbb88c3e2f28fab6847
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 3 12:13:03 2016 -0500
+
+    declare foo external
+
+commit a832ca851bc4d3c11dafdc19f08bc51cf3676ced
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 3 11:37:09 2016 -0500
+
+    unsized array 3D
+
+commit 5af8af3e396f602eda643a6423535cf1e90278b9
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 3 11:35:37 2016 -0500
+
+    2D array iter example using len func
+
+commit d0ddfdc9bddc8aceb8bafc9bad2e740ec420ef0d
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Dec 3 11:05:36 2016 -0500
+
+    supporting 3D arrays
+
+commit b94ce46ada80e97f81e338f81a27931aa49896c9
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sat Dec 3 05:24:34 2016 -0500
+
+    final makefile step
+
+commit 923bf220fae31d30a8680192aff26f9ecdbeb5da
+Merge: 28d986b bd51dcb
+Author: Timothy Goodwin <timg.goodwin@gmail.com>
+Date:   Fri Dec 2 23:11:34 2016 -0500
+
+    Merge pull request #9 from dextercallender/new.array
+    
+    Boooooom
+
+commit bd51dcb9f0c5a8388ccb8d2f7f448b696153eff5
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 2 23:08:48 2016 -0500
+
+    some new array tests exhibiting updated usage
+
+commit 28d964425acbcfa66e4f249055510dbe03f18de4
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 2 23:05:40 2016 -0500
+
+    tired of arrays no variable sized arrays too tricky
+
+commit 329ef10108da1aea2f9058f3d0da074435936082
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 2 22:08:00 2016 -0500
+
+    added built-in array length function
+
+commit 4cafe39722d0f567a6e9153556a25215d3edaf29
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 2 20:41:51 2016 -0500
+
+    1D, 2D size init and literal init working
+
+commit eeeb2cdc7bd71a15d5654f4c5d41e4b60414ec37
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 2 17:53:38 2016 -0500
+
+    just compiled new array approach..
+
+commit 980f68c822f255b0b98c102f667835dfd4ce3e28
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 2 16:38:47 2016 -0500
+
+    SizedArray not arraysizeinit
+
+commit 28d986b99a25ef7e5117c38ca15d541a42a21b48
+Merge: 8a98ce2 98c30af
+Author: restocle <sh3266@columbia.edu>
+Date:   Fri Dec 2 11:31:16 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 8a98ce2160e7c0d45b775a00a701edf6294f53ae
+Author: restocle <sh3266@columbia.edu>
+Date:   Fri Dec 2 11:30:52 2016 -0500
+
+    tests
+
+commit 2e0eac6235fb642c1617f537384d9091fc7a4f80
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Dec 2 11:08:01 2016 -0500
+
+    fix hello world return type
+
+commit 98c30af0e8375464ae5161f41a15721ea49bb3ab
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Fri Dec 2 11:23:31 2016 -0500
+
+    new makefile to test. en route to full pipeline
+
+commit c5d76b296e2a8e26c534d76ef6f5f099111f5935
+Author: restocle <sh3266@columbia.edu>
+Date:   Fri Dec 2 10:30:35 2016 -0500
+
+    array fix
+
+commit 8131a1bf283e6f253ec1fbcfeedb72f67c80bb42
+Merge: 6389bb4 c21311a
+Author: restocle <sh3266@columbia.edu>
+Date:   Fri Dec 2 10:26:19 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 6389bb478ad2be626c72c313e29e60c30c9a0e50
+Author: restocle <sh3266@columbia.edu>
+Date:   Fri Dec 2 10:26:16 2016 -0500
+
+    Makefile edit
+
+commit c21311aa4a845dffc50d8193ea6d32cf242897c9
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Thu Dec 1 18:31:02 2016 -0500
+
+    readColorImage(), readDimensions(), readGrayscaleImage() complete.
+
+commit 0177cc80396dffdd823677c05a96bdf973f107e4
+Author: Tim Goodwin <tgoodwin@graphiq.com>
+Date:   Wed Nov 30 16:37:59 2016 -0500
+
+    more test updates
+
+commit 51e1787e4b8b0247644ca70b957405bfa4590885
+Author: Tim Goodwin <tgoodwin@graphiq.com>
+Date:   Wed Nov 30 16:33:21 2016 -0500
+
+    updated loop tests to account for new line printign
+
+commit 2bc0ad73d6152202a09a4c62c57b74ac736a5073
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 30 01:17:31 2016 -0500
+
+    keep track of arraytype dimensions
+
+commit 0bc239d734736a4607d6f73f092a3f23f79505f8
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 29 21:36:07 2016 -0500
+
+    supporting float type binops now (see included test)
+
+commit e77c7fb69467b45e378ae0440d5a7c1283dbd875
+Author: Tim Goodwin <tgoodwin@graphiq.com>
+Date:   Tue Nov 29 21:14:33 2016 -0500
+
+    updated print formatting in tests
+
+commit 44c9edabb69f8e8059c5c805a915ca2d970aa593
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 29 21:11:02 2016 -0500
+
+    No longer need print format strings :)
+
+commit 02f1aa23844886acf12f08648a265de65deced00
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Mon Nov 28 23:33:57 2016 -0500
+
+    who cares
+
+commit 4aaa030fa4892ea0f40815c88fbf4d77cf4d0e92
+Merge: 1898a40 dbc25d4
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 29 00:04:55 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 1898a4009613c606ff9242039f71ac0f583c1152
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 29 00:04:47 2016 -0500
+
+    fixed merge conflicts
+
+commit dbc25d42519a27a1256fdafb6858dbf617f65616
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 29 00:04:12 2016 -0500
+
+    tests
+
+commit 61fb6d351a3cfe83c5dc69e9c821858641f941d6
+Merge: babc5e3 ec4ffcc
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 29 00:01:58 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit babc5e36b502f3c3be60059e039324acbc50627f
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 29 00:01:53 2016 -0500
+
+    completed function to return pointer to pointer of image and dimensions
+
+commit ec4ffcc47f0f83d3a41847d513ba58b55384b232
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Nov 28 23:37:24 2016 -0500
+
+    removed Canvas from ast
+
+commit be457240b3dc367a1bfece907f57a296b742113e
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Nov 28 23:36:58 2016 -0500
+
+    removed Canvas from parser
+
+commit 01bdb7c78c872c8fed844401a79830d62e7cf2c9
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Nov 28 23:36:17 2016 -0500
+
+    removed Canvas from prettyprint
+
+commit 57fe7bf9b9877f5ada27a205d5919ea478f98ddf
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Nov 28 23:35:20 2016 -0500
+
+    removed Canvas from ast
+
+commit 44407404f3fbb2bdbd041a8d2d9a9a4b894fb6a1
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Nov 28 23:34:39 2016 -0500
+
+    removed Canvas from parser
+
+commit 02f1e67cca8262a808a90dc0b6a09e9c0b661c4b
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Nov 28 23:33:20 2016 -0500
+
+    removed Canvas from scanner
+
+commit 83b68f4395b8a25c76a543e5ccf7bef73b53198d
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Nov 28 23:28:46 2016 -0500
+
+    tests
+
+commit 8757c3cff9e4be4a36f383f26450afdc74dfaa20
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Nov 28 22:54:48 2016 -0500
+
+    tests
+
+commit cd2ef61cce067d934d57800ef1a411fcadb52df3
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Nov 28 22:23:41 2016 -0500
+
+    tests
+
+commit b33e843e694414e88d349a1da85e5d0e4d570e8a
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 27 15:32:31 2016 -0500
+
+    some error handling in generator
+
+commit 951f012924ce2671610ca94f7bb1b778dc515030
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 27 14:39:20 2016 -0500
+
+    1D array literals working
+
+commit 2c1bc789b58f7aea540e7154cd472bf3a3122e79
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 27 13:55:34 2016 -0500
+
+    example array tests
+
+commit 02477d620b2a1db684c0e7d4ce4aba5cab0f8077
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 27 13:49:26 2016 -0500
+
+    array access works now
+
+commit 9cf37c4402d6a02c6adff797ba61c5d7ade5c9cf
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Nov 26 17:24:14 2016 -0500
+
+    small fix
+
+commit 0de674248a5872efbb684f5f872a1d35a01a6854
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Nov 26 13:11:44 2016 -0500
+
+    fix id_to_str to handle array ids
+
+commit 95ccdeac38dea9b6b99eabb1414931d008290778
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 20:19:54 2016 -0500
+
+    testscript error redirection
+
+commit 88f4840ce76cb35aeb56fedcde260fb0d16655e3
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 13:35:19 2016 -0500
+
+    tests
+
+commit 291f3bf5ac15c309b0ca50367be0f792b8ba37ad
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 13:30:59 2016 -0500
+
+    testscript
+
+commit 6fa081fddae57fd14c2cd37b237ac5faa330c466
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 13:17:32 2016 -0500
+
+    tests
+
+commit d54e3db69ac90cdcd314f962b4f5915d76a21895
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 13:00:20 2016 -0500
+
+    tests
+
+commit 6a6ac87c58bfe468427c7c5bf04a02b226da4f5d
+Merge: 194a26b dc994c2
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 12:58:49 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 194a26b4d7028b17f7ce2c367b7e0b775e266900
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 12:58:45 2016 -0500
+
+    updated testscript
+
+commit dc994c2f7cfe49d265e07b4d33071f41d4e00a5c
+Author: Tim Goodwin <tgoodwin@graphiq.com>
+Date:   Sat Nov 26 12:57:18 2016 -0500
+
+    renaming type getters for clarity
+
+commit 04b1ab5ca456bbef842049224745fb4c19b3c9f2
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Nov 26 12:47:26 2016 -0500
+
+    arr access test example
+
+commit 648011fa7d0b4e695e5ef51c922532ca50c42ee3
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Nov 26 12:11:41 2016 -0500
+
+    fixed shift reduce conflicts
+
+commit 7199f81fe94c43ac20beaf00304e322ff6769673
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Nov 26 11:24:29 2016 -0500
+
+    notes
+
+commit e32b6dbd31057c4fd6efcfa593dd4beba56ba648
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 25 19:56:48 2016 -0500
+
+    trying arrayaccess using expr instead of ID
+
+commit c108f7655b545773fbc9d74a4ac74cada2452459
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 25 18:31:04 2016 -0500
+
+    array access compiling
+
+commit 8db3bd1825443f9a777bcdd101a5ef30ac6fbdd3
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 25 16:30:24 2016 -0500
+
+    compiling 2D arr support
+
+commit adae72a8c326bbda016ba123e6e02f7b89cecf18
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 25 15:46:48 2016 -0500
+
+    arr size pretty print
+
+commit 8acb144880527190dba7acd284a44c768bf64833
+Merge: fcab198 30613ad
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 12:14:53 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit fcab198c11ade79c33f9933491064c12b983848e
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 12:14:45 2016 -0500
+
+    tests no semi
+
+commit 30613ad8aa1bc59e595215d47b253787e1eeba90
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Nov 26 12:14:32 2016 -0500
+
+    while loop test
+
+commit 8bad661f10a2bc7519b424c21429571db97e24ce
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 25 15:44:19 2016 -0500
+
+    frontend changes to arr size in it, arr access
+
+commit 25949c92c0d1bc78e175f0bb7b237e2f8a4c0b08
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 26 12:04:06 2016 -0500
+
+    tests
+
+commit 6208abcf0cf4bdff0cae0369965542eea518acba
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Nov 26 11:03:10 2016 -0500
+
+    Starting to add variables to semantic analysis.
+
+commit 02e5022b25df55fe4dbf5a60ee9eac3d30bb4e7a
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 25 14:54:03 2016 -0500
+
+    modularized arrmap update + added float binops
+
+commit c4337f0e2e7dadb5b29df4f1e0ff5055e2d3e7b0
+Merge: 1dd3a25 7034945
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Nov 25 14:11:52 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 1dd3a2589ba8fbcff279f7cf82346cac73aa54b4
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Nov 25 14:11:38 2016 -0500
+
+    TEMPORARY blur.ml without semantic analysis.
+
+commit 7034945314accea5d87ed15c7cf61b9abcf2315e
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 25 14:02:39 2016 -0500
+
+    1D array literals working
+
+commit 20938184ee541f171c71e7d8c00be311b08bc28c
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 23 18:11:46 2016 -0500
+
+    ok
+
+commit 2d0dfeea59216397eef5785c25b1fabb8e899666
+Merge: ce2ee10 5c14fa7
+Author: Timothy Goodwin <timg.goodwin@gmail.com>
+Date:   Fri Nov 25 12:56:24 2016 -0500
+
+    Merge pull request #7 from dextercallender/tim_arr
+    
+    while loops work it was a tricky error
+
+commit 5c14fa74bcd7165be838b2e42257fb4d0911f2e9
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 25 12:54:25 2016 -0500
+
+    while loops work it was a tricky error
+
+commit ce2ee10af32371e2dbfc74eefc4514f41f25785e
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Nov 25 12:27:15 2016 -0500
+
+    Undeclared identifier check is working.
+
+commit 5b25bde2b3682f2c9b9de00f1a5bf6fa980c9b06
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Nov 25 00:24:17 2016 -0500
+
+    Beginning to implement checks for expressions and statements. Writing test to ensure that nothing follows a return statement.
+
+commit f8bc0fde5d1dbbd0323f5b4a2286792035cfd2df
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 24 15:05:44 2016 -0500
+
+    Adding function that will return type of a variable.
+
+commit ee5afac17d47ec85e56d1d0c379ea95a9043c334
+Merge: b74ecab 59bbe91
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 22:10:41 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit b74ecabb48554fa49fe81d31b6f0ba463196532f
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 22:10:24 2016 -0500
+
+    Adding global variables to a map and writing functions to add local variables to a map.
+
+commit 59bbe91314db2997d4baef3074319a3118ec71ba
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Nov 23 18:15:55 2016 -0500
+
+    parser & tests
+
+commit 9b0b37a01170ff8f156f36de1bb5eb9105db8460
+Merge: 26d4d79 6298ac1
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Nov 23 18:04:39 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 26d4d794da9e4f8181611c6317e5a5d0431789ac
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Nov 23 18:03:38 2016 -0500
+
+    fixed while loop pretty print
+
+commit 92d4c47c4d6bf129294fca65872b42243fd2bbee
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Nov 23 18:01:45 2016 -0500
+
+    fixed for loop pretty print
+
+commit 6298ac187e1eab80faff9df05b450cadb666429e
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 23 18:00:07 2016 -0500
+
+    compiling arraysizeinit, needs testing
+
+commit d47702a97490f81388611bce150260a5080c89c3
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 23 17:26:51 2016 -0500
+
+    added noexpr to codegen expr
+
+commit a4a26ada6fd13e19e5b6cc62bace53be4e3d8b89
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 23 17:14:45 2016 -0500
+
+    keeping track of array dimensions in map (1D right now)
+
+commit b82a6cdb508c4249128431a66874eeef27b19842
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 23 16:59:13 2016 -0500
+
+    trying array stuff
+
+commit da55d59b1e3ecbfae704167b381244e438162e80
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Nov 23 16:59:50 2016 -0500
+
+    for loop
+
+commit 7f726653019275150f9aa449e856e01a51ffbebf
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 15:34:59 2016 -0500
+
+    Ensuring that main function exists.
+
+commit f4c79b821e75f43ed4efca6b40cca3eccd727063
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 15:25:20 2016 -0500
+
+    Cleaning up array code.
+
+commit 92f768969760082c2581714500ed8a207710d3bb
+Merge: 595c802 2b68c5d
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 15:14:58 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 595c80237dfa19eafe45b2c7bbb2467615ba47d4
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 15:14:45 2016 -0500
+
+    Making array size declarations take int list. Note that pretty printing is not formatted properly.
+
+commit 2b68c5d0b8c1308ec3f0cf17ab3d144a2fdd1fe2
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Nov 23 15:05:30 2016 -0500
+
+    test update
+
+commit 5927bd8ac5db9934fe1585912eb3cc679d73be6b
+Merge: e2497f2 52aa84d
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 14:47:36 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit e2497f25f7a8297fcfebfb7c29ef0ba49712d989
+Merge: d8674bc 81d43f1
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 14:47:04 2016 -0500
+
+    Merge.
+
+commit 81d43f142589747e3189e6966cf2f5c20b31c495
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 11:54:17 2016 -0500
+
+    Fixing formatting.
+
+commit 03ee4683ed0d6679cc1a48de3fe7e70bdc5892ed
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 11:51:40 2016 -0500
+
+    Fixing array type in generator.
+
+commit 1c5d46c11227bb2b0df4353b0d148bec4297c5cb
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 23 10:48:11 2016 -0500
+
+    Working toward array types.
+
+commit 923b87809b8aca0ef4f73f0bc2a3b009d8559f0b
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 22 21:51:43 2016 -0500
+
+    no more errors datatypes work
+
+commit 90b910b7543a9199b556dc956bfb7bfe3497fda4
+Author: Tim Goodwin <tgoodwin@graphiq.com>
+Date:   Tue Nov 22 20:55:17 2016 -0500
+
+    fake global maps i hate functional programming
+
+commit bd35911a9ecd1b25912b4c906fe0e4b768475510
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 22 20:33:53 2016 -0500
+
+    temp
+
+commit 0a4d334c30b23b888211032737120fcaea31c31c
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 22 18:38:55 2016 -0500
+
+    ugh
+
+commit 52aa84db6602d1b6683f745c573ca00bdd7d69ad
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 18:31:48 2016 -0500
+
+    fail output
+
+commit e0a43ccc901d2466a5f828b544b8d6a04455d483
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 18:30:28 2016 -0500
+
+    fail test
+
+commit 69aa53228788b9bdaa4180a7ad02a7f3406527ce
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 18:28:23 2016 -0500
+
+    updated test output
+
+commit d4d2510161af9e2c106244647a6fc356912c3b85
+Merge: 78c4512 ae7f710
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 18:12:27 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 78c45123ae9c06afe71dec5d679c151b006be5fc
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 18:12:18 2016 -0500
+
+    tests print lowercase
+
+commit ae7f71043c40a5f7183ffe3c2f277b1a90ba6800
+Merge: e43cf04 3bc2180
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 22 18:08:58 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit e43cf0418ec6a10988a304a46e774c65fa3ba26b
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 22 18:08:46 2016 -0500
+
+    linked opengl and created c library that can read, display, and return data pointer to image. Not yet linked into Makefile. to test, cd into clib/, run 'make exec', and then run './test Golden_Mushroom.jpg'
+
+commit d1aae36902af274dcfe49e2251ebedf060c89d35
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 22 18:05:36 2016 -0500
+
+    arraty init framework
+
+commit 3bc218088e509aecbe22de6914a4adb246aec1f1
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 18:03:22 2016 -0500
+
+    code tests
+
+commit 8860ccc682ddfc42d1dd7146a267a07febe95233
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 18:03:03 2016 -0500
+
+    code compile test automation
+
+commit 2b562951768f8cd1109ef9e1352c5befad2fffd2
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 17:09:46 2016 -0500
+
+    fixed testscript
+
+commit c458b2ffc33252d767d4c463854dec06e7d70e1d
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 16:11:32 2016 -0500
+
+    updated testscript for compile test automation
+
+commit 5a04a6deb75aaf93a461108ad129104815c6084a
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 16:08:33 2016 -0500
+
+    new tests and testsPP folders
+
+commit 221d44e6ef480333c762b499a2679264361ff990
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 15:58:51 2016 -0500
+
+    update testscript
+
+commit d9e93803eeeff55f6bea342a2883f81929c3cf8f
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 15:55:51 2016 -0500
+
+    testscript without blanks
+
+commit 484b4cbcd6e969fe83f721c6e7758c30676e71da
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 15:50:54 2016 -0500
+
+    added hello output file
+
+commit d8674bc2b620e0883cd79f0422c966e4bcb3373b
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 22 15:38:46 2016 -0500
+
+    Beginning to make changes to gen for arrays.
+
+commit f94a78e59672a5efc4053e24b7e77b14378b334a
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 15:17:41 2016 -0500
+
+    updated testscript
+
+commit c24508b8f730f954945e834038986b53e85d2827
+Merge: 6a83f97 4accabb
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 22 15:15:31 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 4accabb9d3a9d269babdc2bf4fbea25727b7fa40
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 22 15:15:03 2016 -0500
+
+    removed all llvm linking code, attempt 2
+
+commit b3aa0a24f5ad8ca12a634392617e9c0dbed16aea
+Merge: bc3d6ce 364d7e5
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 22 15:13:41 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit bc3d6ceb97a967d153f45b6d95835b707aa92de3
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 22 15:13:21 2016 -0500
+
+    removed llvm linker code and library
+
+commit 364d7e558ebdf1bb5696bb3b3f181d45daa2ca7d
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 15:03:17 2016 -0500
+
+    updated testscript
+
+commit 5c00eec2c8223587280f6b35064503ab81ea5b8f
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 13:03:48 2016 -0500
+
+    updated testscript - helloworld
+
+commit a172bfb59adac1a0b603d68ac4ce38d208464785
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 12:45:11 2016 -0500
+
+    tescript update
+
+commit c1f0e397d226d54b5c2688606b8d68d99666e50b
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 22 12:09:39 2016 -0500
+
+    first automated tests
+
+commit 6a83f97eb9d462fe8d5234d6584127cc7732e978
+Merge: f22ba93 400ffbb
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 22 10:17:45 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 400ffbb033c246c0fa9462a7e6ca653d90702aae
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 22 10:16:10 2016 -0500
+
+    modified readme with installation instructions
+
+commit f22ba93d4fa1cd0ac52caf388285a77f9672bb01
+Merge: 038a01a 701a2ee
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 22 00:42:17 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 038a01a92c2cd9d342a801d87f4b6e1c382d2dc8
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 21 17:06:01 2016 -0500
+
+    Restructuring array type in order to distinguish from primitive types.
+
+commit 701a2ee077efb524c06f28b2c89cb4b823bc206b
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Mon Nov 21 16:46:52 2016 -0500
+
+    read image in bindings.c nearly complete but seg fault
+
+commit 7582a499c8f17ba68e370ba9dcd2ce201f00c746
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sun Nov 20 15:23:29 2016 -0500
+
+    slowly fixing more errors with linking an image reading library
+
+commit 078a49bbd336bce8fd281530b72f2507dabafac3
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sun Nov 20 13:42:36 2016 -0500
+
+    added commands to install llvm for ocaml in readme
+
+commit c63553fc0ba6d009679c1ba4f690bdfceaad7644
+Merge: 3cb198e 980d2c3
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sun Nov 20 12:50:30 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 3cb198ec929950a4c348878ba15ce4ba32a663c2
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sun Nov 20 12:48:52 2016 -0500
+
+    now using png++ image library
+
+commit 980d2c36b172af474ae616dc1f5ab83529e96b07
+Merge: b229267 c3296f3
+Author: restocle <sh3266@columbia.edu>
+Date:   Sun Nov 20 12:21:24 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit b2292679b7907d53361a6f1a32f0df1cf2bc9e35
+Author: restocle <sh3266@columbia.edu>
+Date:   Sun Nov 20 12:21:22 2016 -0500
+
+    testscript update
+
+commit c3296f3deeffcad5bc0a28aaf806043b0ec582bc
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Sun Nov 20 11:57:21 2016 -0500
+
+    linking cpp files works now
+
+commit 779b0f7df60898b0ec8f4c594ca590562dd7b81b
+Merge: 4a684a4 d08b049
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Nov 20 11:35:17 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 4a684a4634424a8d10c7459f4b57b6c6dfa3ae50
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Nov 20 11:35:14 2016 -0500
+
+    Removingdeprecated array test.
+
+commit d08b049a83e6a563f153a62d71c0d6ae3e75e695
+Merge: b7b48bb 2241c28
+Author: restocle <sh3266@columbia.edu>
+Date:   Sun Nov 20 11:30:53 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit b7b48bb42ebb811cc8b6c05dd36c1c5d5a35d07e
+Author: restocle <sh3266@columbia.edu>
+Date:   Sun Nov 20 11:30:50 2016 -0500
+
+    updated parser, ast, prettyprint, test for array init with size
+
+commit 2241c28cbf6994b5fbc64261fc60605a01be7267
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Nov 19 19:04:48 2016 -0500
+
+    WHILE and FOR statements generation. TODO -- scope behavior checking with tests
+
+commit ae8b341764064be38f5fa1d52062bea5040e33d5
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sat Nov 19 18:46:04 2016 -0500
+
+    generating IF statements. TODO: testing
+
+commit 729b133e6263be03c21ca1ddc3fd8d3ad1ec475f
+Author: restocle <sh3266@columbia.edu>
+Date:   Sat Nov 19 14:57:47 2016 -0500
+
+    trying pretty print comparison
+
+commit 16821f495aa4d8d66253b533915a28cf2643f880
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Nov 19 13:19:08 2016 -0500
+
+    Implementing array access.
+
+commit 79dfc57335d6e9a2e66b9ef04a528dff937af0b9
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 18 18:57:11 2016 -0500
+
+    TODO: finish statement handling. if, for, while, continue, break.
+
+commit eac7a51ab9c772ab9b403afc5263b8e59548d081
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 18 17:57:29 2016 -0500
+
+    unops
+
+commit 91f7991a56d4d2102f1454b44077d738a0780f51
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 18 17:42:08 2016 -0500
+
+    ~~ hello world ~~
+
+commit f446a105baf925b0c62302ba1e94e43b2ec6ec9e
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 18 17:07:19 2016 -0500
+
+    supporting string pointers. 'string s = hello;'
+
+commit ba6b8e1372211600a46e0d8c531c1a12d95977a0
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 18 16:22:33 2016 -0500
+
+    exceptions framework
+
+commit 17134ea6198d0832035bf7571f411e3a89136799
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 18 16:19:03 2016 -0500
+
+    generator works with assigments now. that was not trivial
+
+commit 6c718a77a82bb056924e6b048bf7f0793a721ff2
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 18 13:38:06 2016 -0500
+
+     'int a = 5' working in llvm module
+
+commit c10df21e55f59f70d363fbd89f7ef72f26e55f63
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 17 18:35:52 2016 -0500
+
+    incorporated var declaration into the codegen_stmt function.
+
+commit 90e069a6cf8c8b0f29472d883edf9d04721087d8
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 17 18:17:31 2016 -0500
+
+    temp commit
+
+commit ef6a11101e4dafdf900bea39568c4771b04812a0
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 17 18:16:12 2016 -0500
+
+    try
+
+commit 94eb5d983b2d226a07454d266fbeb4c9036463b8
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 17 00:42:59 2016 -0500
+
+    minor fixes, code cleaning. prettyprint charLiteral update.
+
+commit 2deccc67dc2fe0c8fe94e8bada480ce5b2e8af94
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 17 00:12:52 2016 -0500
+
+    id_to_str hack for Asn binary operator
+
+commit 85a53ed2de6c78c4f3179d40a6053567395eb5fc
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 17 00:01:44 2016 -0500
+
+    wasteland
+
+commit 784a9160b87fea8f2ee50d0dcdf8d840f00fd40c
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 16 23:57:47 2016 -0500
+
+    idk
+
+commit 0ac535941ac98b2938a6d8f701a97f530378268e
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 23:59:06 2016 -0500
+
+    Adding more to local variables in generator.
+
+commit 0e01e6b1bf85543ff42824e10e3f811f5dcb738c
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 23:28:44 2016 -0500
+
+    Implementing updated local variable declarations for generator.
+
+commit 64cd202bd211e0b291ecc38bb882498b01b3d34f
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 22:13:57 2016 -0500
+
+    Removing redundant Asn in ast.
+
+commit 4025e52678189219c89e68a91e1068700e42339b
+Merge: 3b5e266 f929215
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 22:01:57 2016 -0500
+
+    Testing.
+
+commit f929215593f3df00627c21921978648c2b99807b
+Merge: cd428ac 6e7bc56
+Author: melissaKG <mhk2149@columbia.edu>
+Date:   Wed Nov 16 22:00:09 2016 -0500
+
+    Merge pull request #5 from dextercallender/func_struct
+    
+    This is printing vars correctly.
+
+commit 6e7bc56c631b7110435988799875626b1fbc447e
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 21:57:59 2016 -0500
+
+    This is printing vars correctly.
+
+commit cd428ac95eb2875672c628e45567af5c7b3799df
+Merge: aa88c02 77ae099
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 21:41:57 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt into func_struct
+
+commit aa88c025eb06e602f63c9227020645d4861498f1
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 21:40:21 2016 -0500
+
+    Fixing format of pretty print for var init.
+
+commit 3b5e26619e3e3adcff885f41e73d67be3eaa187e
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 21:36:30 2016 -0500
+
+    Making test for func more complex.
+
+commit 77ae0991be5e652d7e257bbd90f85158d252faf1
+Merge: d84c907 3f0c9d9
+Author: melissaKG <mhk2149@columbia.edu>
+Date:   Wed Nov 16 21:32:30 2016 -0500
+
+    Merge pull request #4 from dextercallender/func_struct
+    
+    Func struct
+
+commit 3f0c9d948fd3556947c341aff449f1424fb16756
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 15:58:10 2016 -0500
+
+    Fixing pretty print alignment.
+
+commit 36753b45799c04f0f825054fcf7b630ffd1d5191
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 12:57:00 2016 -0500
+
+    Implementing new local variable structure.
+
+commit d84c90702e371ae7f7e3ceaf80446fe32afe458e
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 16 12:00:54 2016 -0500
+
+    added TODOs for all incomplete pattern matching in generator.ml
+
+commit 46d38d8dccd7de84026bad051066020e9c259afb
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 16 11:50:51 2016 -0500
+
+    properly included ast module into namespace
+
+commit 946ce4d98c169b728988a745655d4eac82c00172
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 10:59:54 2016 -0500
+
+    Changing func decl to have statement list instead of locals and the body.
+
+commit b2b3d1a73ab6df2f007baeca46ff9458744154fb
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 16 10:39:55 2016 -0500
+
+    Cleaning up.
+
+commit 107cb2dbfc6fe575a2d6564eb4cdf4b3cfe6291d
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 15 16:24:44 2016 -0500
+
+    code generation for a blur function call
+
+commit 576c4fdefd793dc6088f21c79e54c382e7d34b24
+Merge: 2c83e38 1dd07db
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 15 15:54:37 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 2c83e381dfe91f1858ca6e0121537ddc53764a91
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 15 15:54:25 2016 -0500
+
+    Adding test for var decl and init on one line. Also starting to check assignments in semantic analyzer.
+
+commit 1dd07dbf0c04e97c7ec1ec3cb02a40a95579eb75
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 15 15:50:19 2016 -0500
+
+    can link c files!
+
+commit 3dce50d3c4614599e98290dd4a81f46ad9cf5afd
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 15 15:41:42 2016 -0500
+
+    Adding one line init to var decls.
+
+commit e11eb1fc5b00a0e65cc61cc4460f4e83998f0fe4
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 15 15:40:14 2016 -0500
+
+    2D array test
+
+commit 5516fc400627f04a4fc0d401a8768f4251b6bd0a
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 15 15:15:01 2016 -0500
+
+    fixed global_var codegen
+
+commit fb2be61e05ea691f6a686367d696fc4589c8d361
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Tue Nov 15 15:01:35 2016 -0500
+
+    modified makefile to link generator. Modified blur file to accept flags for different compile options
+
+commit d610921d52d1d53bf8c7742ba16b50addd933d3f
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 15 11:25:38 2016 -0500
+
+    added very basic support for print function code generation
+
+commit 954e8ce67585920b5be6b6b835cf5064d8bc16d1
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Mon Nov 14 23:40:43 2016 -0500
+
+    generator compiles with only warnings, no errors
+
+commit df8cf1f523f92c96e44c3ae32928a4ae73aec840
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Mon Nov 14 23:13:07 2016 -0500
+
+    error on line 126
+
+commit 1c8fdd5737b51aedb9600dd726602f6a89b71dad
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 14 22:51:00 2016 -0500
+
+    Ensuring that user cannot define a print function.
+
+commit d6c85db3f181ed024efafb4b403e288f2ad37c18
+Merge: dd09722 8f3c52e
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 14 22:26:03 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit dd097226f085191906cf813bc35fa612546a2734
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Nov 13 18:17:42 2016 -0500
+
+    Checking for duplicate and void arguments.
+
+commit 8f3c52e628f839acb3440a9cd1367a26d5cd6534
+Merge: 3026088 31fff53
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 13 15:08:26 2016 -0500
+
+    Merge branch 'llvm.try' hope this helps
+
+commit 31fff537609ec61d404936788801192204e624eb
+Merge: 5ef9475 3026088
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 13 15:07:33 2016 -0500
+
+    makefile merge errors
+
+commit 5ef9475a95f331925ecf64134eb922015c0ff376
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 13 14:58:23 2016 -0500
+
+    first iter
+
+commit 2a0d4cce2d0ef6e9064a4148e9b498fd295f49f0
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 13 14:55:04 2016 -0500
+
+    v temp
+
+commit 01224bc8fe637fedc45dfafc626aea20c47dfa9f
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Nov 13 11:59:56 2016 -0500
+
+    Checking for duplicate function names.
+
+commit 30260889514281aa0ac7731a91a6107bcfd42d98
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Nov 13 08:28:12 2016 -0500
+
+    Adding .cmx to Makefile.
+
+commit 71781aa4c736c6a668529d1e0e455e0e49e98689
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Nov 13 08:15:36 2016 -0500
+
+    Renaming .mli files to .ml files.
+
+commit d470011755270c165f8054f5f558f707d09bab5f
+Merge: 8bc8155 acb1e3a
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 10 20:47:42 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 8bc8155e83635a87f8f42012a8ec2b0fa342c207
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 10 20:47:09 2016 -0500
+
+    Adding semantic test for duplicate variables.
+
+commit acb1e3a900ac1749e6ba94026c15c796d2d775ae
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 19:08:09 2016 -0500
+
+    updated funccall test
+
+commit cf988226ef3a3217ee0401a6db943319a320222a
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 10 19:06:46 2016 -0500
+
+    no syntax errors, but llvm module not linked properly
+
+commit 1cded3c3bf6410bfaf6723d803cac495c52d89db
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 19:05:37 2016 -0500
+
+    added var test
+
+commit 404529b2a3fecc3eb79afec8240414693da7f694
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 10 18:41:38 2016 -0500
+
+    try
+
+commit a4374fa948256b0169f3a6a8e3c54948d4c1b83a
+Merge: 4693867 22ed5e9
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 18:32:20 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 46938670da48c5c6fe40df496c4fb52ccd5f7546
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 18:31:55 2016 -0500
+
+    added positive while tests
+
+commit 22ed5e9583687185c02fec4afbef277ebcccbf5e
+Merge: 4922cf6 b997536
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 10 18:15:18 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit 4922cf6d9513b5f94097adafd80ad05c8af85a18
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 10 18:15:06 2016 -0500
+
+    Updating Makefile to include generator. Eventually we need to add generator to OBJS.
+
+commit b997536508a4789f86ca670283f9c346cb550c7f
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 18:10:22 2016 -0500
+
+    added positive forloop tests
+
+commit 8c944b75cdfa07a4ec8190518cb4b946446671b6
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 18:04:11 2016 -0500
+
+    added fail return tests
+
+commit 82c89dadbf9990f970cbaa94870f8bccfc059ab2
+Merge: 89bf77e 10ad6a8
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 17:53:11 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 89bf77e35cf225a4971e4333144cfd52e61da734
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 17:53:08 2016 -0500
+
+    testscript.sh
+
+commit 10ad6a80ebcc80ee19fa1be2d68e1809f1a290ce
+Merge: 3c95db8 a241143
+Author: Timothy Goodwin <timg.goodwin@gmail.com>
+Date:   Thu Nov 10 17:47:35 2016 -0500
+
+    Merge pull request #2 from dextercallender/llvm.stage
+    
+    merge Llvm.stage real deal
+
+commit 3c95db89bce2426d77839632596391ae689d96a7
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 12:55:40 2016 -0500
+
+    added parenthesis balance test
+
+commit a241143e05ee4ca386527133fce6817cd4adfe62
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 10 12:26:57 2016 -0500
+
+    initial work on llvm generation file
+
+commit 5d1af5c2a4e8518ffe29fd88ff635a97019e8f46
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 10 12:25:55 2016 -0500
+
+    starting llvm
+
+commit e5f9d4d89001d1e5feac3c640994999fe5380523
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 10 11:49:43 2016 -0500
+
+    Implementing initialization of Canvas.
+
+commit d3ad01169c37664038f2cda11391f7c908fbdd1f
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 10 11:30:51 2016 -0500
+
+    Implementing Canvas declaration.
+
+commit c6e271f52e725a5dd3bbc39e68514f8036b85b51
+Merge: a042367 3b344b6
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 10 00:55:50 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/plt
+
+commit a04236754fe808e06bc650c26a2ea4bf47a7e0d6
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 10 00:55:40 2016 -0500
+
+    Adding void check for global variables in semantic analysis.
+
+commit 3b344b64afd2282757a29d22ffb13029978d973e
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 00:24:53 2016 -0500
+
+    added positive conditional test
+
+commit 763fe57ac28facf6cf184020ceb30e97cb6231ca
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 00:20:27 2016 -0500
+
+    added positive variable test
+
+commit 5f96f7bfd866a073eb5b9cd6c7fb82f9c9c0ce90
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 00:14:38 2016 -0500
+
+    added positive return test for all types
+
+commit 9636d998953a0a98c3f1dd2b18f9c2c5b166b304
+Author: restocle <sh3266@columbia.edu>
+Date:   Thu Nov 10 00:01:07 2016 -0500
+
+    updated print test & added for/while loop tests
+
+commit 70704f4d98172b6564d59aa7f8c47125e025d288
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Nov 9 23:41:04 2016 -0500
+
+    updated type tests
+
+commit 0baee814c119470d7005f9f462065e02db078228
+Merge: 5a65728 ba9cee1
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Nov 9 22:57:20 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 5a6572876dd66cfa7dc2380f1e4a98060d8d24e6
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Nov 9 22:57:09 2016 -0500
+
+    just conflict resolve
+
+commit ba9cee1382b9d4c46733baf4631f09396097db26
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 9 18:11:34 2016 -0500
+
+    remove temp files with make clean
+
+commit e1b8ef0d4667bdfd9c089140619cb55cd361b676
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 9 17:07:26 2016 -0500
+
+    Trying to figure out type. This compiles.
+
+commit caa89ca40310da3cb2f22d8de435d9ace76ada76
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Wed Nov 9 16:41:28 2016 -0500
+
+    fixed pretty print error
+
+commit 505e37a7de12a6e332c6c5b9a9d14ebf60c4f7ca
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 8 20:57:45 2016 -0500
+
+    integrated new array_type into master, got rid of arr keyword
+
+commit 6dad7660a69ef25cdc27c630fd8ebdfe51026606
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 8 20:50:32 2016 -0500
+
+    screw calc
+
+commit f3747237ba362210e7bbf0354ce81f84bd55c16b
+Merge: 1af6759 114c1cc
+Author: Timothy Goodwin <timg.goodwin@gmail.com>
+Date:   Tue Nov 8 20:49:47 2016 -0500
+
+    Merge pull request #1 from dextercallender/2D.please
+    
+    trying new 2D array
+
+commit 114c1cc446dfcf28b7b04f4cf123218f1d89a7ea
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 8 20:23:25 2016 -0500
+
+    trying new 2D array
+
+commit 1af67591d61d9360afbcb412f38de88f44b9aa0b
+Merge: 3b5735f 4be121c
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 8 19:44:00 2016 -0500
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 3b5735f41c5a4f9a64d4f34ed8e840f78ff221d6
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 8 19:41:17 2016 -0500
+
+    added type test - only int and void types work at the moment
+
+commit d6079c5fce11bae201936ff68ff4cf1d8cbbde9c
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 8 19:10:48 2016 -0500
+
+    updated comment tests - ignores comments
+
+commit 4be121cef098074e6ea5e5235f3cc59b4370459a
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 8 18:49:50 2016 -0500
+
+    first design of sast.mli
+
+commit 48d05f15f32e880fe981de775e8b0d682aa0ebe4
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Nov 8 18:20:56 2016 -0500
+
+    added comment tests but need to be implemented in pretty print
+
+commit 2a3ea8ef0fae42edb53a4816afc2788f803fc85f
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 8 17:05:17 2016 -0500
+
+    Beginning static analysis. Checking for duplicates.
+
+commit 10abbc8a3d050d41e5812300d2d4bbf2cdf2aacd
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 8 15:55:31 2016 -0500
+
+    De-cluttering Makefile.
+
+commit 74666b10fdd2f231a26fe68a8404d77a87b96aca
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 8 15:29:22 2016 -0500
+
+    Clarifying arg and var structure.
+
+commit 08bd0a21573ff0b92fecd65896e8e94cf3cef50b
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 8 11:01:51 2016 -0500
+
+    Implementing array declaration and initialization with no shift/reduce conflicts.
+
+commit bca56794bfd987b719ec6c7bcb9b09dc1c565598
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 7 16:56:17 2016 -0500
+
+    Array declaration works without shift/reduce conflicts.
+
+commit 3b9188ab02e5d2cbb1b748ac98ef0c3363e2a30c
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Mon Nov 7 16:34:16 2016 -0500
+
+    goodbye arrays
+
+commit b869e37cc18463ef645f9461ee332493a5e2ba71
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Mon Nov 7 14:07:01 2016 -0500
+
+    init semantic analysis
+
+commit 5f9a60c89524c99f9d662488f8cf87859b564144
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 7 14:14:33 2016 -0500
+
+    Ensuring that arrays still work with new variable structure.
+
+commit 94f915d7fd56146bd2d5cdef7718291cb63cebc1
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 7 14:09:07 2016 -0500
+
+    Formatting binop.
+
+commit 9c8b65d0a73f25cfd8a4d853911d79cdbe082bd8
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 7 14:00:08 2016 -0500
+
+    Adding var specifications to pretty print.
+
+commit 9fab8461faedc39335bd783356b3bc76b8f88c02
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 7 13:42:29 2016 -0500
+
+    Defining function arguments as variable declarations.
+
+commit 4ed3b322165752b80a98dff30751744505eb817d
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 7 13:33:19 2016 -0500
+
+    Continuing to change the structure of var.
+
+commit 1de9f62228f190f49226c779e7c3ca8150fa0568
+Merge: e963618 8a9b300
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 7 11:36:32 2016 -0500
+
+    Resolving merge conflicts.
+
+commit e963618faabc7b77362663bbdd14d9e67ff9f9e4
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 7 11:31:56 2016 -0500
+
+    Beginning to change var structure.
+
+commit 8598065ab3c2d679128f4071cff05910325c4f41
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Nov 7 00:14:01 2016 -0500
+
+    Changing the structure of the program in an effort to fix the bug with ASSIGN.
+
+commit 8a9b30074df16817391056267d593cda6ba4fff9
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 6 20:48:38 2016 -0500
+
+    prettyprint should have everything but it neeeds testing sorry for commiting before testing
+
+commit bcdd7e6bdd556517e3065644445f3e1e6c21948f
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 6 20:29:16 2016 -0500
+
+    fixed errors with unary op printing, removed whatever Seq was doing for now
+
+commit ca9f3f30889faf325a4b44fbe0fd7519ceeac55d
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 6 20:20:05 2016 -0500
+
+    pretty print function calls
+
+commit a024ac865655c50f2550dc05785dcc3340d53440
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Sun Nov 6 19:50:04 2016 -0500
+
+    added unary operators, some comments
+
+commit 466b19ff684887bc1aa80473ac6727978d015805
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Nov 6 09:14:05 2016 -0500
+
+    Implementing arrays via curly braces.
+
+commit 7aeb4a80fd7fa2ac2d28b1c6e2cbc82ecd6de248
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Nov 5 10:12:53 2016 -0400
+
+    Implementing array initialization by size.
+
+commit 32342729f860aed63483face27c212d925885d89
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Nov 5 09:20:03 2016 -0400
+
+    Implementing array declarations.
+
+commit 546dc6075f6bfba271a790f16f45b4a23236e109
+Merge: fed90e0 af0ed83
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Nov 5 07:48:20 2016 -0400
+
+    Resolving merge conflicts.
+
+commit fed90e07cd2b6a568a2af0781a5c459685605a4a
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Nov 4 23:48:36 2016 -0400
+
+    Starting to implement arrays.
+
+commit af0ed83b11545897b929ef85da59b0fd0aca27d0
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 4 21:10:05 2016 -0400
+
+    added ability to make function calls
+
+commit 3cc322117c47a23a9753ffedcd9500776473b7f8
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 4 20:49:16 2016 -0400
+
+    added conditional statements and loop statements to parser and ast
+
+commit c83f957121f2c0711e2e299bcad8d6afd3f7fc87
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 4 20:13:52 2016 -0400
+
+    added all binary operators to ast
+
+commit 80c0d358a1d743dfe2217739fb25b6127f7e85ae
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 4 19:59:45 2016 -0400
+
+    added type literals up to AST level. needs integration testing daniel daniel daniel
+
+commit 647367858c57b38b345feb1f530ca3d1a82041ff
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 4 19:47:53 2016 -0400
+
+    added type literals to scanner and parser
+
+commit 6e8ac723aec70c632123aadaa9649c74fc396f27
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Fri Nov 4 18:52:43 2016 -0400
+
+    types?
+
+commit cf57d182b6cc51b2e4837789fc28d09dce840c60
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Nov 4 18:04:38 2016 -0400
+
+    Implementing binary operators add sub mult div.
+
+commit 49bb58009cf17b7d405130551b2708d68757c6c5
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 3 20:59:11 2016 -0400
+
+    added rest of things in LRM to scanner and as parser tokens
+
+commit ca46bdded281dabad25501a1b82793f58b001cef
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 3 15:29:08 2016 -0400
+
+    Implementing ASSIGN. Note that we cannot declare and assign on the same line yet.
+
+commit 32d7d09a6383b94438e30a71467c47c96b5624c8
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 3 11:54:34 2016 -0400
+
+    Function pretty prints.
+
+commit bb57a33a0c94a13e2dc2fcc6ecbbc5ee08404786
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Thu Nov 3 11:32:02 2016 -0400
+
+    first pretty print
+
+commit 4f6a9de0e061f9fd861577d64e0534614364b81e
+Author: tim goodwin <tlg2132@columbia.edu>
+Date:   Tue Nov 1 23:01:41 2016 -0400
+
+    trial
+
+commit 5c80c98bdc460a0677e5239acea0c956d00f87c8
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Nov 3 10:53:19 2016 -0400
+
+    Pretty print will print an empty file . . . but that's it atm.
+
+commit c6e071e26aa4a0a9197cb054981fb14b815edcbe
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 2 17:34:42 2016 -0400
+
+    Working toward pretty print. Need to fix fatal parsing error.
+
+commit f562778b2488a196a0c6f4a2fe646a29714a763e
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Wed Nov 2 16:59:36 2016 -0400
+
+    Pretty print can take a file as an arg.
+
+commit b06fe13476417ad9cfc7dbf55cc4ae7278934d4b
+Author: Tim Goodwin <tgoodwin@graphiq.com>
+Date:   Tue Nov 1 19:19:50 2016 -0400
+
+    added missing tokens to scanner and parser
+    
+    fixed syntax errors
+
+commit 91d2b715150f4010cef6e3ecbaf0e8f01ff74aea
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 1 15:47:26 2016 -0400
+
+    Fixing bug.
+
+commit 0872c9b72772cb64b5abb6275c4e950ccadd156e
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Nov 1 14:54:29 2016 -0400
+
+    Need to fix this, but working toward pretty printing.
+
+commit f39aecde3d4e1cfa1db5ea6474a2d73653ebaef1
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Oct 31 20:36:43 2016 -0400
+
+    Cleaning up file structure for pretty printing.
+
+commit e9dcb8037a91b49a0a70238bfd59480653461af0
+Merge: ce42413 48eee7c
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Oct 29 14:52:17 2016 -0400
+
+    Fixing merge conflicts.
+
+commit ce42413f7d13c58d390c568402e7682a7a19d295
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sat Oct 29 14:50:51 2016 -0400
+
+    Fixed Makefile by adding deps.
+
+commit 48eee7c46924fbbb0d4acbe668e48799a8a1aee1
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Oct 28 19:33:02 2016 -0400
+
+    Adding clean to Makefile.
+
+commit dad269c4cd43f2d13a33f1beb7a3d2342f2f363f
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Fri Oct 28 19:00:57 2016 -0400
+
+    SOMETHING PRINTS
+
+commit 4ae2cd88f8c5e0c215d9cbdb931a4ff0bb067cf8
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Oct 27 13:54:45 2016 -0400
+
+    Modifying the Makefile to link files.
+
+commit cfa8ce94d70865d4b9ecfc85a7f1a8d61f38cd75
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Thu Oct 27 10:56:56 2016 -0400
+
+    Changing file structure to get pretty print going.
+
+commit 85a9b3386640478a8e8ee9a9ed33fe27f54fbafe
+Merge: 657b290 dd3168f
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Oct 26 15:47:46 2016 -0400
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 657b2903932f38f6e28a4c8f80e67b6d5d2c4c34
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Oct 26 15:47:29 2016 -0400
+
+    added print test
+
+commit dd3168f162ddf49c787ceb357ef85b115de74c90
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Wed Oct 26 15:42:14 2016 -0400
+
+    now we're ready to add the pretty printing functions into blur.ml
+
+commit 5793e20d2d31936ef2bcd44469ff709f5464a4e5
+Merge: 61135b2 63de1d4
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Wed Oct 26 15:39:17 2016 -0400
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+    
+    Merging
+
+commit 61135b26f533964f938b55e16a53b0a9e40a48c2
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Wed Oct 26 15:38:49 2016 -0400
+
+    added blur.ml file so we can separate pretty printing functions from the ast.ml file
+
+commit 63de1d4114ec4e8ca9a4ee03deff3ba263493386
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Oct 26 15:32:35 2016 -0400
+
+    added testscript.sh
+
+commit 0f65314702403ade6131ad015a24d77710756df0
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Oct 26 15:25:11 2016 -0400
+
+    test add edits
+
+commit 3d58df0e7a27d400ff51b192751f2cb499c9ae6b
+Author: restocle <sh3266@columbia.edu>
+Date:   Wed Oct 26 14:56:22 2016 -0400
+
+    Added test directory
+
+commit c0480ac9f1ddec17e617a75691b9fcbd2d1f9621
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Oct 25 21:42:25 2016 -0400
+
+    Resolving inconsistencies between files. Had to delete some code, but we can add back in once we get everything hooked up. Need to resolve 1 rule not reduced.
+
+commit df172e7dd58f8e9c09b57151a2841f96efdc94cf
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Oct 25 14:56:58 2016 -0400
+
+    Modifying abstract syntax tree.
+
+commit b1e71ce20acbed8ab9b910c7cd8ddc91e40db08c
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Oct 25 13:53:31 2016 -0400
+
+    Adding precedence to resolve shift/redue conflicts.
+
+commit e694b6935498e7f39eeecf28dbec7b313e7d1444
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Oct 25 13:48:40 2016 -0400
+
+    Updating parser. Need to resolve shift/reduce conflicts.
+
+commit d8226334c3530fa10f4127053f50fe7e8fbc3bde
+Author: restocle <sh3266@columbia.edu>
+Date:   Tue Oct 25 12:18:10 2016 -0400
+
+    parser.mly edit
+
+commit c4ea2e22179f838f4abc9833b2496b7a0c1caf79
+Merge: 439988d 861a113
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Oct 24 22:40:10 2016 -0400
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+
+commit 439988d27f8219f16af6421b858d455c810c8d33
+Author: restocle <sh3266@columbia.edu>
+Date:   Mon Oct 24 22:38:04 2016 -0400
+
+    added operators from scanner to ast.ml; minor fixes in scanner.mll; added sample.ml for testing
+
+commit 861a113fc7f8ccebfacce73bf1aef84b4ae23c3c
+Merge: 6e68dd2 2f89189
+Author: tgoodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 22:25:57 2016 -0400
+
+    Merge branch 'master' of github.com:dextercallender/blur
+
+commit 6e68dd2456e2577b958c25212b155fed278b8759
+Author: tgoodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 22:07:11 2016 -0400
+
+    fixed scanner typo
+    
+    added makefile
+    
+    comment typo
+
+commit 2f8918907a10f9f4c6b64d83e93a0ad745bbdf38
+Merge: 5a397a0 d65c220
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Mon Oct 24 22:04:05 2016 -0400
+
+    Merge branch 'master' of https://github.com/dextercallender/blur
+    
+    merge necessary becuase i accidentally parser.mli
+
+commit 5a397a02fc0a831ffd65aa5c835e887b7ec7b5dd
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Mon Oct 24 22:03:49 2016 -0400
+
+    added makefile
+
+commit d65c220efaf920424cdc53c2529df867e60c9045
+Merge: 58b73c8 39d259f
+Author: tgoodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 22:00:08 2016 -0400
+
+    Merge branch 'master' of github.com:dextercallender/blur
+
+commit 58b73c89e23fb09d6816cb1be2e9d04b08a7a438
+Author: tgoodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 21:59:40 2016 -0400
+
+    pushing scanner
+
+commit 39d259f7eb2167846f8428bc7447dd5f16b9b060
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Oct 24 20:52:56 2016 -0400
+
+    Adding more details to expr.
+
+commit fee666f31509e9ac86e18ce2e5be60547a0c267f
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Oct 24 20:32:20 2016 -0400
+
+    Adding skeleton for expr.
+
+commit 2de816f6f5eb82d97e90613c74d915cdb54fc84b
+Author: tgoodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 16:01:07 2016 -0400
+
+    filled out scanner.mll
+
+commit 25de79200727a009804ca66235c4f712685ed29c
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Oct 24 15:59:56 2016 -0400
+
+    Adding pretty printing.
+
+commit 29b6512827ce2716866e4b96eec4f47ac8e7ba54
+Merge: c12d4e6 e79dbdb
+Author: tgoodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 15:40:27 2016 -0400
+
+    fixed merge conflicts
+
+commit c12d4e62dcd1c23bb25406c43310132edf969da5
+Author: tgoodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 15:37:58 2016 -0400
+
+    scanner filling out
+
+commit e79dbdb378caf5898e77c182508e8813a8705c6b
+Merge: 5c3221f 091829b
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Oct 24 15:36:12 2016 -0400
+
+    Resolving merge conflicts.
+
+commit 5c3221fc30177472712f7e4dd7a869e0a87dd27b
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Mon Oct 24 15:34:25 2016 -0400
+
+    Adding function and variable decls. TODO: Add statement decls.
+
+commit 091829b350ece913b08c3933bf4dc2a9df72e323
+Author: tgoodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 15:17:41 2016 -0400
+
+    removed test
+
+commit 4966934f32e27c42e663b410241f70532f8fe636
+Merge: b859968 7edecce
+Author: Timothy Goodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 14:54:14 2016 -0400
+
+    Merge branch 'master' of github.com:dextercallender/blur
+
+commit b8599680dc16f6e5bd237d5c0cad7dc2fd5115d8
+Author: Timothy Goodwin <tlg2132@columbia.edu>
+Date:   Mon Oct 24 14:54:01 2016 -0400
+
+    hey
+
+commit 7edeccef2403c0eeb7bd5c99726bd8e4f5730738
+Author: dextercallender <dec2148@columbia.edu>
+Date:   Mon Oct 24 14:48:22 2016 -0400
+
+    scanner.mll modified to include variable names
+
+commit a325abc235b5ae39571f8b490734d9cf471bf61e
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Oct 23 22:37:33 2016 -0400
+
+    Cleaning up directory.
+
+commit 8ee21976f4c29338f6de0135bfff5256ed990af7
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Oct 23 22:25:31 2016 -0400
+
+    Compiles without errors.
+
+commit 87046761de16fc3c06f05cc997a8a5cae25c2903
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Sun Oct 23 22:12:06 2016 -0400
+
+    This compiles! With reduce conflicts.
+
+commit 559aacfa84c5c2dd67afeb2df8b57cc7376738cc
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Oct 11 15:47:30 2016 -0400
+
+    Adding scanner.mll.
+
+commit c26b2672f5c3617ba83645745135fe92f3c4c16e
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Oct 11 15:29:35 2016 -0400
+
+    Adding a parser file.
+
+commit 216a657c70bc15e547944534e752cb35f79077df
+Author: dexter_callender_iii <dec2148@columbia.edu>
+Date:   Tue Oct 11 15:22:18 2016 -0400
+
+    Update README.md
+
+commit e25bc8d9ffc7f67d77a28a0d098f18460142f146
+Author: Tim Goodwin <tlg2132@columbia.edu>
+Date:   Tue Oct 11 15:18:32 2016 -0400
+
+    calculator
+
+commit d22c4bc27b7558e8a44942ea60dd8908c361b6c2
+Author: melissaKG <mkaufmangomez@gmail.com>
+Date:   Tue Oct 11 15:10:51 2016 -0400
+
+    Testing vm.
+
+commit 09b1c2b884ce50ec0614a421b759f8c2532d5150
+Author: Tim Goodwin <tlg2132@columbia.edu>
+Date:   Sun Oct 9 11:13:37 2016 -0400
+
+    problem5 output
+
+commit 756435c85bdce34e5acde39d4840e23acf7aacdc
+Author: Timothy Goodwin <tlg2132@columbia.edu>
+Date:   Tue Sep 13 15:32:37 2016 -0400
+
+    hey
+
+commit 748df9180abb5fd17e357312458f71a964734adf
+Author: Melissa Kaufman-Gomez <mhk2149@columbia.edu>
+Date:   Tue Sep 13 15:26:46 2016 -0400
+
+    Testing.
+
+commit affc306312bf428c5d9268a995873164fdbd1b87
+Author: dexter_callender_iii <dec2148@columbia.edu>
+Date:   Tue Sep 13 14:53:18 2016 -0400
+
+    Update README.md
+
+commit 049efc587089eff6c5d9bb4cd86c265446710ea5
+Author: dexter_callender_iii <dec2148@columbia.edu>
+Date:   Tue Sep 13 14:47:11 2016 -0400
+
+    Initial commit
