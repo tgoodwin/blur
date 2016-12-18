@@ -2,7 +2,7 @@ string retString() {
     return "str";
 }
 
-void main() {
+int main() {
     string s = retString();
     println(s);
 }

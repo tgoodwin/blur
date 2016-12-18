@@ -1,4 +1,4 @@
-void main() {
+int main() {
 	int a = 1;
 	char c = 'c';
 	if(a==c and a < 4) {

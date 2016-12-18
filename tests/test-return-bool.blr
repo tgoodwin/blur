@@ -2,7 +2,7 @@ bool retBool() {
     return true;
 }
 
-void main() {
+int main() {
     bool b = retBool();
     println(b);
 }

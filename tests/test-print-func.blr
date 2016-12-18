@@ -2,6 +2,6 @@ int retInt() {
     return 5;
 }
 
-void main() {
+int main() {
     println(retInt());
 }

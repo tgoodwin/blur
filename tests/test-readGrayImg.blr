@@ -1,4 +1,4 @@
-void main() {
+int main() {
     int[][] a = readGrayscaleImage("../Golden_Mushroom.jpg");
 	int width = len(a);
 	int height = len(a[0]);

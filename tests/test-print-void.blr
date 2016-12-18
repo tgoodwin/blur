@@ -2,6 +2,6 @@ void retVoid() {
 
 }
 
-void main() {
+int main() {
     println(retVoid());
 }

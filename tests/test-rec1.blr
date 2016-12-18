@@ -6,6 +6,6 @@ int try(int a) {
 	return 0;
 }
 
-void main() {
+int main() {
 	try(3);
 }

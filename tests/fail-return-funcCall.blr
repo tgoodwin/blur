@@ -3,6 +3,6 @@ int add(int a, int b) {
 	return x;
 }
 
-void main() {
+int main() {
 	string z = add(7, 9);
 }

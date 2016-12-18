@@ -2,6 +2,6 @@ void argFunc(void a) {
     int a;
 }
 
-void main() {
+int main() {
 
 }

@@ -3,6 +3,6 @@ int retFollow() {
     int x;
 }
 
-void main() {
+int main() {
 
 }

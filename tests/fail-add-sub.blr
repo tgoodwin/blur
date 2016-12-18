@@ -1,4 +1,4 @@
-void main() {
+int main() {
 	println(22.3-2);
 	println(10.3 + 3);
 }

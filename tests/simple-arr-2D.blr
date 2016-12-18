@@ -1,4 +1,4 @@
-void main() {
+int main() {
         int[5][5] a;
         a[4][4] = 2;
         println(a[4][4]);

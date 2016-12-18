@@ -3,6 +3,6 @@ int add(int a, int b) {
 	return "hi";
 }
 
-void main() {
+int main() {
 	
 }

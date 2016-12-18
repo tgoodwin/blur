@@ -2,7 +2,7 @@ double retDouble() {
     return 1.12345;
 }
 
-void main() {
+int main() {
     double d = retDouble();
     println(d);
 }

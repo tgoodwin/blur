@@ -1,4 +1,4 @@
-void main() {
+int main() {
         string a = "Hello, world!";
         println(a);
 }

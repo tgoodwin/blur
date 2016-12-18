@@ -2,7 +2,7 @@ char retChar() {
     return 'c';
 }
 
-void main() {
+int main() {
     char z = retChar();
     println(z);
 }

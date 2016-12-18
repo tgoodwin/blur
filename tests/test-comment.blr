@@ -1,6 +1,6 @@
 /*comment test abc 123 !@#$%^&* /+-~ end_test*/
 
-void main ( ) {
+int main ( ) {
 	int b;
 	int c;
 	/* comment inside function */

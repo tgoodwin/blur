@@ -4,7 +4,7 @@ int argVar(int k) {
     return k;
 }
 
-void main() {
+int main() {
     x = 5;
     int z = argVar(x);
     println(z);

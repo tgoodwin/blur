@@ -1,4 +1,4 @@
-void main() {
+int main() {
 	double[] d = [1.123, 2.123, 3.123];
     println(d[1]);
 }

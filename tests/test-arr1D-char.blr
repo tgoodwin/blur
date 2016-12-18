@@ -1,4 +1,4 @@
-void main() {
+int main() {
 	char[] c = ['a', 'b', 'c'];
 	println(c[1]);
 }

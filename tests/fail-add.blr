@@ -6,6 +6,6 @@ int add(string x, int y) {
     println(z);
 }
 
-void main() {
+int main() {
 	add("hi", 7);
 }

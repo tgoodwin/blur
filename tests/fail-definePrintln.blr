@@ -2,6 +2,6 @@ void println() {
 	int p;	
 }
 
-void main() {
+int main() {
 	int x = 7;	
 }
