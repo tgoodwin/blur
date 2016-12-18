@@ -395,7 +395,7 @@ let check_prog (globals, functions) =
 			} in
 		(* Add the function to the environment 
 		For now, the symbol table and return type have empty local scope. *)
-		if fdecl.typ = UnsizedArray(Char, 2) then ignore(print_endline("OMGOMGOMG"));
+		if fdecl.typ = UnsizedArray(Char, 2) then ignore(print_endline(";OMGOMGOMG"));
 		(*print_endline(";" ^ string_of_datatype fdecl.typ);*)
 		let new_env = 
 		{
