@@ -313,8 +313,6 @@ let translate (globals, functions) use_stdLib =
           | A.Mag      -> (match (L.string_of_lltype (L.type_of exp)) with
                             "i32" -> L.build_call intensityToChar_f [| exp |] "mag_call" llbuilder
                           | "i8"  -> L.build_call charToInt_f [| exp |] "mag_callchar" llbuilder)
-          | A.Lighten -> L.build_call adjust_px_f [| exp; (L.const_int i32_t 2) |] "lightenChar" llbuilder
-          | A.Darken -> L.build_call adjust_px_f [| exp; (L.const_int i32_t 0) |] "darkenChar" llbuilder
 
         (* helper to get the raw string from an ID expression type. MOVE TO A UTILS FILE *)
         and id_to_str id = match id with
