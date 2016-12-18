@@ -1,0 +1,17 @@
+int reader(string s) {
+        return 7;
+}
+
+char reader(string s) {
+        return 'c';
+}
+
+int getcanvas(string s) {
+        int x = 8;
+        x = 7;
+        return 7;
+}
+
+void main() {
+        println("hi");
+}
