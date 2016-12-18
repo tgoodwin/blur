@@ -17,7 +17,6 @@ let translate (globals, functions) use_stdLib =
     let the_module = L.create_module context "Blur" in
     
     let i32_t = L.i32_type context
-    and i64_t = L.i64_type context
     and iFl_t = L.double_type context
     and i8_t = L.i8_type context
     and i1_t = L.i1_type context
@@ -26,7 +25,6 @@ let translate (globals, functions) use_stdLib =
 
     let string_t = L.pointer_type i8_t in
     let int_ptr_t = L.pointer_type i32_t in
-    let fl_ptr_t = L.pointer_type iFl_t in
     let array_t = L.array_type in
     let zero_t = L.const_int i32_t 0 in
 
@@ -59,13 +57,6 @@ let translate (globals, functions) use_stdLib =
       i32_t    -> img_t
     | i8_t   -> char_struct
     | iFl_t   -> float_struct
-
-    and get_array_pointer typ dims =
-        let lltype = ltype_of_typ typ in
-        match dims with
-          1 -> L.pointer_type lltype
-        | 2 -> L.pointer_type (L.pointer_type lltype)
-        | 3 -> L.pointer_type (L.pointer_type (L.pointer_type lltype))
 
     and ltype_of_primitive (p: A.primitive) = match p with
       A.Int     -> img_t
@@ -191,30 +182,6 @@ let translate (globals, functions) use_stdLib =
             StringMap.add name local_var local_vars
         in
 
-        (* --- ARRAY HELPER FUNCTIONS --- *)
-        (* return a list of integers as dimensions *)
-        let get_arrliteral_dims inputlist =
-            let rec insert_at_end l i =
-                match l with
-                 [] -> [i]
-               | h::t -> h:: (insert_at_end t i)
-            in
-
-            let rec get_length l dim_list =
-                let dim = List.length l in
-                let dim = L.const_int i32_t dim in
-                insert_at_end dim_list dim
-
-            in
-            get_length inputlist []
-        in
-
-        let add_arrdim id dimension_list arr_dims =
-            StringMap.add id dimension_list arr_dims
-        in
-
-        (* --- END OF ARRAY HELPER FUNCTIONS --- *)
-
         (* Only add each function's args for now, will add to map when we encounter a varDecl in the functions body,
          * which is a statement list *)
 
@@ -228,12 +195,6 @@ let translate (globals, functions) use_stdLib =
             with Not_found -> try StringMap.find name global_vars
             with Not_found -> raise (Exceptions.UnknownVariable name)
         in
-
-        let lookup_arr name arr_map =
-            try StringMap.find name arr_map
-            with Not_found -> raise (Exceptions.UninitializedArray name)
-        in
-
 
          let rec codegen_binop e1 op e2 maps llbuilder =
             let int_ops lh op rh  =
@@ -281,11 +242,7 @@ let translate (globals, functions) use_stdLib =
                 | "i8"     -> int_ops lh op rh (* chars are treated as ints *)
             in
             let assign_binop e1 e2 =
-                let arr_dims = (snd maps) in
-                let id_str = (id_to_str e1) in
                 (* if the assignment involves array dimensions, update the arr_dims map *)
-                (* i.e. int[][] a = int[5][10] *)
-                let arr_dims = (snd maps) (*= update_array_map id_str e2 arr_dims (maps, llbuilder) *) in
                 let maps = ((fst maps), arr_dims) in
                 match e1 with
                   A.Id s        -> codegen_asn s (codegen_expr (maps, llbuilder) e2) maps llbuilder
@@ -470,10 +427,9 @@ let translate (globals, functions) use_stdLib =
                     let arr_ptr_a = L.build_alloca (struct_typ) vdecl.declID llbuilder in
                     ignore(L.build_store gen_exp local_var llbuilder);
 
+                    (* use LLVM to measure cost_array dimensions, then store them in the array struct type *)
                     let width = L.const_int i32_t (L.array_length exp_typ) in
                     let height = if d = 2 then
-                        let gep = L.build_gep local_var [| zero_t; zero_t |] "heightgep" llbuilder in
-                        let subarr = L.build_load gep "subarr" llbuilder in
                         L.const_int i32_t (L.array_length exp_typ)
                     else
                         zero_t
@@ -507,7 +463,7 @@ let translate (globals, functions) use_stdLib =
             let len = List.length llvalues in
             let typ = (L.type_of (List.hd llvalues)) in
             let cool_array = Array.of_list llvalues in
-            let res = L.const_array (array_t i32_t len) cool_array in
+            let res = L.const_array (array_t typ len) cool_array in
             ignore(print_endline("; " ^ L.string_of_lltype (L.type_of res))); res
 
 
@@ -521,16 +477,13 @@ let translate (globals, functions) use_stdLib =
             let depth_ptr = L.build_gep arr_handle [| zero_t; L.const_int i32_t 2 |] "depth" llbuilder in
             let depth = L.build_load depth_ptr "depthval" llbuilder in
 
-            let width_ptr = L.build_gep arr_handle [| zero_t; zero_t |] "width" llbuilder in
+            (*let width_ptr = L.build_gep arr_handle [| zero_t; zero_t |] "width" llbuilder in
             let width = L.build_load width_ptr "widthval" llbuilder in
 
             let height_ptr = L.build_gep arr_handle [| zero_t; L.const_int i32_t 1 |] "height" llbuilder in
-            let height = L.build_load height_ptr "heightval" llbuilder in
-
-            let arr_srcs = (snd maps) in
+            let height = L.build_load height_ptr "heightval" llbuilder in *)
 
             (* normal, Blur initialized array *)
-            (*let arr_info = StringMap.find name arr_srcs in *)
             if depth = zero_t then
 
                 (*let arr_handle = L.build_pointercast arr_handle (L.pointer_type (snd arr_info)) "normcast" llbuilder in *)
@@ -540,10 +493,10 @@ let translate (globals, functions) use_stdLib =
                 ignore(print_endline("; data pointer member: " ^ L.string_of_lltype (L.type_of data)));
                 let datatyp = L.type_of (L.build_load data "val" llbuilder) in
                 ignore(print_endline("; data typ: " ^ L.string_of_lltype (datatyp)));
-                let struct_type = get_struct_type datatyp in
+                let struct_typ = get_struct_type datatyp in
 
-                ignore(print_endline("; data typ: " ^ L.string_of_lltype (struct_type)));
-                let data = L.build_pointercast data (L.pointer_type (char_struct)) "datacast" llbuilder in
+                ignore(print_endline("; data typ: " ^ L.string_of_lltype (struct_typ)));
+                let data = L.build_pointercast data (L.pointer_type (struct_typ)) "datacast" llbuilder in
 
                 (*ignore(print_endline("; access cast type: " ^ L.string_of_lltype(snd arr_info))); *)
 
@@ -586,24 +539,6 @@ let translate (globals, functions) use_stdLib =
                 else
                     let load = L.build_load gep name llbuilder in
                     ignore(print_endline("; load type babe: " ^ (L.string_of_lltype (L.type_of load)))); load
-
-        (* s is expected to be the ID expression of an already declared array *)
-        and build_array_ptr the_arr prim_typ id dims (maps, llbuilder) =
-            let ptr_typ = get_array_pointer prim_typ dims in (* i32** or something *)
-
-            let gep_head =
-                if dims = 2 then
-                    let fst_idx_ptr = L.build_in_bounds_gep the_arr [| zero_t; zero_t |] (id ^ "_fst_ptr") llbuilder in
-                    ignore(print_endline("; fstptrtype " ^ (L.string_of_lltype(L.type_of fst_idx_ptr))));
-                    let snd_idx_ptr = L.build_in_bounds_gep fst_idx_ptr [| zero_t; zero_t |] (id ^ "_snd_ptr") llbuilder in
-                    ignore(print_endline("; sndptrtype " ^ (L.string_of_lltype(L.type_of snd_idx_ptr))));
-                    L.build_pointercast fst_idx_ptr ptr_typ (id ^ "_ref") llbuilder
-                else
-                    let fst_idx_ptr = L.build_in_bounds_gep the_arr [| zero_t; zero_t |] (id ^ "_fst_ptr") llbuilder in
-                    L.build_pointercast fst_idx_ptr ptr_typ (id ^ "_ref") llbuilder
-            in gep_head
-
-
 
         (* used to add a branch instruction to a basic block only if one doesn't already exist *)
         and codegen_conditional pred then_stmt else_stmt (maps, llbuilder) =
