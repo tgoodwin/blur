@@ -1,0 +1,15 @@
+int main(){
+
+    /* Dither */
+
+    char[][] asciiArt = dither("images/leaf.jpg");
+
+    /* Edge Detection */
+
+    int[][] edges = edgeDetect("images/leaf.jpg", 30);
+
+    /* Dithering + Edge Detection */
+
+    char[][] final = impose( asciiArt, edges, 'X' );
+
+}
