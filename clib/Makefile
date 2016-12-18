@@ -2,6 +2,10 @@ clib:
 	gcc -c bindings.c -lGL -lglut -lGLU -lIL
 	ar -cvq libclib.a bindings.o builtin.o
 
+stdlib: 
+	gcc -c bindings.c -lGL -lglut -lGLU -lIL
+	ar -cvq libclib.a bindings.o builtin.o stdlib.o
+
 exec:
 	gcc bindings.c -lGL -lglut -lGLU -lIL -o test
 

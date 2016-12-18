@@ -53,6 +53,7 @@ int[][] edgeDetect(string x, int edgeDist){
     return image;
 }
 
+
 int pixelDistance( int x, int y ){
     int distance; 
     if( x > y ){
@@ -101,17 +102,9 @@ char[][] impose(char[][] asciiArt, int[][] edges, char edgeChar){
 		print( asciiArt[i][j] );
 	    }
 	}
+	println(" ");
     }    
     return asciiArt;
 }
 
-int main(){
-
-    char[][] cv = canvas("images/leaf.jpg");
-    /* char[][] asciiArt = dither("images/leaf.jpg"); */
-    /* int[][] edges = edgeDetect("images/leaf.jpg"); */
-    /* char[][] final = impose( asciiArt, edges, 'X' ); */
-    return 0;
-
-}
 
