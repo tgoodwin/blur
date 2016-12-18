@@ -36,8 +36,8 @@ int main(){
     int height = len(canvas[0]);
     int i;
     int j;
-    for( i = 0; i < width; i++ ){
-	for( j = 0; j < height; j++ ){
+    for( i = 0; i < width; i = i + 1 ){
+	for( j = 0; j < height; j = j + 1 ){
 	    canvas[i][j] = charToInsensity( (i + j) % 255 );
         }
     }
