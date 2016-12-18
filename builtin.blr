@@ -1,11 +1,18 @@
-char intensityToChar(int intensity){
+char intensityToChar(int i){
     
     char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; 
 
+    int intensity = i % 255;
     int maplen = len(map);
     int factor = intensity * maplen; /* scale factor to map intensity (0-255) to char (0-len(map) */
     int index = factor / 255;
-    return map[maplen - index];
+    char retval;
+    if (index == 0) {
+        retval = map[maplen - 1];
+    } else {
+        retval = map[maplen - index];
+    }
+    return retval;
 }
 
 int charToIntensity(char c){
@@ -25,6 +32,23 @@ int charToIntensity(char c){
 
     intensity = (255 * idx) / maplen;
     return 255 - intensity;
+}
+
+/* offset == -1 for darken, 1 for lighten */
+char adjustPX(char c, int offset) {
+
+    char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; 
+    
+    int maplen = len(map);
+    int idx = 0;
+    int i;
+    char target = c;
+    for(i = 0; i < maplen; i = i + 1) {
+        if(map[i] == c) {
+            taret = map[i + offset]
+        }
+    }
+    return target;
 }
 
 
