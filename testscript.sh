@@ -13,7 +13,7 @@ code(){
     fi
     rm -rf tests/*.ll
 	rm -rf tests/*.s
-	rm -rf tests/*.blx
+	#rm -rf tests/*.blx
 }
 
 codeAll(){
