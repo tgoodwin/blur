@@ -1,0 +1,11 @@
+int over() {
+	return 5;
+}
+
+char over() {
+	return 'c';
+}
+
+int main() {
+	return 0;
+}
