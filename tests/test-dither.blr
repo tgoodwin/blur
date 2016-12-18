@@ -1,4 +1,3 @@
 void main() {
 	char[][] ditherArr = dither("images/leaf.jpg");
-	println(ditherArr[0][0]);
 }

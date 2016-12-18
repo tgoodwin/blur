@@ -7,13 +7,13 @@ code(){
     #cmp --silent output.txt helloWorld.out || echo "Wrong Output"
     DIFF=$(diff -bBw output.txt "${filebase}.out")
     if [ "$DIFF" == "" ]; then
-	echo "${filebase}: check"
+	echo "${filebase}: Passed"
     else
 	echo "${filebase}: Wrong Output"
     fi
     rm -rf tests/*.ll
 	rm -rf tests/*.s
-	#rm -rf tests/*.blx
+	rm -rf tests/*.blx
 }
 
 codeAll(){

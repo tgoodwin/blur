@@ -1,9 +1,0 @@
-int main() {
-        int[][] a = getImg();
-        int c = a[1];
-        int width = len(a);
-        int length = len(a[0]);
-        println(width);
-        println(length);
-        println(c);
-}
