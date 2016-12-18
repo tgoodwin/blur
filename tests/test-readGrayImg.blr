@@ -1,5 +1,5 @@
 int main() {
-    int[][] a = readGrayscaleImage("../Golden_Mushroom.jpg");
+    int[][] a = readGrayscaleImage("images/leaf.jpg");
 	int width = len(a);
 	int height = len(a[0]);
 	println(width);
