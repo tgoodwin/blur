@@ -1,0 +1,119 @@
+tests/array-iter: Wrong Output
+tests/fail-add2: check
+tests/fail-add: check
+tests/fail-add-int-double: check
+tests/fail-add-strings: check
+tests/fail-add-sub: check
+tests/fail-arg1: check
+tests/fail-arg-dup: check
+tests/fail-arg-scope: check
+tests/fail-arr-bounds1: Wrong Output
+tests/fail-arr-bounds2: Wrong Output
+tests/fail-built-in-call-args: check
+tests/fail-comp-and: check
+tests/fail-comp-eq: check
+tests/fail-comp-neq: check
+tests/fail-comp-or: check
+tests/fail-definePrint: check
+tests/fail-definePrintln: check
+tests/fail-dup-var-arr: check
+tests/fail-funcCall-args: check
+tests/fail-funcCall: check
+tests/fail-funcCall-expr: check
+tests/fail-global-dup: check
+tests/fail-globals-only: Wrong Output
+tests/fail-local-dup2: check
+tests/fail-local-dup: check
+tests/fail-main-args: Wrong Output
+tests/fail-main-missing: Wrong Output
+tests/fail-overload: Wrong Output
+tests/fail-return-follow: Wrong Output
+tests/fail-return-funcCall: check
+tests/fail-returnType: check
+tests/fail-sizedArr-decl: Wrong Output
+tests/fail-str: Wrong Output
+tests/fail-types: check
+tests/fail-undeclared-id-while: check
+tests/fail-undeclaredVarInit: check
+tests/fail-unexpected-arg-types: Wrong Output
+tests/fail-uninit-unsizedArr: check
+tests/fail-unsizedArr-decl: Wrong Output
+tests/fail-var1: check
+tests/fail-var2: check
+tests/fail-var-asn: check
+tests/float-arith: check
+tests/helloWorld: check
+tests/simple-arr-2D: Wrong Output
+tests/simple-asn: Wrong Output
+tests/test-3D-array: Wrong Output
+tests/test-abs-char1: Wrong Output
+tests/test-abs-char2: Wrong Output
+tests/test-add1: check
+tests/test-add: check
+tests/test-add-sub: check
+tests/test-args: check
+tests/test-arr1D-char: check
+tests/test-arr1D-double: check
+tests/test-arr1D-int: check
+tests/test-arr2D-char: Wrong Output
+tests/test-arr2D-double: Wrong Output
+tests/test-arr2D-int: Wrong Output
+tests/test-arr2D-lit: Wrong Output
+tests/test-array2: Wrong Output
+tests/test-array: Wrong Output
+tests/test-arr-get: Wrong Output
+tests/test-arr-length-func: Wrong Output
+tests/test-arr-lit: Wrong Output
+tests/test-arr-nonasn-get: Wrong Output
+tests/test-bool: check
+tests/test-builtin-getimg: Wrong Output
+tests/test-canvas: check
+tests/test-cast-int: check
+tests/test-charToInt: check
+tests/test-comment2: check
+tests/test-comment: check
+tests/test-comparison1: check
+tests/test-comparison2: check
+tests/test-cond-and: check
+tests/test-conditional: check
+tests/test-conditional-mult2: check
+tests/test-conditional-mult: check
+tests/test-cond-or: check
+tests/test-diff-return-types: check
+tests/test-dither: Wrong Output
+tests/test-edge: check
+tests/test-forloop1: check
+tests/test-forloop2: check
+tests/test-forloop3: check
+tests/test-funcCall-args: check
+tests/test-funcCall: Wrong Output
+tests/test-if1: check
+tests/test-if2: check
+tests/test-if3: check
+tests/test-if-else: check
+tests/test-intToChar: check
+tests/test-localArgs: check
+tests/test-math-ops: Wrong Output
+tests/test-mod: Wrong Output
+tests/test-negation: Wrong Output
+tests/test-not: Wrong Output
+tests/test-print: check
+tests/test-print-func: check
+tests/test-print-void: Wrong Output
+tests/test-readGrayImg: check
+tests/test-rec1: check
+tests/test-return-bool: check
+tests/test-return-char: check
+tests/test-return-double: check
+tests/test-return-funCall: check
+tests/test-return-int: check
+tests/test-return-str: check
+tests/test-str: check
+tests/test-subarray-construction: Wrong Output
+tests/test-types: check
+tests/test-var-asn: check
+tests/test-var-scope1: check
+tests/test-var-scope2: check
+tests/test-var-scope3: check
+tests/test-while1: check
+tests/test-whileloopMC: check
