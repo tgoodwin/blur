@@ -15,8 +15,8 @@ let rec string_of_op = function
   | Leq -> "<="
   | Gt -> ">"
   | Geq -> ">="
-  | And -> "&&"
-  | Or -> "||"
+  | And -> "and"
+  | Or -> "or"
 
 and string_of_unop o e = match o with
     Not -> "!" ^ string_of_expr e

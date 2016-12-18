@@ -36,14 +36,6 @@ semantic_analyzer.cmo : ast.cmo sast.cmo
 semantic_analyzer.cmx : ast.cmx sast.cmx
 parser.cmi: ast.cmo
 
-#.PHONY : blur
-#blur:
-#	make prog
-#	./prog -l < $(file) > "out.ll"
-#	make libs		
-#	llc out.ll > out.s
-#	gcc -I ${LIBDIR} -o out_final out.s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
-
 .PHONY: %.ll
 %-ll:
 	./blur -l < $(*F).blr > $(*F).ll
@@ -51,6 +43,7 @@ parser.cmi: ast.cmo
 	llc $(*F).ll > $(*F).s
 	gcc -I ${LIBDIR} -o $(*F).blx $(*F).s -L${LIBDIR} -lclib -lGL -lglut -lGLU -lIL
 
+# for including the Blur standard library.
 .PHONY: %.ll
 %-ls:
 	./blur -ls < $(*F).blr > $(*F).ll

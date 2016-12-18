@@ -15,7 +15,7 @@ type binopr =
   | Or
   | Asn
 
-type unopr = Not | Neg | Mag | Darken | Lighten
+type unopr = Not | Neg | Mag
 
 (* BLUR TYPES *)
 type primitive =
@@ -35,8 +35,6 @@ type expr =
   | CharLit of char
   | BoolLit of bool
   | Id of string
-  (*| Asn of string * expr *)
-  (* | Seq of expr * expr *)
   | ArrayListInit of expr list
   | ArrayAccess of string * expr list
   | FuncCall of string * expr list
