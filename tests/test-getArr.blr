@@ -1,8 +1,0 @@
-int main() {
-        int[] a = getArr();
-        int x = a[0];
-        println(x);
-        println(a[1]);
-        a[1] = 2;
-        println(a[1]);
-}

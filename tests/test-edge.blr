@@ -1,4 +1,3 @@
 void main() {
-	int[][] edges = edgeDetect("images/leaf.jpg");
-	println(edges[0][0]);
+	int[][] edges = edgeDetect("images/leaf.jpg", 30);
 }
