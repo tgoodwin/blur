@@ -110,9 +110,9 @@ let check_prog (globals, functions) =
 		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
 		| ArrayListInit elist -> print_endline(";arr init"); 
 			(*check_arr_literal elist*)
-			UnsizedArray(Char, List.length elist)
+			UnsizedArray(Int, List.length elist)
 		| ArrayAccess (s, elist) -> print_endline(";arr access");
-			SizedArray(Char, [1;2;3])
+			SizedArray(Int, [1;2;3])
 			(* Check that you're accessing something available*)
 			(*Datatype(Char)*)
 		| Id s -> print_endline(";id"); 
@@ -211,9 +211,9 @@ let check_prog (globals, functions) =
 			let new_env = { (env) with symtab = new_symbol_table; }
 			and vdecl = 
 				{
-					declTyp = decl.declTyp;
+					declTyp = decl.declTyp; (* UnsizedArray(p, int) *)
 					declID = decl.declID;
-					declInit = decl.declInit;
+					declInit = decl.declInit; (* ArrayListInit(elist) *)
 				}
 			in (new_env, vdecl))
     in

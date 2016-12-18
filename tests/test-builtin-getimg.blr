@@ -1,0 +1,28 @@
+
+
+int cool_dither(int[][] a) {
+        int width = len(a);
+        int height = len(a[0]);
+        println(width);
+        println(height);
+        println(a[0][0]);
+        int i;
+        int j;
+        char px;
+        for(i = 0; i < width; i = i + 1) {
+                for(j = 0; j < height; j = j + 1) {
+                        px = intensityToChar(a[i][j]);
+                        print(px);
+                }
+                println("");
+        }
+        return len(a);
+}
+
+int main() {
+        char c = intensityToChar(255);
+        int[][] a = reader("images/leaf.jpg");
+        int d = cool_dither(a);
+        println(d);
+        println(c);
+}
