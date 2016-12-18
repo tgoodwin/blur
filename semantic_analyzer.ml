@@ -312,11 +312,11 @@ let check_prog (globals, functions) =
 			(env, stmt)
 		| Return e -> print_endline(";check return"); let e_type = check_expr env e in
 			ignore(print_endline(";t expr"));
-			ignore(print_endline(";" ^ string_of_datatype e_type));
+			(*ignore(print_endline(";" ^ string_of_datatype e_type));*)
 			ignore(print_endline(";t env return type"));
 			match env.return_type with
 				| return_type ->
-					ignore(print_endline(";" ^ string_of_datatype env.return_type));
+					(*ignore(print_endline(";" ^ string_of_datatype env.return_type));*)
 					if e_type = return_type then (env, stmt)
 					else raise (Failure ("incorrect return type"))
 					(*| None ->print_endline(";NONE"); (env, stmt)) raise (Failure ("no return")))*)
@@ -394,7 +394,7 @@ let check_prog (globals, functions) =
 		(* Add the function to the environment 
 		For now, the symbol table and return type have empty local scope. *)
 		if fdecl.typ = UnsizedArray(Char, 2) then ignore(print_endline("OMGOMGOMG"));
-		print_endline(";" ^ string_of_datatype fdecl.typ);
+		(*print_endline(";" ^ string_of_datatype fdecl.typ);*)
 		let new_env = 
 		{
 			(env)
