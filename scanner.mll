@@ -28,12 +28,10 @@ rule token = parse
 | "<="  { LEQ }
 | '>'   { GT }
 | ">="  { GEQ }
-| "&&"  { AND }
-| "||"  { OR }
+| "and"  { AND }
+| "or"  { OR }
 | '!'   { NOT }
 | '|'	{ BAR }
-| ">>" { DARKEN }
-| "<<" { LIGHTEN }
 | "int" 	{ INT }
 | "double"      { DOUBLE }
 | "string"      { STRING }

@@ -118,9 +118,9 @@ let translate (globals, functions) use_stdLib =
     let intensityToChar_f = L.declare_function "intensityToChar" intensityToChar_t the_module in
     let builtin_decls = StringMap.add "intensityToChar" intensityToChar_f builtin_decls in
 
-    let darken_t = L.var_arg_function_type i8_t [| i8_t; i32_t |] in
-    let darken_f = L.declare_function "adjustPX" darken_t the_module in
-    let builtin_decls = StringMap.add "adjustPX" darken_f builtin_decls in
+    let adjust_px_t = L.var_arg_function_type i8_t [| i8_t; i32_t |] in
+    let adjust_px_f = L.declare_function "adjustPX" adjust_px_t the_module in
+    let builtin_decls = StringMap.add "adjustPX" adjust_px_f builtin_decls in
 
     let builtin_decls =
 
@@ -143,10 +143,6 @@ let translate (globals, functions) use_stdLib =
             StringMap.add "impose" impose_f builtin_decls
         else builtin_decls
     in
-
-
-
-    (* end built-ins *)
 
     (* define each function w/ args and return type so we can call it *)
     let function_decls =
@@ -216,7 +212,6 @@ let translate (globals, functions) use_stdLib =
         let add_arrdim id dimension_list arr_dims =
             StringMap.add id dimension_list arr_dims
         in
-
 
         (* --- END OF ARRAY HELPER FUNCTIONS --- *)
 
@@ -308,15 +303,18 @@ let translate (globals, functions) use_stdLib =
                 
         and codegen_unop op e maps llbuilder =
             let exp = (codegen_expr (maps, llbuilder)) e in
+            ignore(print_endline("; okokokokokokok" ^ L.string_of_lltype (L.type_of exp)));
             if (L.type_of exp) = iFl_t then
                 L.build_fneg exp "flt_unoptmp" llbuilder
             else
             match op with
             A.Neg       -> L.build_neg exp "int_unoptmp" llbuilder
           | A.Not       -> L.build_not exp "bool_unoptmp" llbuilder
-          | A.Mag      -> L.build_call charToInt_f [| exp |] "mag_call" llbuilder
-          | A.Lighten -> L.build_call darken_f [| exp; (L.const_int i32_t 1) |] "lightenChar" llbuilder
-          | A.Darken -> L.build_call darken_f [| exp; (L.const_int i32_t 1) |] "darkenChar" llbuilder
+          | A.Mag      -> (match (L.string_of_lltype (L.type_of exp)) with
+                            "i32" -> L.build_call intensityToChar_f [| exp |] "mag_call" llbuilder
+                          | "i8"  -> L.build_call charToInt_f [| exp |] "mag_callchar" llbuilder)
+          | A.Lighten -> L.build_call adjust_px_f [| exp; (L.const_int i32_t 2) |] "lightenChar" llbuilder
+          | A.Darken -> L.build_call adjust_px_f [| exp; (L.const_int i32_t 0) |] "darkenChar" llbuilder
 
         (* helper to get the raw string from an ID expression type. MOVE TO A UTILS FILE *)
         and id_to_str id = match id with

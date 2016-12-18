@@ -16,5 +16,5 @@ clean:
 
 .PHONY: cleantest
 cleantest:
-	rm -f bindings.o
+	rm -f bindings.o stdlib.o
 	rm libclib.a test
