@@ -376,6 +376,8 @@ let check_prog (globals, functions) =
 		print_endline(";" ^ fdecl.fname);
 		if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
 		raise (Failure ("Cannot overwrite built-in function!!")) else
+		if (List.mem fdecl.fname (List.map (fun f -> f.name) env.funcs)) then
+		raise (Failure ("Duplicate function.")) else
 		(* Get the types of the function's arguments. *)
 		let a_types = List.map (fun adecl -> adecl.argdeclType) fdecl.args in
 		(* Make a function entry for the function. *)

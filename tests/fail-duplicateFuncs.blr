@@ -1,0 +1,15 @@
+int sub(int x, int y) {
+	int z = x-y;	
+	return z;
+}
+
+int sub(int x) {
+	int z = x-3;
+	return z;
+}
+
+void main(int a)
+{
+	int a;
+	a = 6;
+}
