@@ -24,7 +24,10 @@ done
 
 code(){
     filebase=$(echo ${1} | cut -f 1 -d '.')
-    { ./blur -l < "${filebase}.blr" > "${filebase}.ll" && lli "${filebase}.ll"; } &> output.txt
+    { ./blur -l < "${filebase}.blr" > "${filebase}.ll" } &> output.txt
+    make ${filebase}-ls # now have an executable with .blx extension
+    ./${filebase}.blx &> output.txt
+
     #cmp --silent output.txt helloWorld.out || echo "Wrong Output"
     DIFF=$(diff -bBw output.txt "${filebase}.out")
     if [ "$DIFF" == "" ]; then

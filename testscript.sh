@@ -7,7 +7,7 @@ code(){
     #cmp --silent output.txt helloWorld.out || echo "Wrong Output"
     DIFF=$(diff -bBw output.txt "${filebase}.out")
     if [ "$DIFF" == "" ]; then
-	echo "${filebase}: check"
+	echo "${filebase}: Passed"
     else
 	echo "${filebase}: Wrong Output"
     fi

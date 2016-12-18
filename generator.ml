@@ -338,7 +338,7 @@ let translate (globals, functions) use_stdLib =
 
         and arr_len_handler arr (maps, llbuilder) =
 
-            if (StringMap.find (id_to_str arr) (snd maps)) then
+            if (StringMap.mem (id_to_str arr) (snd maps)) then
                 let exp = codegen_expr (maps, llbuilder) arr in
                 (ignore(print_endline("; ok")));
                 L.const_int i32_t (L.array_length (L.type_of exp))
@@ -411,8 +411,7 @@ let translate (globals, functions) use_stdLib =
                     ignore(L.build_store arr_ptr arr_ptr_a llbuilder);
                     let local_vars = StringMap.add vdecl.declID local_img_var local_vars in
                     ignore(print_endline("; arr_ptr type: " ^ L.string_of_lltype(L.type_of arr_ptr)));
-                    let arr_src = StringMap.add vdecl.declID false (snd maps) in
-                    ignore(codegen_asn vdecl.declID gen_exp (local_vars, arr_src) llbuilder); local_vars, arr_src
+                    ignore(codegen_asn vdecl.declID gen_exp (local_vars, (snd maps)) llbuilder); local_vars, (snd maps)
 
                 (* normal case, i.e. int[] a = [1,2]; *)
                 else
@@ -445,8 +444,7 @@ let translate (globals, functions) use_stdLib =
                     let arr_struct = L.const_named_struct struct_typ [| width; height; zero_t; (L.undef pointer_typ) |] in
                     let arr_struct1 = L.build_insertvalue arr_struct arr_ptr 3 "pls" llbuilder in
                     let local_vars = StringMap.add vdecl.declID arr_ptr_a local_vars in (* adding struct type *)
-                    let arr_src = StringMap.add vdecl.declID false (snd maps) in
-                    ignore(codegen_asn vdecl.declID arr_struct1 (local_vars, arr_src) llbuilder); local_vars, arr_src
+                    ignore(codegen_asn vdecl.declID arr_struct1 (local_vars, (snd maps)) llbuilder); local_vars, (snd maps)
                 in
                 let maps = (local_vars, arr_src) in maps, llbuilder
 
@@ -477,7 +475,7 @@ let translate (globals, functions) use_stdLib =
         (* BUILD ARRAY ACCESS *)    
         and build_array_access name idx_list maps llbuilder isAssign =
 
-            if (StringMap.find name (snd maps)) then
+            if (StringMap.mem name (snd maps)) then
                 let idx_list = List.map (codegen_expr (maps, llbuilder)) idx_list in
                 let the_arr = (lookup name (fst maps)) in
                 let idx_list = (L.const_int i32_t 0)::[]@idx_list in

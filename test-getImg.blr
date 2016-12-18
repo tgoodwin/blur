@@ -1,41 +1,37 @@
 int[][] reader(string s) {
         int[][] as = readGrayscaleImage(s);
-        char[][] cv = getcanvas(s);
-        println(len(cv));
-        println(len(cv[0]));
         return as;
 }
 
-char[][] getcanvas(string s) {
-        char[][] can = canvas(s);
-        println(len(can));
-        println(len(can[0]));
-        return can;
-}
-
-int cool_dither(int[][] a) {
+void cool_dither(int[][] a, char[][] cv, int b) {
         int width = len(a);
         int height = len(a[0]);
-        println(width);
-        println(height);
-        println(a[0][0]);
         int i;
         int j;
         char px;
+        int c = b % 10;
         for(i = 0; i < width; i = i + 1) {
                 for(j = 0; j < height; j = j + 1) {
-                        px = intensityToChar(a[i][j]);
-                        print(px);
+                        px = |a[i][j] - c|;
+                        cv[i][j] = px;
                 }
-                println("");
         }
-        return len(a);
+        for(i = 0; i < width; i = i + 1) {
+            for(j = 0; j < height; j = j + 1) {
+                print(cv[i][j]);
+            }
+            println("");
+        }
 }
 
 int main() {
         char c = intensityToChar(255);
         int[][] a = reader("images/leaf.jpg");
-        int d = cool_dither(a);
-        println(d);
-        println(c);
+        char[][] cv = canvas("images/leaf.jpg");
+        int i = 0;
+        int d;
+        while(i < 1000) {
+            cool_dither(a, cv, i);
+            i = i + 1;
+        }
 }
