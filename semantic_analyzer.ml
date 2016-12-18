@@ -500,7 +500,7 @@ let check_prog (globals, functions) =
 		print_endline(";ADDING FUNCS");
 		List.fold_left (fun acc f -> 
 			let(nenv, f) = add_function_declaration (fst acc) f
-			in (nenv, (f :: (snd acc)))) (new_env, []) functions 
+			in (nenv, (f :: (snd acc)))) (new_env, []) (List.rev functions) 
 	in
 	(*ignore(print_endline(";after adding funcs"));
 	ignore(print_endline(";" ^ string_of_int(List.length env.symtab.args)));

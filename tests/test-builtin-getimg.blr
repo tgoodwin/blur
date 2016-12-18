@@ -1,11 +1,3 @@
-int main() {
-        char c = intensityToChar(255);
-        int[][] a = reader("images/leaf.jpg");
-        int d = cool_dither(a);
-        println(d);
-        println(c);
-}
-
 int[][] reader(string s) {
         int[][] as = readGrayscaleImage(s);
         char[][] cv = getcanvas(s);
@@ -40,3 +32,10 @@ int cool_dither(int[][] a) {
         return len(a);
 }
 
+int main() {
+        char c = intensityToChar(255);
+        int[][] a = reader("images/leaf.jpg");
+        int d = cool_dither(a);
+        println(d);
+        println(c);
+}
