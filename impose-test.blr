@@ -6,10 +6,10 @@ int main(){
 
     /* Edge Detection */
 
-    int[][] = edgeDetect("images/leaf.jpg");
+    int[][] edges = edgeDetect("images/leaf.jpg", 30);
 
     /* Dithering + Edge Detection */
 
-    char[] final = impose( asciiArt, edges, 'X' );
+    char[][] final = impose( asciiArt, edges, 'X' );
 
 }
