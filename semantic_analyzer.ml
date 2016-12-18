@@ -148,7 +148,6 @@ let check_prog (globals, functions) =
 		print_endline(";" ^id);
 		print_endline(";" ^ string_of_int(List.length env.funcs));
 		try
-			print_endline("trying");
 			let func_entry = List.find (fun f -> f.name = id) env.funcs in
 			(* Get the types of the arg expressions. *)
 			let arg_types = List.map(fun arg -> check_expr env arg) args in
