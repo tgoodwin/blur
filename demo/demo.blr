@@ -16,7 +16,7 @@ int main(){
     }
     recurse(4);
     
-    /* Builtins and Canvas Manipulation */
+    /* Built-ins and Canvas Manipulation */
 
     int intensity;
     intensity = intensityToChar( 140 );
@@ -43,23 +43,11 @@ int main(){
     }
 
 
-<<<<<<< Updated upstream
-    char[][] asciiArt = dither("images/leaf.jpg");
-    println(" ");
-
-    /* Edge Detection */
-
-    int[][] edges = edgeDetect("images/leaf.jpg");
-    println(" ");
-
-    /* Dithering + Edge Detection */
-
-    /* impose( asciiArt, edges ); */
-=======
     char[][] asciiArt = dither("images/leaf.jpg"); 
+    println(" ");
     int[][] edges = edgeDetect("images/leaf.jpg", 30);
+    println(" ");
     char[][] final = impose( asciiArt, edges, 'X' );
->>>>>>> Stashed changes
 
     return 0;
 }
