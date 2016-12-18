@@ -1,11 +1,11 @@
-int add(int x, int y) {
-	int z = x + y;
-	sub(3,1);
+int sub(int x, int y) {
+	int z = x-y;
 	return z;
 }
 
-int sub(int x, int y) {
-	int z = x-y;
+int add(int x, int y) {
+	int z = x + y;
+	sub(3,1);
 	return z;
 }
 
