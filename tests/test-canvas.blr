@@ -1,4 +1,4 @@
 void main() {
-	char[][] canv = canvas("../Golden_Mushroom.jpg");
-	println(len(a));
+	char[][] canv = canvas("images/leaf.jpg");
+	println(len(canv));
 }
