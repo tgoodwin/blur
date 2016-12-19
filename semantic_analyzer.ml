@@ -155,6 +155,10 @@ let check_prog (globals, functions) =
 			| Mag -> 
 				if (t <> Datatype(Char) && t <> Datatype(Int)) then raise (Failure("illegal operation")) 
 				else Datatype(Char)
+			| Not -> if t <> Datatype(Bool) then raise (Failure("illegal operation"))
+				else Datatype(Bool)
+			| Neg -> if (t <> Datatype(Int) && t <> Datatype(Double)) then raise (Failure("illegal operation"))
+				else t
 			| _ -> raise(Failure("illegal unop")))
 		| FuncCall (s, arglist) -> check_func_call s arglist env
 		| Binop (e1, op, e2) -> print_endline(";expr is binop");
