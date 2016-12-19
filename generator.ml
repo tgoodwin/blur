@@ -468,8 +468,7 @@ let translate (globals, functions) use_stdLib =
             let len = List.length llvalues in
             let typ = (L.type_of (List.hd llvalues)) in
             let cool_array = Array.of_list llvalues in
-            let res = L.const_array (array_t typ len) cool_array in
-            ignore(print_endline("; " ^ L.string_of_lltype (L.type_of res))); res
+            let res = L.const_array typ cool_array in res
 
 
         (* BUILD ARRAY ACCESS *)    
