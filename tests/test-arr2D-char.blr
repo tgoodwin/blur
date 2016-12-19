@@ -1,5 +1,4 @@
 int main() {
 	char[][] c = [['a','b'],['c','d']];
 	println(c[1][1]);
-	println(c[0][0]);
 }
