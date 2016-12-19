@@ -1,1 +1,2 @@
-Fatal error: exception Failure("illegal operation")
+Fatal error: exception Failure("invalid operands")
+
