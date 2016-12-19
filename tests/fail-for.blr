@@ -1,0 +1,6 @@
+int main() {
+    int i;
+    for(i=0; "hey"; i=i+1) {
+	println(i);
+    }
+}

@@ -321,7 +321,8 @@ let check_prog (globals, functions) =
 			let checked_e1 = check_expr env e1
 			and checked_e2 = check_expr env e2
 			and checked_e3 = check_expr env e3 in
-			(env, stmt)
+			if is_bool checked_e2 then (env, stmt)
+			else raise(Failure("illogical for"))
 		| While (e, s) -> 
 			let checked_expr = check_expr env e 
 			and (_, checked_stmt) = check_stmt env s in
