@@ -1,4 +1,5 @@
 int main() {
 	char px;
 	px = |30|;
+	println(px);
 }
