@@ -1,5 +1,0 @@
-int add(void a)
-{
-  int c;
-  c = a + b;
-}

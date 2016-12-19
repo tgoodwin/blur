@@ -1,5 +1,0 @@
-void whileloop() {
-    while(True) {
-	Println("While True == inf loop");
-    }
-}

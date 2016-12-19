@@ -52,8 +52,6 @@ rule token = parse
 | '"' (([^ '"'] | "\\\"")* as lxm) '"' { STRING_LITERAL(lxm) }
 | '\'' ([' '-'&' '('-'[' ']'-'~'] as lxm) '\'' { CHAR_LITERAL(lxm) }
 
-| "break"       { BREAK }
-| "continue"    { CONTINUE }
 | '_'?['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }
 | eof { EOF }
 

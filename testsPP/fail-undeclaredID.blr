@@ -1,4 +1,0 @@
-void main() {
-	q = 1;
-	return q;
-}

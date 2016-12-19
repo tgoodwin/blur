@@ -1,4 +1,0 @@
-void var() {
-    int a;
-    a=5;
-}

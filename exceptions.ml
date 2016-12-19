@@ -10,3 +10,4 @@ exception NotAssignable
 exception UnsizedArrayWithoutAssignment
 exception UnsupportedDimensions
 exception CharOpNotSupported
+exception NotSupported

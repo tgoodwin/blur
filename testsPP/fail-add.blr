@@ -1,8 +1,0 @@
-/* Add fail case */
-
-func addFail(int x, int y) {
-    return x + y;
-}
-
-/* function call */
-addFail (a, b);

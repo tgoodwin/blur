@@ -1,4 +1,5 @@
 int main(){
 	char[][] asciiArt = dither("images/leaf.jpg"); 
-	int[][] edges = edgeDetect("images/leaf.jpg", 30); 
+	int[][] edgeMask = edgeDetect("images/leaf.jpg", 30); 
+        char[][] outlined = impose(asciiArt, edgeMask, 'X');
 }

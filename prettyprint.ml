@@ -51,7 +51,6 @@ and string_of_expr = function
   | Binop(e1, o, e2) -> "\t" ^ string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_unop o e
   | ArrayListInit(l) -> "[" ^ String.concat ", " (List.map string_of_expr l) ^ "]"
-  (*| ArraySizeInit(t, n) -> string_of_typ t ^ "[" ^ String.concat "][" (List.map string_of_expr n) ^ "]" *)
   | ArrayAccess(id, dl) -> "\t" ^ id ^ "[" ^ String.concat "][" (List.map string_of_expr dl) ^ "]"
   | FuncCall(n, p) -> n ^ "(" ^ String.concat ", " (List.map string_of_expr p) ^ ")"
   | Noexpr -> ""
@@ -81,8 +80,6 @@ let rec string_of_stmt = function
   | If(e, s1, s2) -> "if (" ^ string_of_expr e ^ ") {\n" ^ string_of_stmt s1 ^ "}\n else {\n" ^ string_of_stmt s2 ^ "}\n"
   | For(e1, e2, e3, s) -> "for (" ^ string_of_expr e1 ^ ";" ^ string_of_expr e2 ^ ";" ^ string_of_expr e3 ^ ")\n" ^ string_of_stmt s ^ ";\n"
   | While(e, s) -> "while (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s ^ ";\n"
-  | Continue -> "continue;"
-  | Break -> "break;"
 
 let string_of_funcdecl fdecl =
   string_of_datatype fdecl.typ ^ " " ^

@@ -1,3 +1,0 @@
-bool ret_bool() {
-    return 5; /* should return bool */
-}

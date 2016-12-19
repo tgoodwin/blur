@@ -1,8 +1,0 @@
-int main() {
-        int[] a = [1,2,3];
-        int i = len(a);
-        print(i);
-
-        int[5][10] b;
-        print(len(b[0]));
-}

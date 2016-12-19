@@ -64,8 +64,6 @@ type stmt =
   | If of expr * stmt * stmt
   | For of expr * expr * expr * stmt
   | While of expr * stmt
-  | Continue
-  | Break
 
 type funcdecl = {
     typ : datatype;

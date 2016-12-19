@@ -1,3 +1,0 @@
-void ret_void() {
-    return False; /* should return void */
-}

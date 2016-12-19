@@ -1,5 +1,0 @@
-void whileloop() {
-    while(False) {
-	Println("This should not print");
-    }
-}

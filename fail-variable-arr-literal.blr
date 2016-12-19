@@ -1,6 +1,0 @@
-int main() {
-        int a = 5;
-        int e = 10;
-        int i = 20;
-        int[] denoms = [a, e, i];
-}
