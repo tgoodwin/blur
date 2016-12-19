@@ -154,7 +154,9 @@ let check_prog (globals, functions) =
 			(match op with 
 			| Mag -> 
 				if (t <> Datatype(Char) && t <> Datatype(Int)) then raise (Failure("illegal operation")) 
-				else Datatype(Char)
+				else 
+					(if t = Datatype(Int) then Datatype(Char)
+					else Datatype(Int)) 
 			| Not -> if t <> Datatype(Bool) then raise (Failure("illegal operation"))
 				else Datatype(Bool)
 			| Neg -> if (t <> Datatype(Int) && t <> Datatype(Double)) then raise (Failure("illegal operation"))
