@@ -135,7 +135,7 @@ let check_prog (globals, functions) =
 			let t1 = check_expr env e1 
 			and t2 = check_expr env e2 in
 			match op with 
-			| Add | Sub | Mult | Div | Lt | Leq | Gt | Geq -> print_endline(";arith");
+			| Add | Sub | Mult | Div | Lt | Leq | Gt | Geq | Mod -> print_endline(";arith");
 				ignore(print_endline(";" ^ string_of_datatype t1));
 				ignore(print_endline(";" ^ string_of_datatype t1));
 				if is_arith t1 && t1 = t2 then t1
