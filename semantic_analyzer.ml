@@ -123,6 +123,13 @@ let check_prog (globals, functions) =
 				(try get_variable_decl env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
 				) 
+		| Unop (op, e) -> print_endline(";expr is unop");
+			let t = check_expr env e in
+			(match op with 
+			| Mag -> 
+				if (t <> Datatype(Char) && t <> Datatype(Int)) then raise (Failure("illegal operation")) 
+				else Datatype(Char)
+			| _ -> raise(Failure("illegal unop")))
 		| FuncCall (s, arglist) -> check_func_call s arglist env
 		| Binop (e1, op, e2) -> print_endline(";expr is binop");
 			let t1 = check_expr env e1 
