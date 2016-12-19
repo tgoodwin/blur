@@ -1,0 +1,10 @@
+int main() {
+        int i;
+        i = 5;
+        while("sed"){
+                println(i);
+                i = i - 1;
+        }
+        println(42);
+        return 0;
+}

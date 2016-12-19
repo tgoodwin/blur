@@ -356,7 +356,8 @@ let check_prog (globals, functions) =
 		| While (e, s) -> 
 			let checked_expr = check_expr env e 
 			and (_, checked_stmt) = check_stmt env s in
-			(env, stmt)
+			if is_bool checked_expr then (env, stmt)
+			else raise(Failure("illogical while")) 
 		| Return e -> print_endline(";check return"); let e_type = check_expr env e in
 			ignore(print_endline(";t expr"));
 			(*ignore(print_endline(";" ^ string_of_datatype e_type));*)
