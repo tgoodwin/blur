@@ -1,9 +1,0 @@
-int main() {
-        int[] a = [1,2];
-        int[] b = [3,4];
-        int[2][2] c;
-        c[0] = a;
-        c[1] = b;
-        print(c[0][0]); /* should print 1 */
-
-}

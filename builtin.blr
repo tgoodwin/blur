@@ -1,12 +1,22 @@
 char intensityToChar(int i){
     
-    char[] map = [' ', '.', '^', ',', ':', ';', 'I', 'l', '!', 'i', '>', '<', '~', '+', '_', '-', '?', ']', '[', '}', '{', '1', ')', '(', '|', '/', 't', 'f', 'j', 'r', 'x', 'n', 'u', 'v', 'c', 'z', 'X', 'Y', 'U', 'J', 'C', 'L', 'Q', 'O', '0', 'Z', 'm', 'w', 'q', 'p', 'd', 'b', 'k', 'h', 'a', 'o', '*', '#', 'M', 'W', '&', '8', '%', 'B', '@', '$'];
+    char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; 
 
-    int intensity = i % 255;
+    int intensity = i;
     int maplen = len(map);
     int factor = intensity * maplen; /* scale factor to map intensity (0-255) to char (0-len(map) */
     int index = factor / 255;
-    return map[maplen - index];
+    char ret;
+    if(index > maplen) {
+        ret = map[0];
+    }
+    if(index == 0) {
+        ret = map[maplen - 1];
+    }
+    else {
+        ret = map[maplen - index];
+    }
+    return ret;
 }
 
 int charToIntensity(char c){

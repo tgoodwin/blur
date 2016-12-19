@@ -1,5 +1,5 @@
 int reader(string s) {
-        return 7;
+        return 0;
 }
 
 char readerC(string s) {
