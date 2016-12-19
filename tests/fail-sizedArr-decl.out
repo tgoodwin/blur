@@ -1,1 +1,1 @@
-Fatal error: exception Failure("variable declaration type mismatch")
+Fatal error: exception Failure("illegal array initialization")
