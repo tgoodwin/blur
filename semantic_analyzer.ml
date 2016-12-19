@@ -323,10 +323,11 @@ let check_prog (globals, functions) =
 		| UnsizedArray(p,d) -> 
 			if decl.declInit = Noexpr then raise(Failure("unsized array must be initialized"))
 			else var_add_arr env decl p
-		| SizedArray(p, intlist) ->
+		| SizedArray(p, intlist) -> var_add_arr env decl p
+		(*| SizedArray(p, intlist) ->
                         match decl.declInit with
                           Noexpr -> adding_arr env decl p
-                        | _      -> raise (Failure ("illegal array initialization"))
+                        | _      -> raise (Failure ("illegal array initialization"))*)
 		| _ -> var_add env decl
 
 	in	
