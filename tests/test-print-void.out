@@ -1,1 +1,7 @@
-Fatal error: exception Failure("Cannot print void.")
+void retVoid() {
+
+}
+
+int main() {
+    println(retVoid());
+}
