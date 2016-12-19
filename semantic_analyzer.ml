@@ -199,7 +199,7 @@ let check_prog (globals, functions) =
 			raise (Failure ("Incorrect number of args for function call " ^ id ^ 
 				". Expecting " ^ (string_of_int (List.length func_entry.arg_types)) ^ " args but got "
 				^ (string_of_int (List.length args)))) else 
-			(*if (id = "println" || id = "print") && (List.length arg_types)<1 then raise(Failure("Cannot print void."));*)
+			(*if (id = "println" || id = "print") && (List.length arg_types)<1 then raise(Failure("Cannot print void."));*) 
 			if id <> "print" && id <> "println" && id <> "len" && arg_types <> func_entry.arg_types then
 			raise (Failure("unexpected arg types")) else
 			func_entry.return_type
@@ -424,6 +424,8 @@ let check_prog (globals, functions) =
 	let add_function_declaration (env : env) (fdecl : funcdecl) :(env * funcdecl) = 
 		print_endline(";adding FUNC declaration to env");
 		print_endline(";" ^ fdecl.fname);
+		if fdecl.fname="main" && (List.length fdecl.args) > 0 
+			then raise (Failure("main() may not take args")) else
 		if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
 		raise (Failure ("Cannot overwrite built-in function!!")) else
 		if (List.mem fdecl.fname (List.map (fun f -> f.name) env.funcs)) then
