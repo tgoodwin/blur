@@ -3,8 +3,6 @@ open Ast
 
 module A = Ast
 
-(*open Sast*) 
-
 module StringMap = Map.Make(String)
 
 type symbol_table = {
@@ -38,10 +36,8 @@ let string_of_datatype = function
 
 let check_prog (globals, functions) = 
 	(* Add global variable declarations to the symbol table *)
-	print_endline("; checking prog");
 
 	let built_in_functions = 
-		(* TODO: fix types in general. *)
 		(* print and println actually take expr, not a Datatype. We deal with this in check_func_call*)
 		[ {name = "print"; arg_types = [Datatype(String)]; return_type = Datatype(Void);};
 			{name = "println"; arg_types = [Datatype(String)]; return_type = Datatype(Void);};
@@ -85,27 +81,15 @@ let check_prog (globals, functions) =
 	List.iter check_not_void globals;
 
 	let rec get_variable_decl (symtab : symbol_table) (id : string) :datatype =
-		print_endline(";getting var decl");
-		print_endline(";" ^ id);
-		print_endline(";" ^ string_of_int(List.length symtab.args));
-		print_endline(";" ^ string_of_int(List.length symtab.variables));
 		try 
 			let decl = List.find (fun vdecl -> vdecl.declID = id) symtab.variables in decl.declTyp
 		  with
-		  | Not_found -> print_endline(";try again"); try let decl = List.find (fun adecl -> adecl.argdeclID = id) symtab.args in decl.argdeclType
+		  | Not_found -> try let decl = List.find (fun adecl -> adecl.argdeclID = id) symtab.args in decl.argdeclType
 		  			with
 		  			| Not_found -> (match symtab.parent with 
-		  				| Some parent -> print_endline(";look at parent"); get_variable_decl parent id 
+		  				| Some parent -> get_variable_decl parent id 
 		  				| _ -> raise Not_found) in
 
-	(*let check_arr_literal (elist : expr list) =
-		
-		(*let _ = 
-			(* Error out if there is a var in arr literal. *)
-			List.find (fun e -> Id e) elist
-			in raise (Failure ("Duplicate variable " ^ decl.declID))
-			UnsizedArray(Int, List.length elist)*)
-	in*)
         let check_arr_access_type symtab s elist =
             let num_dims = (List.length elist) in
             let arr_type =
@@ -133,23 +117,22 @@ let check_prog (globals, functions) =
 
 	(* Returns datatype of expression. *)
 	let rec check_expr (env : env) (expr : expr) = 
-		print_endline(";checking expr");
 		match expr with 
-		  IntLit i -> print_endline(";int"); Datatype(Int)
-		| DoubleLit d -> print_endline(";double"); Datatype(Double)
-		| CharLit c -> print_endline(";char"); Datatype(Char)
-		| StrLit s -> print_endline(";str"); Datatype(String)
-		| BoolLit b -> print_endline(";bool"); Datatype(Bool)
-		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
-		| ArrayListInit elist -> print_endline(";arr init"); check_arr_literal env elist
-		| ArrayAccess (s, elist) -> print_endline(";arr access"); check_arr_access_type env.symtab s elist
+		  IntLit i -> Datatype(Int)
+		| DoubleLit d -> Datatype(Double)
+		| CharLit c -> Datatype(Char)
+		| StrLit s -> Datatype(String)
+		| BoolLit b -> Datatype(Bool)
+		| Noexpr -> Datatype(Void)
+		| ArrayListInit elist -> check_arr_literal env elist
+		| ArrayAccess (s, elist) -> check_arr_access_type env.symtab s elist
 			(* Check that you're accessing something available*)
-		| Id s -> print_endline(";id"); 
+		| Id s ->
 				(* This gets the type of the variable. *)
 				(try get_variable_decl env.symtab s 
 				with | Not_found -> raise (Failure ("undeclared identifier " ^ s))
 				) 
-		| Unop (op, e) -> print_endline(";expr is unop");
+		| Unop (op, e) ->
 			let t = check_expr env e in
 			(match op with 
 			| Mag -> 
@@ -163,23 +146,19 @@ let check_prog (globals, functions) =
 				else t
 			| _ -> raise(Failure("illegal unop")))
 		| FuncCall (s, arglist) -> check_func_call s arglist env
-		| Binop (e1, op, e2) -> print_endline(";expr is binop");
+		| Binop (e1, op, e2) -> 
 			let t1 = check_expr env e1 
 			and t2 = check_expr env e2 in
 			match op with 
-			| Add | Sub | Mult | Div | Mod -> print_endline(";arith");
-				ignore(print_endline(";" ^ string_of_datatype t1));
-				ignore(print_endline(";" ^ string_of_datatype t1));
+			| Add | Sub | Mult | Div | Mod -> 
 				if is_arith t1 && t1 = t2 then t1
 				else raise (Failure ("illegal operation")) 
 			| Lt | Leq | Gt | Geq | Eq | Neq | And | Or ->
 				if is_logical t1 && t1 = t2 then Datatype(Bool)
 				else raise (Failure("invalid operands"))
-			(* TODO: fail if type is not int or double *)
-			| Asn -> print_endline(";asn");
+			| Asn ->
 				if t1 = t2 then t1
-				else raise (Failure ("illegal assignment")) 
-	
+				else raise (Failure ("illegal assignment")) 	
 
         (* get type of an expr list, potentailly nested. Blur supports up to 2D arrays. *)
         and check_arr_literal env elist =
@@ -193,9 +172,6 @@ let check_prog (globals, functions) =
 
 	(* Checking function call returns the type of the function. *)
 	and check_func_call (id : string) (args : expr list) (env : env) = 
-		print_endline(";checking function call");
-		print_endline(";" ^id);
-		print_endline(";" ^ string_of_int(List.length env.funcs));
 		try
 			let func_entry = List.find (fun f -> f.name = id) env.funcs in
 			(* Get the types of the arg expressions. *)
@@ -205,12 +181,10 @@ let check_prog (globals, functions) =
 			raise (Failure ("Incorrect number of args for function call " ^ id ^ 
 				". Expecting " ^ (string_of_int (List.length func_entry.arg_types)) ^ " args but got "
 				^ (string_of_int (List.length args)))) else 
-			(*if (id = "println" || id = "print") && (List.length arg_types)<1 then raise(Failure("Cannot print void."));*) 
 			if id <> "print" && id <> "println" && id <> "len" && arg_types <> func_entry.arg_types then
 			raise (Failure("unexpected arg types")) else
 			func_entry.return_type
-			(*Datatype(Int)*)
-		with | Not_found -> (*Datatype(Int)*) raise (Failure ("undeclared function " ^ id))
+		with | Not_found -> raise (Failure ("undeclared function " ^ id))
 	in	
 
 	let var_add (env : env) (decl : vardecl) =
@@ -224,7 +198,6 @@ let check_prog (globals, functions) =
 				in raise (Failure ("Duplicate variable " ^ decl.declID))
 			with
 			| Not_found -> 
-				(* TODO: use same symbol table as symbol table from arg *)
 				let new_symbol_table = 
 					{
 						(env.symtab)
@@ -244,8 +217,6 @@ let check_prog (globals, functions) =
 
 	(* Add ArrayListInit as declInit of vardecl to env. *)
 	let adding_arr (env : env) (decl : vardecl) (p : primitive) =
-		(* TODO: Ensure that the elements of the array literal are of the correct type, p. *)
-		ignore(print_endline(";adding arr"));
 		(try
 			let _ = 
 				(* Error out if local variable with same name already exists. *)
@@ -254,7 +225,6 @@ let check_prog (globals, functions) =
 			in raise (Failure ("Duplicate variable " ^ decl.declID))
 		with
 		| Not_found -> 
-			(* TODO: use same symbol table as symbol table from arg *)
 			let new_symbol_table = 
 				{
 					(env.symtab)
@@ -273,9 +243,6 @@ let check_prog (globals, functions) =
 
     (* Add array when it is initialized by a function that returns an array. *)
     let adding_arr_func_call (env : env) (decl : vardecl) (p : primitive) =
-		(* TODO: Ensure that the elements of the array literal are of the correct type, p. *)
-		ignore(print_endline(";ADDING ARR FROM FUNC CALL"));
-		ignore(print_endline(";" ^ decl.declID));
 		(try
 			let _ = 
 				(* Error out if local variable with same name already exists. *)
@@ -284,7 +251,6 @@ let check_prog (globals, functions) =
 			in raise (Failure ("Duplicate variable " ^ decl.declID))
 		with
 		| Not_found -> 
-			(* TODO: use same symbol table as symbol table from arg *)
 			let new_symbol_table = 
 				{
 					(env.symtab)
@@ -305,31 +271,25 @@ let check_prog (globals, functions) =
 	an ArrayListInit, or a function that returns ArrayListInit. *)
 	let var_add_arr (env : env) (decl : vardecl) (p : primitive) =
 		match decl.declInit with
-		| ArrayListInit(elist) -> print_endline(";arr list init"); adding_arr env decl p
-		| FuncCall(s, elist) -> print_endline(";arr func call"); adding_arr_func_call env decl p
+		| ArrayListInit(elist) -> adding_arr env decl p
+		| FuncCall(s, elist) -> adding_arr_func_call env decl p
 		| _ -> raise (Failure("illegal array initialization"))
 	in 		
 
 	let check_variable_declaration (env : env) (decl: vardecl) = 
-		print_endline(";checking var decls");
 
 		(* A variable cannot have type void. *)
 		let check_not_void_var (decl : vardecl) = 
-			print_endline(";checking void vars");
 			let var_typ = (fun v -> decl.declTyp) decl in
 					if var_typ = Datatype(Void) then raise (Failure ("illegal void variable " ^ decl.declID))
 					else ()
 		in 
 		ignore(check_not_void_var (decl));
 
-		(*match decl.declTyp with
-		| UnsizedArray(p,d) -> print_endline(";unsized");*)
-
 		match decl.declTyp with
 		| UnsizedArray(p,d) -> 
 			if decl.declInit = Noexpr then raise(Failure("unsized array must be initialized"))
 			else var_add_arr env decl p
-		(*| SizedArray(p, intlist) -> var_add_arr env decl p *)
 		| SizedArray(p, intlist) -> if decl.declInit = Noexpr then adding_arr env decl p else raise (Failure("illegal array initialization"))
 		| _ -> var_add env decl
 
@@ -337,18 +297,17 @@ let check_prog (globals, functions) =
 
 	(* Return env and stmt tuple. *)
 	let rec check_stmt (env : env) (stmt : stmt) :(env * stmt) = 
-		print_endline(";checking stmt");
 		match stmt with 
-			Expr e -> print_endline(";stmt is expr"); ignore(check_expr env e); (env, stmt) (* Expression cannot mutate the environment. *)
+			Expr e -> ignore(check_expr env e); (env, stmt) (* Expression cannot mutate the environment. *)
 		(* Return current env since Blocks have their own scope. *)
-		| Block stmt_list -> print_endline(";block");
+		| Block stmt_list ->
 			let new_symbol_table = { parent = Some env.symtab; variables = []; args = []; } in
 			let (_, checked_stmts) = check_stmt_list { (env) with symtab = new_symbol_table; } stmt_list in
 			(env, stmt)
-		| Decl vdecl -> print_endline(";checking decl"); (* Return new env*)
+		| Decl vdecl -> (* Return new env*)
 			let (new_env, vdecl) = check_variable_declaration env vdecl
 			in (new_env, stmt)
-		| If (e, s1, s2) -> print_endline(";IF");
+		| If (e, s1, s2) ->
 			let checked_expr = check_expr env e
 			and (_, checked_s1) = check_stmt env s1
 			and (_, checked_s2) = check_stmt env s2 in
@@ -365,19 +324,13 @@ let check_prog (globals, functions) =
 			and (_, checked_stmt) = check_stmt env s in
 			if is_bool checked_expr then (env, stmt)
 			else raise(Failure("illogical while")) 
-		| Return e -> print_endline(";check return"); let e_type = check_expr env e in
-			ignore(print_endline(";t expr"));
-			(*ignore(print_endline(";" ^ string_of_datatype e_type));*)
-			ignore(print_endline(";t env return type"));
+		| Return e -> let e_type = check_expr env e in
 			match env.return_type with
 				| return_type ->
-					(*ignore(print_endline(";" ^ string_of_datatype env.return_type));*)
 					if e_type = return_type then (env, stmt)
 					else raise (Failure ("incorrect return type"))
-					(*| None ->print_endline(";NONE"); (env, stmt)) raise (Failure ("no return")))*)
 	(* Each statement takes the environment updated from the previous statement. *)
 	and check_stmt_list (env : env) ( slist : stmt list ) :(env * stmt list) = 
-		print_endline(";checking stmt list");
 		let(new_env, stmts) = 
 			List.fold_left (fun acc stmt ->
 				let (nenv, s) = check_stmt (fst acc) stmt
@@ -387,11 +340,9 @@ let check_prog (globals, functions) =
 
 	(* Check arguments *)
 	let check_argdecl (env : env) (adecl : argdecl) = 
-		print_endline(";checking arg decl");
 
 		(* An argument cannot have type void. *)
 		let check_not_void_arg (adecl : argdecl) = 
-			print_endline(";checking void args");
 			let arg_typ = (fun a -> a.argdeclType) adecl in
 					if arg_typ = Datatype(Void) then raise (Failure ("illegal void arg"))
 					else ()
@@ -412,8 +363,6 @@ let check_prog (globals, functions) =
 					with 
 					args = adecl :: env.symtab.args;
 				} in
-			print_endline(";arg ct");
-			print_endline(";" ^ string_of_int(List.length new_symbol_table.args));
 			let new_env = { (env) with symtab = new_symbol_table; }
 			and arg = 
 				{
@@ -425,8 +374,6 @@ let check_prog (globals, functions) =
 
 	(* Add function declaration to the environment. *)
 	let add_function_declaration (env : env) (fdecl : funcdecl) :(env * funcdecl) = 
-		print_endline(";adding FUNC declaration to env");
-		print_endline(";" ^ fdecl.fname);
 		if fdecl.fname="main" && (List.length fdecl.args) > 0 
 			then raise (Failure("main() may not take args")) else
 		if (List.mem fdecl.fname (List.map (fun f -> f.name) built_in_functions)) then
@@ -452,59 +399,35 @@ let check_prog (globals, functions) =
 			} in
 		(* Add the function to the environment 
 		For now, the symbol table and return type have empty local scope. *)
-		if fdecl.typ = UnsizedArray(Char, 2) then ignore(print_endline(";OMGOMGOMG"));
-		(*print_endline(";" ^ string_of_datatype fdecl.typ);*)
 		let new_env = 
 		{
 			(env)
 			with
 			symtab = new_symbol_table;
 			funcs =  new_funcs;
-			return_type = (*Some*) fdecl.typ;
+			return_type = fdecl.typ;
 		} in
-		print_endline(";func count:");
-		print_endline(";" ^ string_of_int(List.length new_env.funcs));
 		(* Add the args to the function scope. *)
 		let (env_with_args, argdecl_list) = 
 			List.fold_left (fun acc argdecl ->
 				let (nenv, arg) = check_argdecl (fst acc) argdecl 
 				in (nenv, (arg :: (snd acc)))) (new_env, []) fdecl.args in
 		let (_, func_body) = 
-			check_stmt_list env_with_args fdecl.body in (*KG before this was env*)
+			check_stmt_list env_with_args fdecl.body in
 		let func_body = func_body in
 		let f = 
 		{
 			typ = fdecl.typ;
 			fname = fdecl.fname;
 			args = List.rev argdecl_list;
-			body = func_body;(*fdecl.body;*)
+			body = func_body;
 		} in
-		(*print_endline(";env with args");
-		print_endline(";" ^ string_of_int(List.length env_with_args.symtab.args));*)
 		(* Return the environment with this added function. *)
 		({ (env_with_args) with funcs = new_funcs; }, f) 
  	in
 
-
-
-	(* Check function declaration and return new environment. *)
-	(*let check_function_declaration (env : env) (fdecl : funcdecl) : (env * funcdecl) =
-		print_endline(";checking func decl");
-		print_endline(";" ^ fdecl.fname);
-		(*ignore(print_endline(";func arg count:"));
-		ignore(print_endline(";" ^ string_of_int(List.length env.symtab.args)));*)
-		(* No need to keep track of environment outside the scope of the function. *)
-		let (_, func_body) = 
-			check_stmt_list env fdecl.body in 
-		let func_body = func_body in
-		(* Return the environment with this added function. *)
-		(env, fdecl) 
-  	in*)
-
-
 	(* Establish initial environment *)
 	let env = 
-		print_endline("; est init env");
 		{
 			symtab = { parent = None; variables = []; args = []; };
 			funcs = built_in_functions; 
@@ -513,7 +436,6 @@ let check_prog (globals, functions) =
 
 	(* Add global variables to the environment. *)
 	let check_global_var (env : env) (vdecl : vardecl) = 
-		print_endline(";checking global vars");
 		(try
 			let _ =	
 				(* Error out if global variable with same name already exists. *)
@@ -522,9 +444,7 @@ let check_prog (globals, functions) =
 			in raise (Failure ("Duplicate variable " ^ vdecl.declID))
 		with
 			| Not_found -> 
-				print_endline(";add global to symbol tab");
 				let new_symbol_table = 
-					print_endline(";" ^ string_of_int(List.length env.symtab.variables));
 					{
 						(env.symtab)
 						with 
@@ -542,21 +462,13 @@ let check_prog (globals, functions) =
 
 	(* Add globals to env. *)
 	let(new_env, vars) = 
-		(*print_endline(";globals loop");*)
 		List.fold_left (fun acc v ->
 			let (nenv, v) = check_global_var (fst acc) v
 			in (nenv, (v :: (snd acc)))) (env, []) globals 
 	in 
 
-	(*print_endline(";after globals run");
-	print_endline(";" ^ string_of_int(List.length new_env.symtab.variables));
-
-	ignore(print_endline(";how many fns"));
-	ignore(print_endline(";" ^ string_of_int(List.length functions)));*)
-
 	(* Adding func decl to env, which also adds args to env.*)
 	let (new_env, funcs) = 
-		print_endline(";ADDING FUNCS");
 		List.fold_left (fun acc f -> 
 			let(nenv, f) = add_function_declaration (fst acc) f
 			in (nenv, (f :: (snd acc)))) (new_env, []) (List.rev functions) 
@@ -571,26 +483,7 @@ let check_prog (globals, functions) =
 		with | Not_found -> raise (Failure("no main"));
 	in
 	 
-	(*ignore(print_endline(";after adding funcs"));
-	ignore(print_endline(";" ^ string_of_int(List.length env.symtab.args)));*)
-	(*let function_decl s = try List.find s functions
-       with Not_found -> raise (Failure ("unrecognized function " ^ s))
-
-    let_ = function_decl "main" in*)
-
-	(*print_endline(";after adding fns and ARGS");
-	print_endline(";" ^ string_of_int(List.length new_env.symtab.variables));*)
-
-	(* TODO: check function in same pass as add function *)
-	(*let (_, fdecl_list) = 
-		List.fold_left (fun acc fdecl ->
-			print_endline(";" ^ fdecl.fname);
-			let (new_env, f) = check_function_declaration (fst acc) fdecl
-			in (new_env, (f :: (snd acc)))) (new_env, []) functions
-	in fdecl_list;*)
-
 	let check_function functions =  
-		print_endline(";checking functions");
 
 		(* Return list of functions after checking functions. *)
 		functions in
@@ -598,148 +491,3 @@ let check_prog (globals, functions) =
 		(* After semantically checking, we return the program -
 		a tuple of a list of globals and a list of functions. *)
 		(globals, functions);
-
-		(*in List.iter check_function functions*)
-
-	(*(* Make a map of global variables *)
-	let global_vars = 
-		let global_var map (vdecl : A.vardecl) =
-			let name = vdecl.declID in
-			let typ = vdecl.declTyp in
-		 	StringMap.add name typ map in 
-		List.fold_left global_var StringMap.empty globals in
-	(* Raise exception if given list has a duplicate *)
-	
-	(* There may not be duplicate variable names. *)
-	let report_duplicate_var exceptf globals =
-		(* Get the names of the globals *)
-		let global_names = List.map (fun v -> v.declID) globals in
-			let rec helper = function	
-					n1 :: n2 :: _ when n1 = n2 -> raise (Failure (exceptf n1))
-				| _ :: t -> helper t
-				| [] -> ()
-			in helper (List.sort compare global_names)
-	in
-	(* There may not be duplicate function names. *)
-	let report_duplicate_func exceptf globals =
-		(* Get the names of the globals *)
-		let global_names = List.map (fun f -> f.fname) globals in
-			let rec helper = function	
-					n1 :: n2 :: _ when n1 = n2 -> raise (Failure (exceptf n1))
-				| _ :: t -> helper t
-				| [] -> ()
-			in helper (List.sort compare global_names)
-	in
-	(* There may not be duplicate arg names. *)
-	let report_duplicate_arg exceptf args =
-		(* Get the names of the args *)
-		let arg_names = List.map (fun a -> a.argdeclID) args in
-			let rec helper = function	
-					n1 :: n2 :: _ when n1 = n2 -> raise (Failure (exceptf n1))
-				| _ :: t -> helper t
-				| [] -> ()
-			in helper (List.sort compare arg_names)
-	in
-	(* A global variable cannot have type void. *)
-	let check_not_void (vdecl : vardecl) = 
-		(* Get the types of the globals *)
-		let global_typ = (fun v -> v.declTyp) vdecl in
-				if global_typ = Datatype(Void) then raise (Failure ("illegal var"))
-				else () 
-	in
-	(* An argument cannot have type void. *)
-	let check_not_void_arg (adecl : argdecl) = 
-		let arg_typ = (fun a -> a.argdeclType) adecl in
-				if arg_typ = Datatype(Void) then raise (Failure ("illegal void arg"))
-				else ()
-	in
-	(* Check assignment - type error *)
-	let check_assign lval_type rval_type err = 
-			if lval_type == rval_type then lval_type 
-			else raise err 
-	in 
-	(**** Check global vars ****)
-	List.iter check_not_void globals;
-	report_duplicate_var (fun n -> "duplicate global " ^ n) globals;
-	(**** Check functions ****)
- 
-	if List.mem "print" (List.map (fun fd -> fd.fname) functions)
-  	then raise (Failure ("function print may not be defined")) else ();
-	report_duplicate_func (fun n -> "duplicate function " ^ n) functions;
-	(* Function declaration for named function. *)
-	(* TODO: Modify when we write these function in llvm. *)
-	let built_in_decls =  StringMap.add "print"
-     { typ = Datatype(Void); fname = "print"; args = [{argdeclType = Datatype(Int); argdeclID = "x"}];
-       body = [] } (StringMap.singleton "printb"
-     { typ = Datatype(Void); fname = "printb"; args = [{argdeclType = Datatype(Bool); argdeclID = "x"}];
-       body = [] })
-   in
-  let function_decls = List.fold_left (fun map fd -> StringMap.add fd.fname fd map)
-                         built_in_decls functions
-  in
-  let function_decl s = try StringMap.find s function_decls
-       with Not_found -> raise (Failure ("unrecognized function " ^ s))
-  in
-  let _ = function_decl "main" in (* Ensure "main" is defined. *)
-	let check_function func env =
-		List.iter check_not_void_arg func.args;
-		report_duplicate_arg (fun n -> "duplicate argument " ^ n) func.args;
-		let local_vars = StringMap.empty in
-		let add_arg map (adecl: A.argdecl) =
-			let name = adecl.argdeclID in
-			let typ = adecl.argdeclType in
-			StringMap.add name typ map 
-		in
-		let add_local map (vdecl: A.vardecl) = 
-			let name = vdecl.declID in
-			let typ = vdecl.declTyp in
-			StringMap.add name typ map
-		in
-		(* Add function arguments to local_vars map. *)
-		let local_vars = List.fold_left add_arg local_vars func.args in
-		let type_of_var v =
-			print_endline("decl?");
-			try StringMap.find v local_vars
-			with Not_found -> raise (Failure ("undeclared identifier " ^ v))
-		in
-		
-		let rec binop typed_e1 op typed_e2 = 
-			check_assign typed_e1 typed_e2 (Failure ("illegal assignment"))
-		in
-		let check_local_vardecl vdecl map = 
-			let local_vars = add_local map vdecl in
-      let init_expr = vdecl.declInit in
-      match init_expr with
-        A.Noexpr      -> local_vars
-      | e             -> local_vars
-		in
-		(* Return the type of an expression or throw exception. *)
-		let rec expr = function
-				IntLit _ -> Datatype(Int)
-			| DoubleLit _ -> Datatype(Double)
-			| CharLit _ -> Datatype(Char) 
-			| StrLit _ -> Datatype(String)
-			| BoolLit _ -> Datatype(Bool)
-			| Id t -> type_of_var t
-			| Binop (e1, op, e2) -> 
-					let checked_e1 = expr e1
-					and checked_e2 = expr e2
-					in binop checked_e1 op checked_e2
-		in
-		let rec stmt = function
-				Expr e -> ignore (expr e) ; local_vars
-			| Decl vardecl -> 
-				(*let local_vars = check_local_vardecl vardecl map
-				in local_vars*)check_local_vardecl vardecl local_vars ; local_vars
-			|	Block stmtlst -> let rec check_block = function
-						[Return _ as s] -> stmt s
-					| Return _ :: _ -> raise (Failure "nothing may follow a return") 
-					| Block sl :: ss -> check_block (sl @ ss) 
-					| s :: ss -> stmt s ; check_block ss 
-					| [] -> local_vars
-				in check_block stmtlst
-		in
-		(* Account for local var decls being part of func body stmt *)
-		let _ = stmt (Block func.body) in ()
-	in
-	List.iter check_function functions*)
