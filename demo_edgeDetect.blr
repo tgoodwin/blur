@@ -1,0 +1,4 @@
+int main(){
+	char[][] asciiArt = dither("images/leaf.jpg"); 
+	int[][] edges = edgeDetect("images/leaf.jpg", 30); 
+}

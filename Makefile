@@ -46,7 +46,7 @@ parser.cmi: ast.cmo
 # for including the Blur standard library.
 .PHONY: %.ll
 %-ls:
-	#./blur -ls < $(*D)/$(*F).blr > $(*D)/$(*F).ll
+	./blur -ls < $(*D)/$(*F).blr > $(*D)/$(*F).ll
 	cd ${LIBDIR} && make stdlib && cd ../
 	llc $(*D)/$(*F).ll > $(*D)/$(*F).s
 
