@@ -16,7 +16,6 @@ let _ =
 	let lexbuf = Lexing.from_channel stdin in
 	let ast = Parser.program Scanner.token lexbuf in 
 	Semantic_analyzer.check_prog ast; 
-	(*ast;*)
 	match action with
 	Pretty -> print_endline (Prettyprint.string_of_prog ast)
 	| Llvm -> print_string (Llvm.string_of_llmodule (Generator.translate ast false))
