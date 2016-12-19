@@ -1,0 +1,5 @@
+int main() {
+    if('h') {
+        println("if true test");
+    }
+}
