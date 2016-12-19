@@ -506,11 +506,24 @@ let check_prog (globals, functions) =
 			let(nenv, f) = add_function_declaration (fst acc) f
 			in (nenv, (f :: (snd acc)))) (new_env, []) (List.rev functions) 
 	in
+
+	let env_func_names = List.map (fun f -> f.name) env.funcs in
+
+	let (new_env, funcs) = 
+		try 
+		let _ = List.find (fun func -> func.name = "main") new_env.funcs in
+		(new_env, funcs)
+		with | Not_found -> raise (Failure("no main"));
+	in
+	 
 	(*ignore(print_endline(";after adding funcs"));
-	ignore(print_endline(";" ^ string_of_int(List.length env.symtab.args)));
+	ignore(print_endline(";" ^ string_of_int(List.length env.symtab.args)));*)
+	(*let function_decl s = try List.find s functions
+       with Not_found -> raise (Failure ("unrecognized function " ^ s))
 
+    let_ = function_decl "main" in*)
 
-	print_endline(";after adding fns and ARGS");
+	(*print_endline(";after adding fns and ARGS");
 	print_endline(";" ^ string_of_int(List.length new_env.symtab.variables));*)
 
 	(* TODO: check function in same pass as add function *)
