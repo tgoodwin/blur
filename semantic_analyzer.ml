@@ -125,7 +125,7 @@ let check_prog (globals, functions) =
                         let result_dim = (List.nth dl (tot_dims - num_dims)) in
                         SizedArray(p, [result_dim])
                     else if (tot_dims < num_dims) then
-                        raise (Failure ("array accessing more dimensions than exist"))
+                        raise (Failure ("Array accessing more dimensions than exist"))
                     else
                         Datatype(p)
                             
@@ -141,13 +141,9 @@ let check_prog (globals, functions) =
 		| StrLit s -> print_endline(";str"); Datatype(String)
 		| BoolLit b -> print_endline(";bool"); Datatype(Bool)
 		| Noexpr -> print_endline(";noexpr"); Datatype(Void)
-		| ArrayListInit elist -> print_endline(";arr init");
-			(*check_arr_literal elist*)
-			UnsizedArray(Int, List.length elist)
+		| ArrayListInit elist -> print_endline(";arr init"); check_arr_literal env elist
 		| ArrayAccess (s, elist) -> print_endline(";arr access"); check_arr_access_type env.symtab s elist
-			(*SizedArray(Int, [1;2;3]) *)
 			(* Check that you're accessing something available*)
-			(*Datatype(Char)*)
 		| Id s -> print_endline(";id"); 
 				(* This gets the type of the variable. *)
 				(try get_variable_decl env.symtab s 
@@ -178,6 +174,16 @@ let check_prog (globals, functions) =
 				if t1 = t2 then t1
 				else raise (Failure ("illegal assignment")) 
 	
+
+        (* get type of an expr list, potentailly nested. Blur supports up to 2D arrays. *)
+        and check_arr_literal env elist =
+            let tot_dims = match (List.hd elist) with
+              ArrayListInit(el) -> 2
+            | _                 -> 1
+            in let data_typ = match (List.hd elist) with
+              ArrayListInit(el) -> check_expr env (List.hd el)
+            | e                 -> check_expr env e
+            in let prim_typ = match data_typ with Datatype(p) -> p in UnsizedArray(prim_typ, tot_dims)
 
 	(* Checking function call returns the type of the function. *)
 	and check_func_call (id : string) (args : expr list) (env : env) = 
