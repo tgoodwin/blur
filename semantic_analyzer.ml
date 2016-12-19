@@ -68,6 +68,12 @@ let check_prog (globals, functions) =
 		| _ -> false
 	in
 
+	let is_bool (t : datatype) :bool =
+		match t with
+		Datatype(Bool) -> true
+		| _ -> false
+	in
+
 	(* A global variable cannot have type void. *)
 	let check_not_void (vdecl : vardecl) = 
 		(* Get the types of the globals *)
@@ -135,12 +141,12 @@ let check_prog (globals, functions) =
 			let t1 = check_expr env e1 
 			and t2 = check_expr env e2 in
 			match op with 
-			| Add | Sub | Mult | Div | Lt | Leq | Gt | Geq | Mod -> print_endline(";arith");
+			| Add | Sub | Mult | Div | Mod -> print_endline(";arith");
 				ignore(print_endline(";" ^ string_of_datatype t1));
 				ignore(print_endline(";" ^ string_of_datatype t1));
 				if is_arith t1 && t1 = t2 then t1
 				else raise (Failure ("illegal operation")) 
-			| Eq | Neq | And | Or ->
+			| Lt | Leq | Gt | Geq | Eq | Neq | And | Or ->
 				if is_logical t1 && t1 = t2 then Datatype(Bool)
 				else raise (Failure("invalid operands"))
 			(* TODO: fail if type is not int or double *)
@@ -309,7 +315,8 @@ let check_prog (globals, functions) =
 			let checked_expr = check_expr env e
 			and (_, checked_s1) = check_stmt env s1
 			and (_, checked_s2) = check_stmt env s2 in
-			(env, stmt)
+			if is_bool checked_expr then (env, stmt)
+			else raise(Failure("illogical if"))
 		| For (e1, e2, e3, s) -> 
 			let checked_e1 = check_expr env e1
 			and checked_e2 = check_expr env e2
