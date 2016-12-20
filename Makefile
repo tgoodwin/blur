@@ -58,6 +58,5 @@ libs :
 
 .PHONY : clean
 clean :
-	rm -f prog scanner.ml parser.ml parser.mli blur
+	rm -f scanner.ml parser.ml parser.mli blur
 	rm -f *.cmo *.cmi *.cmx *.o *.bc *.ll *.s *.out *.blx
-	rm -f *~
