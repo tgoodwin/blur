@@ -1,0 +1,42 @@
+int[][] load_scream(string s) {
+        int[][] as = readGrayscaleImage(s);
+        return as;
+}
+
+void my_dither(int[][] a, char[][] cv, int b) {
+        int width = len(a);
+        int height = len(a[0]);
+        int i;
+        int j;
+        char px;
+        int c;
+        for(i = 0; i < width; i = i + 1) {
+                for(j = 0; j < height; j = j + 1) {
+                        c = (a[i][j] + b) % 255;
+                        if(c > 3) {
+                            px = |c|;
+                        }
+                        else {
+                            px = |a[i][j]|;
+                        }
+                        cv[i][j] = px;
+                }
+        }
+        for(i = 0; i < width; i = i + 1) {
+            for(j = 0; j < height; j = j + 1) {
+                print(cv[i][j]);
+            }
+            println("");
+        }
+}
+
+int main() {
+        string imgfile = "the_scream_1910.jpg";
+        int[][] a = load_scream(imgfile);
+        char[][] cv = canvas(imgfile);
+        int i = 0;
+        while(i < 255) {
+            my_dither(a, cv, i);
+            i = i + 2;
+        }
+}
