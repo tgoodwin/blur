@@ -7,9 +7,6 @@
 #define DEFAULT_WIDTH  640
 #define DEFAULT_HEIGHT 480
  
-//int width  = DEFAULT_WIDTH;
-//int height = DEFAULT_HEIGHT;
-
 int glutInitialized = 0;    // Ensure glutInit() is not called twice
                             // the only function that calls it is readDimensions()
 
@@ -31,22 +28,6 @@ void display()
  
     glutSwapBuffers();
 } 
- 
-/* Handler for window re-size event. Called back when the window first appears and
-   whenever the window is re-sized with its new width and height */
-/*
-void reshape(GLsizei newwidth, GLsizei newheight) 
-{  
-    // Set the viewport to cover the new window
-       glViewport(0, 0, width=newwidth, height=newheight);
-     glMatrixMode(GL_PROJECTION);
-     glLoadIdentity();
-     glOrtho(0.0, width, height, 0.0, 0.0, 100.0);
-     glMatrixMode(GL_MODELVIEW);
- 
-    glutPostRedisplay();
-}
-*/
  
 /* Initialize OpenGL Graphics */
 void initGL(int w, int h) 
@@ -253,44 +234,3 @@ struct CanvasStruct canvas(char *filename){
   return canvas;
 
 }
-
-
-/*int main(int argc, char **argv) 
-{
-    GLuint texid;
-    int    image;
- 
-    if ( argc < 1){ return -1; }
-
-    int* dimensions = readDimensions(argv[1]);
-    int width = dimensions[0];
-    int height = dimensions[1];
-   
-    struct ImageStruct s = readGrayscaleImage(argv[1]);
-    printf("width: %d\n",s.width);
-    printf("height: %d\n",s.height);
-    for(int i=0; i<width*height; i++){
-        printf("%d\n", s.imageData[i]);
-    }
-
-     
-    // OpenGL texture binding of the image loaded by DevIL
-       glGenTextures(1, &texid); // Texture name generation 
-       glBindTexture(GL_TEXTURE_2D, texid); // Binding of texture name
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // We will use linear interpolation for magnification filter
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // We will use linear interpolation for minifying filter
-       glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 
-        0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE, ilGetData()); // Texture specification
-      
-
-    // Main loop 
-    glutMainLoop();
- 
-    // Delete used resources and quit
-     ilDeleteImages(1, &image); // Because we have already copied image data into texture data we can release memory used by image.
-     glDeleteTextures(1, &texid);
-     return 0;
-
-} 
-*/
-
