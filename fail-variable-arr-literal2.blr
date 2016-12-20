@@ -1,4 +1,0 @@
-int main() {
-        int i = 5;
-        int[] a = [2+2, 4, i-1]; /* should fail */
-}

@@ -1,8 +1,0 @@
-int retFollow() {
-    return 5;
-    int x;
-}
-
-int main() {
-
-}

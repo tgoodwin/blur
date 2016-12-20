@@ -1,7 +1,0 @@
-int main() {
-        int b = 4;
-        int[10] a;
-        a[b] = b; 
-        int c = a[b];
-        println(c);
-}

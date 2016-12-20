@@ -1,8 +1,0 @@
-int main()
-{
-    int[8] a;
-    a[3] = 4;
-    int z;
-    z = a[3];
-    println(z);
-}
