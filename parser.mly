@@ -1,4 +1,5 @@
 /* PARSER.MLY for BLUR */
+/* authored by Melissa Kaufman-Gomez-mhk2149, Dexter Callender-dec2148, Timothy Goodwin-tlg2132, Daniel Hong-sh3266 */
 
 %{ open Ast %}
 

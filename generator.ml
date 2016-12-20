@@ -1,4 +1,5 @@
-(* code generation: translate takes semantically checked AST and produces LLVM IR *)
+(* code generation: translate takes semantically checked AST and produces LLVM IR.
+ * Authored by Tim Goodwin-tlg2132@columbia.edu *)
 
 open Ast
 open Llvm

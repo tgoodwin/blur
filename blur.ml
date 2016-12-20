@@ -1,9 +1,8 @@
+(* blur.ml *)
+
 open Prettyprint
 open Ast
 open Generator
-
-(* open Llvm *)
-(* open Llvm_analysis *)
 
 type action = Pretty | Llvm | Checked_Llvm | StdLib_Llvm
 

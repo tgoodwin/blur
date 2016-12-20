@@ -1,4 +1,6 @@
-(* Ocammlex scanner for Blur lang *)
+(* Ocammlex scanner for Blur lang
+ * authored by Melissa Kaufman-Gomez-mhk2149, Dexter Callender-dec2148, Timothy Goodwin-tlg2132, Daniel Hong-sh3266 *)
+ 
 { open Parser }
 
 let character = ['a'-'z' 'A'-'Z' '$' '@' '%' '&' '#' '*' '/' '|' '(' ')' '{' '}' '[' ']' '?' '-' '_' '+' '~' '<' '>' '!' ';' ':' '^' ',' '.' ' ' ]

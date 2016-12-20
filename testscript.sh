@@ -1,4 +1,5 @@
 #!/bin/bash
+# authored by Daniel Hong sh3266@columbia.edu
 
 code(){
     filebase=$(echo ${1} | cut -f 1 -d '.')

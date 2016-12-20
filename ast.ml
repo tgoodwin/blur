@@ -1,4 +1,7 @@
-(* Abstract Syntax Tree *)
+(* BLUR Abstract Syntax Tree
+ * Authors: Tim Goodwin - tlg2132@columbia.edu, Melissa Kaufman-Gomez-mhk2149@columbia.edu
+ *)
+
 type binopr =
     Add
   | Sub

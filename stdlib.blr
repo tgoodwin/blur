@@ -1,3 +1,5 @@
+/* stdlib.blr, authored by Tim Goodwin-tlg2132 and Dexter Callender-dec2148 */
+
 void display(char[][] cv) {
      int width = len(cv);
      int height = len(cv[0]);

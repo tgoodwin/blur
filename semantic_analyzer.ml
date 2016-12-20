@@ -1,3 +1,5 @@
+(* semantic_analyzer.ml
+ * authored by Melissa Kaufman-Gomez-mhg2149@columbia.edu and Timothy Goodwin-tlg2132@columbia.edu *)
 
 open Ast
 

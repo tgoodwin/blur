@@ -1,3 +1,4 @@
+/* builtin.blr, authored by Tim Goodwin-tlg2132 and Dexter Callender-dec2148 */
 char intensityToChar(int i){
     
     char[] map = ['$','@','B','%','8','&','W','M','#','*','o','a','h','k','b','d','p','q','w','m','Z','0','O','Q','L','C','J','U','Y','X','z','c','v','u','n','x','r','j','f','t','/','|','(',')','1','{','}','[',']','?','-','_','+','~','<','>','i','!','l','I',';',':',',','^','.',' ']; 
