@@ -1,23 +1,19 @@
-#blur
+#Blur
+###a simple programming language for processing and manipulating image data and for creating text-based visual art.
 
-Blur is a programming language for creation and modificaiton of ASCII art created from image files.
 
-Dependencies: 
+##Dependencies: 
+
+Installation under Ubuntu 15.10
+
+LLVM 3.6 is the default under 15.10, so we ask for a matching version of the
+OCaml library.
+
+sudo apt-get install -y ocaml m4 llvm opam
+opam init
+opam install llvm.3.6 ocamlfind
+eval `opam config env`
+
 sudo apt-get install freeglut3-dev
 sudo apt-get install binutils-gold ( for ubuntu >= 11.10 )
 sudo apt-get install libdevil-dev
-
-
-Bindings functions for use in blur code:
-
-int** readImage(char * filename)
-
-This reads an image file from a filename and returns an array of two pointers. The first pointer is an array containing {image_width, image_height}. The second pointer is a pointer to the RGB value image pixels. To iterate over the pixels use the following for loop:
-
-for(int i = 0; i < height; i++){
-      for(int j = 0; j < width; j++){
-        printf(" Red: %d\n", bytes[(i*width +j)*4 + 0]);
-        printf(" Green: %d\n", bytes[(i*width +j)*4 + 1]);
-        printf(" Blue: %d\n", bytes[(i*width +j)*4 + 2]);
-      }
-   }
