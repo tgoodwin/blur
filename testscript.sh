@@ -2,12 +2,18 @@
 
 code(){
     filebase=$(echo ${1} | cut -f 1 -d '.')
-	make "${filebase}-ls" &> makeOutput.txt
-    ./${filebase}.blx &> output.txt
+    { ./blur -ls < "${filebase}.blr" > "${filebase}.ll"; } &> output.txt
+	if [ -s output.txt ]; then
+		:
+	else
+    	make "${filebase}-ls" &> garb.txt # now have an executable with .blx extension
+    	./${filebase}.blx &> output.txt
+		#echo "checking" >> output.txt
+	fi
     #cmp --silent output.txt helloWorld.out || echo "Wrong Output"
     DIFF=$(diff -bBw output.txt "${filebase}.out")
     if [ "$DIFF" == "" ]; then
-	echo "${filebase}: Passed"
+	echo "${filebase}: check"
     else
 	echo "${filebase}: Wrong Output"
     fi
