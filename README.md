@@ -1,5 +1,5 @@
-#Blur
-###a simple programming language for processing and manipulating image data and for creating text-based visual art.
+# Blur
+### a simple programming language for processing and manipulating image data and for creating text-based visual art.
 
 
 ##Dependencies: 
