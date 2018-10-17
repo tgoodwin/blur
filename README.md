@@ -2,7 +2,7 @@
 ### a simple programming language for processing and manipulating image data and for creating text-based visual art.
 
 
-##Dependencies: 
+## Dependencies: 
 
 Installation under Ubuntu 15.10
 
